@@ -198,7 +198,7 @@ graph TD
 
 | Table Name | Source Sheet | Granularity | Key Attributes | Analytical Use Case |
 | :--- | :--- | :--- | :--- | :--- |
-| **`Dim_EmployeeCensus`** | `Backing 1` | Headcount per Grade | `GRADE`, `FUNCTION`, `MALE_COUNT`, `FEMALE_COUNT` | Validates corporate workforce distribution against macroeconomic industry targets. |
-| **`Dim_CareerLadder`** | `Backing 2` | Executive Job Level | `JOB_LEVEL`, `LEVEL_NAME`, `MIN_TENURE`, `TARGET_TIME_IN_ROLE` | Evaluates promotion pipeline velocity and identifies the "broken rung" at Senior Specialist $\to$ Manager. |
-| **`Dim_NationalityCensus`**| `Backing 3` | Citizenship Group | `CITIZENSHIP_TYPE`, `LEGAL_STATUS`, `WORK_PERMIT_CAT` | Tracks multinational parity and local Swiss labor compliance quotas. |
-| **`Dim_PRA_Equity`** | `Backing 4` | Performance vs Appraisal | `RATING_LEVEL`, `DISTRIBUTION_QUOTA_PCT`, `BONUS_MULTIPLIER` | Audits performance evaluation fairness across male and female appraisal cohorts. |
+| **`Dim_EmployeeCensus`** | `Backing 1` | Employee Census Row | `Employee ID`, `GENDER`, `GRADE`, `FUNCTION`, `PERFORM`, `AGE`, `Y_SERVIC`, `Nationality` | Validates corporate workforce distribution across functions, service tenure, and grades. |
+| **`Dim_CareerLadder`** | `Backing 2` | Executive Progression Pair | `Base_Job_Level`, `Target_Promotion_Level` | Maps corporate promotion pathways across the 5 career promotion boundaries. |
+| **`Dim_NationalityCensus`**| `Backing 3` | Country Representation | `Country_ID`, `Nationality`, `Employee_Count` | Audits multinational workforce parity and Swiss local employment quotas (21 nationalities). |
+| **`Dim_PRA_Equity`** | `Backing 4` | Department Distribution Matrix | `Department`, `Grade_1` to `Grade_6` headcounts | Monitors departmental grade allocation against corporate appraisal equity benchmarks. |

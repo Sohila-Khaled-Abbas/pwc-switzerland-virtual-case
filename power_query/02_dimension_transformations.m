@@ -106,10 +106,17 @@ shared Dim_EmployeeCensus = let
     Promoted = Table.PromoteHeaders(SheetData, [PromoteAllScalars=true]),
     Cleaned = Table.TransformColumnNames(Promoted, Text.Trim),
     Typed = Table.TransformColumnTypes(Cleaned, {
-        {"GRADE", Int64.Type},
+        {"Employee ID", Int64.Type},
+        {"GENDER", type text},
+        {"GRADE", type text},
         {"FUNCTION", type text},
-        {"MALE_COUNT", Int64.Type},
-        {"FEMALE_COUNT", Int64.Type}
+        {"OC_RATE", Int64.Type},
+        {"PERFORM", Int64.Type},
+        {"Y_GRADE", Int64.Type},
+        {"AGE", Int64.Type},
+        {"Y_SERVIC", Int64.Type},
+        {"Nationality", type text},
+        {"Rank 2", Int64.Type}
     })
 in
     Typed;
@@ -122,13 +129,15 @@ in
 shared Dim_CareerLadder = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
     SheetData = Source{[Item="Backing 2", Kind="Sheet"]}[Data],
-    Promoted = Table.PromoteHeaders(SheetData, [PromoteAllScalars=true]),
-    Cleaned = Table.TransformColumnNames(Promoted, Text.Trim),
-    Typed = Table.TransformColumnTypes(Cleaned, {
-        {"JOB_LEVEL", Int64.Type},
-        {"LEVEL_NAME", type text},
-        {"MIN_TENURE_YEARS", type number},
-        {"TARGET_PROMOTION_RATE", type number}
+    SelectedCols = Table.SelectColumns(SheetData, {"Column2", "Column3"}),
+    FilteredRows = Table.SelectRows(SelectedCols, each [Column2] <> null),
+    Renamed = Table.RenameColumns(FilteredRows, {
+        {"Column2", "Base_Job_Level"},
+        {"Column3", "Target_Promotion_Level"}
+    }),
+    Typed = Table.TransformColumnTypes(Renamed, {
+        {"Base_Job_Level", type text},
+        {"Target_Promotion_Level", type text}
     })
 in
     Typed;
@@ -141,12 +150,17 @@ in
 shared Dim_NationalityCensus = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
     SheetData = Source{[Item="Backing 3", Kind="Sheet"]}[Data],
-    Promoted = Table.PromoteHeaders(SheetData, [PromoteAllScalars=true]),
-    Cleaned = Table.TransformColumnNames(Promoted, Text.Trim),
-    Typed = Table.TransformColumnTypes(Cleaned, {
-        {"CITIZENSHIP_CODE", type text},
-        {"NATIONALITY_LABEL", type text},
-        {"SWISS_STATUS", type text}
+    SelectedCols = Table.SelectColumns(SheetData, {"Column3", "Column4", "Column5"}),
+    FilteredRows = Table.SelectRows(SelectedCols, each [Column3] <> null and Value.Is([Column3], type number)),
+    Renamed = Table.RenameColumns(FilteredRows, {
+        {"Column3", "Country_ID"},
+        {"Column4", "Nationality"},
+        {"Column5", "Employee_Count"}
+    }),
+    Typed = Table.TransformColumnTypes(Renamed, {
+        {"Country_ID", Int64.Type},
+        {"Nationality", type text},
+        {"Employee_Count", Int64.Type}
     })
 in
     Typed;
@@ -159,12 +173,25 @@ in
 shared Dim_PRA_Equity = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
     SheetData = Source{[Item="Backing 4", Kind="Sheet"]}[Data],
-    Promoted = Table.PromoteHeaders(SheetData, [PromoteAllScalars=true]),
-    Cleaned = Table.TransformColumnNames(Promoted, Text.Trim),
-    Typed = Table.TransformColumnTypes(Cleaned, {
-        {"RATING_SCORE", Int64.Type},
-        {"RATING_LABEL", type text},
-        {"QUOTA_DISTRIBUTION_PCT", type number}
+    SelectedCols = Table.SelectColumns(SheetData, {"Column3", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10"}),
+    FilteredDepts = Table.SelectRows(SelectedCols, each [Column3] <> null and [Column3] <> "Total" and [Column3] <> "F" and [Column3] <> "M"),
+    Renamed = Table.RenameColumns(FilteredDepts, {
+        {"Column3", "Department"},
+        {"Column5", "Grade_1_Executive"},
+        {"Column6", "Grade_2_Director"},
+        {"Column7", "Grade_3_Senior_Manager"},
+        {"Column8", "Grade_4_Manager"},
+        {"Column9", "Grade_5_Senior_Specialist"},
+        {"Column10", "Grade_6_Junior_Officer"}
+    }),
+    Typed = Table.TransformColumnTypes(Renamed, {
+        {"Department", type text},
+        {"Grade_1_Executive", Int64.Type},
+        {"Grade_2_Director", Int64.Type},
+        {"Grade_3_Senior_Manager", Int64.Type},
+        {"Grade_4_Manager", Int64.Type},
+        {"Grade_5_Senior_Specialist", Int64.Type},
+        {"Grade_6_Junior_Officer", Int64.Type}
     })
 in
     Typed;
