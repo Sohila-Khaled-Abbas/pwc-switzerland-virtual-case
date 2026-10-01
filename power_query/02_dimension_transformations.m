@@ -125,15 +125,16 @@ in
 // ------------------------------------------------------------------------------
 // Auxiliary Dimension 6: Dim_CareerLadder
 // Source: "03 Diversity-Inclusion-Dataset.xlsx" -> Backing 2
+// Note: Empty column A is dropped by Power Query, so Col B=Column1, Col C=Column2
 // ------------------------------------------------------------------------------
 shared Dim_CareerLadder = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
     SheetData = Source{[Item="Backing 2", Kind="Sheet"]}[Data],
-    SelectedCols = Table.SelectColumns(SheetData, {"Column2", "Column3"}),
-    FilteredRows = Table.SelectRows(SelectedCols, each [Column2] <> null),
-    Renamed = Table.RenameColumns(FilteredRows, {
-        {"Column2", "Base_Job_Level"},
-        {"Column3", "Target_Promotion_Level"}
+    FilteredRows = Table.SelectRows(SheetData, each [Column1] <> null),
+    SelectedCols = Table.SelectColumns(FilteredRows, {"Column1", "Column2"}),
+    Renamed = Table.RenameColumns(SelectedCols, {
+        {"Column1", "Base_Job_Level"},
+        {"Column2", "Target_Promotion_Level"}
     }),
     Typed = Table.TransformColumnTypes(Renamed, {
         {"Base_Job_Level", type text},
@@ -146,16 +147,17 @@ in
 // ------------------------------------------------------------------------------
 // Auxiliary Dimension 7: Dim_NationalityCensus
 // Source: "03 Diversity-Inclusion-Dataset.xlsx" -> Backing 3
+// Note: Empty cols A-B are dropped by Power Query, so Col C=Column1, Col D=Column2, Col E=Column3
 // ------------------------------------------------------------------------------
 shared Dim_NationalityCensus = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
     SheetData = Source{[Item="Backing 3", Kind="Sheet"]}[Data],
-    SelectedCols = Table.SelectColumns(SheetData, {"Column3", "Column4", "Column5"}),
-    FilteredRows = Table.SelectRows(SelectedCols, each [Column3] <> null and Value.Is([Column3], type number)),
-    Renamed = Table.RenameColumns(FilteredRows, {
-        {"Column3", "Country_ID"},
-        {"Column4", "Nationality"},
-        {"Column5", "Employee_Count"}
+    FilteredRows = Table.SelectRows(SheetData, each [Column1] <> null and Value.Is([Column1], type number)),
+    SelectedCols = Table.SelectColumns(FilteredRows, {"Column1", "Column2", "Column3"}),
+    Renamed = Table.RenameColumns(SelectedCols, {
+        {"Column1", "Country_ID"},
+        {"Column2", "Nationality"},
+        {"Column3", "Employee_Count"}
     }),
     Typed = Table.TransformColumnTypes(Renamed, {
         {"Country_ID", Int64.Type},
@@ -169,20 +171,30 @@ in
 // ------------------------------------------------------------------------------
 // Auxiliary Dimension 8: Dim_PRA_Equity
 // Source: "03 Diversity-Inclusion-Dataset.xlsx" -> Backing 4
+// Note: Col C=Column1 (Department), Col E=Column2 (Grade 1) ... Col J=Column7 (Grade 6)
 // ------------------------------------------------------------------------------
 shared Dim_PRA_Equity = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
     SheetData = Source{[Item="Backing 4", Kind="Sheet"]}[Data],
-    SelectedCols = Table.SelectColumns(SheetData, {"Column3", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10"}),
-    FilteredDepts = Table.SelectRows(SelectedCols, each [Column3] <> null and [Column3] <> "Total" and [Column3] <> "F" and [Column3] <> "M"),
-    Renamed = Table.RenameColumns(FilteredDepts, {
-        {"Column3", "Department"},
-        {"Column5", "Grade_1_Executive"},
-        {"Column6", "Grade_2_Director"},
-        {"Column7", "Grade_3_Senior_Manager"},
-        {"Column8", "Grade_4_Manager"},
-        {"Column9", "Grade_5_Senior_Specialist"},
-        {"Column10", "Grade_6_Junior_Officer"}
+    FilteredDepts = Table.SelectRows(SheetData, each 
+        [Column1] = "Finance" or 
+        [Column1] = "HR" or 
+        [Column1] = "Internal Services" or 
+        [Column1] = "Operations" or 
+        [Column1] = "Sales & Marketing" or 
+        [Column1] = "Strategy"
+    ),
+    SelectedCols = Table.SelectColumns(FilteredDepts, {
+        "Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7"
+    }),
+    Renamed = Table.RenameColumns(SelectedCols, {
+        {"Column1", "Department"},
+        {"Column2", "Grade_1_Executive"},
+        {"Column3", "Grade_2_Director"},
+        {"Column4", "Grade_3_Senior_Manager"},
+        {"Column5", "Grade_4_Manager"},
+        {"Column6", "Grade_5_Senior_Specialist"},
+        {"Column7", "Grade_6_Junior_Officer"}
     }),
     Typed = Table.TransformColumnTypes(Renamed, {
         {"Department", type text},
