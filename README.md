@@ -1,165 +1,250 @@
-# 🏆 PwC Switzerland Virtual Case Experience: Enterprise BI Portfolio
+<div align="center">
 
-> **Role**: PwC Digital Accelerator & Senior Analytics Engineer  
-> **Platform**: PwC Switzerland Simulation (hosted on Forage)  
-> **Technology Stack**: Microsoft Excel (Power Query, Power Pivot, DAX, VBA), Power BI Desktop, Git Version Control  
-> **Architectural Topology**: Multi-Fact Galaxy / Constellation Semantic Model powered by the **VertiPaq In-Memory Engine**  
+# 🏆 PwC Switzerland Virtual Case Experience
+### Enterprise Business Intelligence, Ralph Kimball Galaxy Semantic Model & Executive Analytics Application
+
+[![PwC Virtual Case](https://img.shields.io/badge/PwC_Switzerland-Virtual_Case-D04A02?style=for-the-badge&logo=pwc&logoColor=white)](https://www.theforage.com/simulations/pwc-ch/power-bi-ch)
+[![Microsoft Excel](https://img.shields.io/badge/Microsoft_Excel-365_ProPlus-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)](https://www.microsoft.com/excel)
+[![Power Query M](https://img.shields.io/badge/Power_Query-M_Engine-2EA44F?style=for-the-badge&logo=powerbi&logoColor=white)](https://learn.microsoft.com/powerquery-m/)
+[![VertiPaq Engine](https://img.shields.io/badge/Engine-VertiPaq_Columnar-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)](https://learn.microsoft.com/analysis-services/tabular-models/)
+[![Architecture](https://img.shields.io/badge/Schema-Kimball_Galaxy-6366F1?style=for-the-badge)](docs/02_galaxy_data_model.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+<br/>
+
+**Engineered by [Sohila Khaled Abbas](https://github.com/Sohila-Khaled-Abbas)**  
+*Senior Analytics Engineer & BI Solutions Architect | Top 200 Arabic-Speaking Data Influencer*
 
 ---
 
-## 🏛️ Executive Summary & Portfolio Provenance
+</div>
 
-This directory contains the production-grade deliverables for the **PwC Switzerland Virtual Case Experience**. Designed to simulate real-world consulting engagements for Tier-1 enterprise clients, this portfolio demonstrates the transition from tactical spreadsheet manipulation to **enterprise-grade business intelligence, dimensional modeling, and automated analytical applications**.
+## 📌 Executive Overview & Portfolio Provenance
+
+This repository houses the enterprise-grade deliverables for the **PwC Switzerland Virtual Case Experience** (hosted on Forage). Operating as a Senior Analytics Engineer within PwC’s Digital Accelerator practice, this project bridges the gap between tactical spreadsheet reporting and **Tier-1 enterprise analytics engineering**.
+
+Rather than treating each consulting task as an isolated exercise, this platform unifies **3 distinct business domains** (Telephony Operations, Customer Retention, and Human Capital Leadership) into a single, high-performance **Ralph Kimball Galaxy Schema (Fact Constellation)** powered by the **VertiPaq In-Memory Columnar Engine**.
 
 ```mermaid
 flowchart TD
-    PWC["PwC Switzerland Virtual Case Experience\n(Digital Accelerator Capstone Suite)"]
+    PWC["🏆 PwC Switzerland Digital Accelerator Suite"]
     
-    T1["Task 1: Call Centre Performance\n• Client: Claire (Call Centre Operations Manager)\n• Source: 01 Call-Center-Dataset.xlsx (5,000 Inbound Inquiries)\n• Focus: Inbound SLAs, 18.92% Abandonment Triage, Agent Performance Quadrant"]
-    T2["Task 2: Customer Retention & Churn Risk\n• Client: Retention Management\n• Source: 02 Churn-Dataset.xlsx (7,043 Subscriber Accounts)\n• Focus: Churn Elasticity, Fiber Dissatisfaction, $139K At-Risk MRR"]
-    T3["Task 3: Diversity & Inclusion Leadership\n• Client: Pharma Group AG Human Resources\n• Source: 03 Diversity-Inclusion-Dataset.xlsx (500 Corporate Personnel)\n• Focus: Executive Gender Parity & FY21 Promotion Velocity"]
+    T1["📞 Task 1: Call Centre Intelligence\n• Client: Claire (Operations Director)\n• Volume: 5,000 Inbound Inquiries (Q1 2021)\n• Focus: 18.92% Abandonment Triage & 2D Agent Quadrant"]
+    T2["🔄 Task 2: Customer Retention & Churn Risk\n• Client: Retention Strategy Board\n• Volume: 7,043 Subscriber Accounts\n• Focus: $139K At-Risk MRR & Fiber Optic Support Friction"]
+    T3["👥 Task 3: Diversity & Inclusion Leadership\n• Client: Pharma Group AG Executive Board\n• Volume: 500 Corporate Personnel\n• Focus: Executive Broken Rung & Promotion Velocity"]
     
     PWC --> T1
     PWC --> T2
     PWC --> T3
     
-    style PWC fill:#0f172a,color:#fff,stroke:#0284c7,stroke-width:2px
-    style T1 fill:#e0f2fe,stroke:#0369a1,stroke-width:2px
-    style T2 fill:#ffedd5,stroke:#c2410c,stroke-width:2px
-    style T3 fill:#dcfce7,stroke:#15803d,stroke-width:2px
+    style PWC fill:#0f172a,color:#fff,stroke:#d04a02,stroke-width:3px
+    style T1 fill:#eff6ff,stroke:#2563eb,stroke-width:2px
+    style T2 fill:#fff7ed,stroke:#ea580c,stroke-width:2px
+    style T3 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
 ```
 
 ---
 
-## 📐 Enterprise Semantic Model Architecture
+## 🏛️ Enterprise Galaxy Data Model (Constellation Schema)
 
-All raw transaction datasets in the `data/` directory are modeled and unified inside [`PWC_Switzerland_Virtual_Case.xlsx`](file:///d:/courses/Data%20Analysis%2026-27/7-Introducation%20to%20Data%20Fields%20(Excel)/11_Demos_and_Workbooks/10_Projects_and_Demos/PWC/PWC_Switzerland_Virtual_Case.xlsx) following the Ralph Kimball dimensional methodology:
+The core semantic model resides inside [`PWC_Switzerland_Virtual_Case.xlsx`](PWC_Switzerland_Virtual_Case.xlsx) and is modeled in **Power Pivot Diagram View** with **zero Many-to-Many (`* : *`) relationships**:
 
 ```mermaid
-flowchart TD
-    subgraph VertiPaq ["Power Pivot In-Memory Semantic Model (VertiPaq Engine)"]
-        direction TB
-        
-        subgraph Sub1 ["Sub-Model 1: Call Center Performance (Task 1)"]
-            DimDate["Dim_Date\n(90 Days, Calendar Hierarchy)"]
-            DimAgent["Dim_Agent\n(8 Representatives, Targets)"]
-            DimTopic["Dim_Topic\n(5 Inquiries, SLA Targets)"]
-            FactCalls["Fact_Calls\n(5,000 Inbound Rows)"]
+classDiagram
+    class DimDate {
+        +Date PK
+        +Year
+        +Quarter
+        +Month
+        +Month_Name
+        +Day
+        +Day_Of_Week
+        +Is_Weekend
+    }
 
-            DimDate -->|1 : *| FactCalls
-            DimAgent -->|1 : *| FactCalls
-            DimTopic -->|1 : *| FactCalls
-        end
+    class DimAgent {
+        +Agent PK
+        +Tier
+        +Target_CSAT
+        +Target_Resolution_Rate
+    }
 
-        subgraph Sub2 ["Sub-Model 2: Customer Retention & Churn (Task 2)"]
-            DimContract["Dim_Contract\n(Commitment Terms & Risk Profiles)"]
-            FactChurn["Fact_Churn\n(7,043 Subscriber Accounts)"]
+    class DimTopic {
+        +Topic PK
+        +Complexity_Weight
+        +SLA_Threshold_Sec
+    }
 
-            DimContract -->|1 : *| FactChurn
-        end
+    class DimContract {
+        +Contract PK
+        +Commitment_Months
+        +Risk_Category
+    }
 
-        subgraph Sub3 ["Sub-Model 3: Diversity & Inclusion (Task 3)"]
-            DimDept["Dim_Department\n(Corporate Divisions & Sponsors)"]
-            FactEmployees["Fact_Employees\n(500 Corporate Personnel)"]
+    class DimDepartment {
+        +Department PK
+        +Executive_Sponsor
+        +Target_Female_Ratio
+    }
 
-            DimDept -->|1 : *| FactEmployees
-        end
-    end
+    class Fact_Calls {
+        +Call_Id PK
+        +Date FK
+        +Time
+        +Agent FK
+        +Topic FK
+        +Answered
+        +Resolved
+        +Speed_Of_Answer_Sec
+        +Talk_Duration_Sec
+        +Satisfaction_Rating
+    }
 
-    style VertiPaq fill:#fffbeb,stroke:#d97706,stroke-width:3px
-    style Sub1 fill:#eff6ff,stroke:#2563eb,stroke-width:2px
-    style Sub2 fill:#fff7ed,stroke:#ea580c,stroke-width:2px
-    style Sub3 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    class Fact_Churn {
+        +customerID PK
+        +gender
+        +tenure
+        +Contract FK
+        +MonthlyCharges
+        +TotalCharges
+        +numTechTickets
+        +Churn
+    }
+
+    class Fact_Employees {
+        +Employee_ID PK
+        +Gender
+        +Department FK
+        +Job_Level_Baseline
+        +Job_Level_After_Promotions
+        +Promoted_FY21
+        +FY20_Rating
+        +FY20_Leaver
+    }
+
+    DimDate "1" --> "*" Fact_Calls : Filters
+    DimAgent "1" --> "*" Fact_Calls : Filters
+    DimTopic "1" --> "*" Fact_Calls : Filters
+
+    DimContract "1" --> "*" Fact_Churn : Filters
+
+    DimDepartment "1" --> "*" Fact_Employees : Filters
 ```
 
-### Table Inventory & Reconciled Metrics
+### Table Inventory & Architectural Role
 
-| Sheet / Table Name | Architectural Role | Row Count | Primary Key / Relationship Key | Description |
-| :--- | :---: | :---: | :--- | :--- |
-| **`Model_Architecture`** | Cover / Architecture | N/A | Documentation & Schema Map | Executive metadata and data model overview |
-| **`Fact_Calls`** | Central Fact Table | 5,000 | `Call_Id` (FK: `Date`, `Agent`, `Topic`) | Telephonic call logs with duration seconds & wait buckets |
-| **`Dim_Date`** | Conformed Dimension | 90 | `Date` (PK) | 90 distinct operational days (Q1 2021) with Year, Month, Day |
-| **`Dim_Agent`** | Entity Dimension | 8 | `Agent` (PK) | 8 call representatives with roles, tiers, and target CSAT |
-| **`Dim_Topic`** | Lookup Dimension | 5 | `Topic` (PK) | 5 customer inquiry categories with SLA targets |
-| **`Fact_Churn`** | Central Fact Table | 7,043 | `customerID` (FK: `Contract`) | Telecom customer accounts with charges, services & churn |
-| **`Dim_Contract`** | Lookup Dimension | 3 | `Contract` (PK) | Month-to-month, One year, and Two year risk profiles |
-| **`Fact_Employees`** | Central Fact Table | 500 | `Employee ID` (FK: `Department`) | Pharma Group AG HR personnel with grades & promotions |
-| **`Dim_Department`**| Organizational Dimension | 6 | `Department` (PK) | Corporate divisions with executive sponsors & gender targets |
-| **`_Measures_Catalog`**| DAX Reference Table | 24 | `Measure_Name` | Complete formulations mapped to Storage vs Formula Engine |
+| Table Name | Architectural Role | Row Count | Primary Key | Foreign Keys | Business Domain |
+| :--- | :---: | :---: | :---: | :--- | :--- |
+| **`Fact_Calls`** | Transaction Fact | 5,000 | `Call_Id` | `Date`, `Agent`, `Topic` | Inbound telephony engagements |
+| **`Fact_Churn`** | Snapshot Fact | 7,043 | `customerID` | `Contract` | BSS subscriber lifecycle & revenue |
+| **`Fact_Employees`** | Accumulating Fact | 500 | `Employee_ID` | `Department` | Corporate workforce & progression |
+| **`DimDate`** | Conformed Dimension | 90 | `Date` | None | Continuous Q1 2021 calendar hierarchy |
+| **`DimAgent`** | Entity Dimension | 8 | `Agent` | None | Support representative SLA tiers |
+| **`DimTopic`** | Lookup Dimension | 5 | `Topic` | None | Inquiry categories & SLA targets |
+| **`DimContract`** | Lookup Dimension | 3 | `Contract` | None | Legal terms & risk tiers |
+| **`DimDepartment`** | Organizational Dimension| 6 | `Department` | None | Business divisions & D&I sponsors |
+| **`Dim_EmployeeCensus`**| Auxiliary Lookup | Census | `GRADE` | None | Macro benchmark headcounts |
+| **`Dim_CareerLadder`** | Auxiliary Lookup | Hierarchy | `JOB_LEVEL` | None | Executive grade definitions |
+| **`Dim_NationalityCensus`**| Auxiliary Lookup | Compliance | `CITIZENSHIP_CODE`| None | Swiss labor residency quotas |
+| **`Dim_PRA_Equity`** | Auxiliary Lookup | Governance | `RATING_SCORE` | None | Appraisal Gaussian quota distribution |
 
 ---
 
-## 🧠 The Data Analytics Mindset: 4 Breakthrough Insights
+## 🧠 Breakthrough Business Insights & Strategic Playbook
 
 ### 1. Forensic Triage of the "946 Missing Values"
-* **The Trap**: 946 rows in `01 Call-Center-Dataset.xlsx` contain nulls for `Speed of answer`, `AvgTalkDuration`, and `Satisfaction rating`.
-* **The Forensic Reality**: Cross-tabulation proves these correspond 100% to `Answered == 'N'`. When callers hang up in queue, no agent connection occurs.
-* **The Solution**: Retained as operational nulls in Power Query. Imputing zero would mathematically falsify the average wait time by pretending 946 customers were answered in 0 seconds!
+* **The Trap**: 946 records in `01 Call-Center-Dataset.xlsx` contain nulls for `Speed of answer`, `AvgTalkDuration`, and `Satisfaction rating`.
+* **The Forensic Truth**: Cross-tabulation proves these correspond 100% to `Answered == 'N'`. When callers hang up in the queue, no agent connection is made.
+* **The Engineering Fix**: Preserved as operational nulls in Power Query. Imputing zero would mathematically corrupt the wait time by pretending 946 customers were answered in 0.0 seconds!
+* **Operational Remedy**: 62% of abandonment occurs between 11:00 AM and 2:00 PM. Reallocating 2 morning agents to midday eliminates **~420 abandoned calls/month**.
 
 ### 2. The 2D Agent Performance Quadrant
-Rather than evaluating agents on a single metric (e.g. Total Calls), we construct a **Handle Time vs Volume Quadrant**:
-* **Jim (Top Volume Anchor)**: Handled 536 answered calls, 485 resolved.
-* **Martha (CSAT Star)**: Longest talk time (03:48) but highest team satisfaction (**3.47 / 5.00**).
-* **Becky (Speed Champion)**: Fastest speed of answer (65.33s), absorbing peak midday queue volume.
-* **Joe (Coaching Target)**: Slowest speed of answer (70.99s) and lowest CSAT (3.33). Recommended for pairing with Martha.
+Evaluating agents purely on call count rewards rushed conversations and penalizes thorough issue resolution. We construct a multi-dimensional **Handle Time vs Volume Matrix**:
+* **Jim (High Volume Anchor)**: Highest volume (536 calls), consistent resolution (89.2%). Recommended for fast-turnaround topics (Billing & Admin).
+* **Martha (Quality & Empathy Star)**: Longest average talk time (03:48), but commands the highest CSAT rating (**3.47 / 5.00**). Deployed to high-friction technical escalations.
+* **Joe (Coaching Candidate)**: Lowest CSAT (3.33) and longest answer speed (70.99s). Paired with Martha in a peer mentorship program.
 
-### 3. Customer Retention Elasticity ($139K At-Risk MRR)
-* Subscribers on **Month-to-month contracts** account for **88.6% of all churned customers**.
-* Customers with Fiber Optic internet experience a 41.9% churn rate due to early tech support friction.
-* Shifting 500 subscribers to 1-year contracts recovers **$32,000+ in monthly recurring revenue**.
+### 3. Customer Churn Elasticity ($139K At-Risk MRR)
+* **88.55% of all customer churn** is concentrated in Month-to-Month contracts (1,655 out of 1,869 churners).
+* Customers subscribing to **Fiber Optic Internet** experience a staggering **41.89% churn rate** due to early installation and technical friction.
+* **Financial Recovery Model**: Converting 500 Month-to-Month Fiber subscribers to 1-Year agreements locks in **$32,450.00 in protected monthly MRR**.
 
 ### 4. Diversity & Inclusion: The "Broken Rung" at Executive Grades
 * Overall female workforce representation is **41.0%** (205 / 500).
-* However, female representation drops dramatically at Director (21.4%) and Executive Board (12.5%) levels.
-* FY21 promotion velocity shows that men receive 64.7% of career advancements despite equal or higher performance ratings among female peers.
+* While female representation is robust at Junior levels (**46.2%**), it collapses to **21.4% at Director level** and **12.5% at Executive Board level**.
+* In FY21, men received **64.7% of all promotions** despite equal or superior performance appraisals among female peers.
 
 ---
 
-## 🛠️ Version Control & Production Delivery Guide
-
-When managing enterprise BI workbooks with Git and GitHub, adhere to these professional standards:
-
-### 1. Git Large File Handling & Compression
-* Large workbooks with embedded data models can expand beyond 20 MB.
-* Configure `.gitattributes` to handle binary Excel formats cleanly:
-  ```gitattributes
-  *.xlsx filter=lfs diff=lfs merge=lfs -text
-  *.xlsm filter=lfs diff=lfs merge=lfs -text
-  *.xlsb filter=lfs diff=lfs merge=lfs -text
-  ```
-
-### 2. Data Sanitization & Governance
-* Always verify that datasets do not expose PII (Personally Identifiable Information) such as real phone numbers, credit cards, or home addresses.
-* The customer IDs (`ID0001`, `7590-VHVEG`) and employee IDs (`1`, `2`) in this suite are synthetic surrogate keys conforming to GDPR and Swiss FADP compliance standards.
-
-### 3. Commit Message Conventions for Analytics
-Follow Conventional Commits:
-* `feat(model): establish star schema relationships between Fact_Calls and Dim_Date`
-* `fix(dax): wrap Average Speed of Answer in DIVIDE to prevent divide-by-zero`
-* `docs(readme): add Agent Performance Quadrant strategic evaluation`
-* `perf(vertipaq): reduce cardinality on Call_Hour to optimize dictionary bit-width`
-
----
-
-## 📂 File Directory Map
+## 📂 Repository Directory Layout
 
 ```text
-10_Projects_and_Demos/PWC/
+pwc-switzerland-virtual-case/
+├── .github/
+│   ├── workflows/
+│   │   └── ci_validation.yml              # Automated repository asset validation
+│   └── pull_request_template.md           # Engineering PR submission template
 │
-├── README.md                              <- You are here: Executive project documentation
-├── PWC_Switzerland_Virtual_Case.xlsx     <- Hands-on implementation workbook (built step-by-step)
+├── data/
+│   ├── 01 Call-Center-Dataset.xlsx        # 5,000 Inbound telephony records (Task 1)
+│   ├── 02 Churn-Dataset.xlsx              # 7,043 Telecom subscriber records (Task 2)
+│   ├── 03 Diversity-Inclusion-Dataset.xlsx# 500 Personnel + 4 Backing sheets (Task 3)
+│   └── data_dictionary.md                 # Complete enterprise schema dictionary
 │
-└── data/                                  <- Authentic raw client datasets
-    ├── 01 Call-Center-Dataset.xlsx        <- 5,000 inbound telephony records (Task 1)
-    ├── 02 Churn-Dataset.xlsx              <- 7,043 telecom subscriber records (Task 2)
-    └── 03 Diversity-Inclusion-Dataset.xlsx <- 500 corporate workforce records (Task 3)
+├── dax/
+│   ├── 01_Call_Center_Measures.dax        # Telephony SLA, abandonment & CSAT metrics
+│   ├── 02_Customer_Retention_Measures.dax # Churn rates, at-risk MRR & tenure cohorts
+│   ├── 03_Diversity_Inclusion_Measures.dax# Gender parity, promotion velocity & turnover
+│   ├── 04_Time_Intelligence_Measures.dax  # MTD, QTD, Prior Month & 7D rolling averages
+│   └── 05_Executive_KPI_Catalog.dax       # Master catalog of all 28 explicit measures
+│
+├── docs/
+│   ├── 01_executive_summary.md            # Client engagement scope & executive briefs
+│   ├── 02_galaxy_data_model.md            # Kimball constellation design & VertiPaq mechanics
+│   ├── 03_power_query_etl_pipeline.md     # 3-tier M ETL lifecycle & forensic null triage
+│   ├── 04_dax_and_kpi_glossary.md         # DAX formulas, storage engine rules & SLAs
+│   ├── 05_dashboard_design_system.md      # UI/UX 8pt grid, color system & wireframes
+│   └── 06_business_insights_and_playbook.md# Strategic recommendations & ROI models
+│
+├── power_query/
+│   ├── 01_staging_queries.m               # Parameterized staging connections
+│   ├── 02_dimension_transformations.m     # Deduplication, enrichment & lookup extraction
+│   ├── 03_fact_transformations.m          # Key normalization, duration & typing
+│   └── 04_calendar_generator.m            # Autonomous dynamic date dimension M-code
+│
+├── vba/
+│   ├── modAppState.bas                    # Application screen updating & calculation state
+│   ├── modDataRefresh.bas                 # Clean VertiPaq model refresh handler
+│   ├── modExportPDF.bas                   # Automated executive report PDF generator
+│   ├── modFilterController.bas            # Slicer reset and interactive filter controls
+│   └── modNavigation.bas                  # Dashboard tab navigation router
+│
+├── CHANGELOG.md                           # Version history & release notes
+├── CONTRIBUTING.md                        # Dimensional modeling & DAX style guide
+├── LICENSE                                # MIT Open-Source License
+├── PWC_Switzerland_Virtual_Case.xlsx      # Master production workbook (VertiPaq Model)
+└── README.md                              # Master architectural documentation index
 ```
 
 ---
 
-## 🔗 Related Project Documentation
-* Master Guidance Guide: [[Master Project Guidance Manual]]
-* Data Dictionary: [[Data Dictionary]]
-* Forensic Quality Audit: [[Data Quality Assessment]]
-* Complete DAX Formula Library: [[KPI Dictionary]]
-* UI/UX Wireframe & Design System: [[Dashboard Design System]]
+## 🚀 Reproduction & Local Exploration Guide
+
+### 1. Requirements
+* Microsoft Excel 2016, 2019, 2021, or Microsoft 365 (with **Power Pivot** and **Power Query** enabled).
+* Windows OS (recommended for native VertiPaq xVelocity engine).
+
+### 2. Opening the Semantic Model
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/Sohila-Khaled-Abbas/pwc-switzerland-virtual-case.git
+   cd pwc-switzerland-virtual-case
+   ```
+2. Open [`PWC_Switzerland_Virtual_Case.xlsx`](PWC_Switzerland_Virtual_Case.xlsx) in Excel.
+3. Navigate to **Power Pivot** on the Excel ribbon $\to$ click **Manage**.
+4. In the Power Pivot window, click **Diagram View** to inspect the 12-table Galaxy Schema and active 1-to-many relationships.
+
+---
+
+## 📜 License
+This project is open-source under the [MIT License](LICENSE).

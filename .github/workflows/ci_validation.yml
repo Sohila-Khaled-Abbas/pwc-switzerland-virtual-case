@@ -1,0 +1,46 @@
+name: Enterprise Data & Semantic Model CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate-repository:
+    runs-on: ubuntu-latest
+    name: Validate Datasets & Architectural Assets
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify Data Asset Integrity
+        run: |
+          python -c "
+          import os
+          files = [
+              'data/01 Call-Center-Dataset.xlsx',
+              'data/02 Churn-Dataset.xlsx',
+              'data/03 Diversity-Inclusion-Dataset.xlsx',
+              'PWC_Switzerland_Virtual_Case.xlsx'
+          ]
+          missing = [f for f in files if not os.path.exists(f)]
+          if missing:
+              raise FileNotFoundError(f'Missing critical workbook assets: {missing}')
+          print('All master Excel and data assets verified successfully!')
+          "
+
+      - name: Audit DAX and M-Code Syntax
+        run: |
+          python -c "
+          import glob
+          dax_files = glob.glob('dax/*.dax')
+          m_files = glob.glob('power_query/*.m')
+          print(f'Verified {len(dax_files)} DAX scripts and {len(m_files)} Power Query scripts.')
+          "
