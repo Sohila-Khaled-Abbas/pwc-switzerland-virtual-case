@@ -1,0 +1,56 @@
+// ==============================================================================
+// PwC Switzerland Virtual Case Experience: Task 3 (Diversity & Inclusion)
+// Explicit DAX Measure Formulations
+// Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
+// ==============================================================================
+
+// Total Active Workforce Personnel
+[Total Employees] := DISTINCTCOUNT(Fact_Employees[Employee ID])
+
+// Female Workforce Headcount
+[Female Count] := 
+CALCULATE(
+    COUNT(Fact_Employees[Employee ID]),
+    Fact_Employees[Gender] = "Female"
+)
+
+// Male Workforce Headcount
+[Male Count] := 
+CALCULATE(
+    COUNT(Fact_Employees[Employee ID]),
+    Fact_Employees[Gender] = "Male"
+)
+
+// Overall Female Workforce Representation Ratio
+[Female Representation %] := 
+DIVIDE([Female Count], [Total Employees], 0)
+
+// Total Career Progressions Awarded in FY21
+[Total Promotions FY21] := 
+CALCULATE(
+    COUNT(Fact_Employees[Employee ID]),
+    Fact_Employees[Promotion in FY21?] = "Yes"
+)
+
+// Share of FY21 Promotions Awarded to Female Staff
+[Female Promotion %] := 
+DIVIDE(
+    CALCULATE(
+        COUNT(Fact_Employees[Employee ID]),
+        Fact_Employees[Promotion in FY21?] = "Yes",
+        Fact_Employees[Gender] = "Female"
+    ),
+    [Total Promotions FY21],
+    0
+)
+
+// Total Workforce Leavers in FY20
+[Turnover Count FY20] := 
+CALCULATE(
+    COUNT(Fact_Employees[Employee ID]),
+    Fact_Employees[FY20 leaver?] = "Yes"
+)
+
+// Annual Turnover / Attrition Rate %
+[Turnover Rate %] := 
+DIVIDE([Turnover Count FY20], [Total Employees], 0)

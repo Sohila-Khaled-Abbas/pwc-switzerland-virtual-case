@@ -1,0 +1,78 @@
+// ==============================================================================
+// PwC Switzerland Virtual Case Experience: Task 1 (Call Centre Performance)
+// Explicit DAX Measure Formulations
+// Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// 1. INTAKE & VOLUME METRICS
+// ------------------------------------------------------------------------------
+
+// Total Inbound Call Inquiries Offered (Gross Demand)
+[Total Demand] := DISTINCTCOUNT(Fact_Calls[Call_Id])
+
+// Successfully Connected Calls
+[Answered Calls] := 
+CALCULATE(
+    COUNT(Fact_Calls[Call_Id]),
+    Fact_Calls[Answered_YN] = "Y"
+)
+
+// Calls Abandoned in Queue before Agent Pickup
+[Abandoned Calls] := 
+CALCULATE(
+    COUNT(Fact_Calls[Call_Id]),
+    Fact_Calls[Answered_YN] = "N"
+)
+
+// Operational Answer Rate % (Target >= 80%)
+[Answer Rate %] := 
+DIVIDE([Answered Calls], [Total Demand], 0)
+
+// Queue Abandonment Rate % (Target <= 15%)
+[Abandonment Rate %] := 
+DIVIDE([Abandoned Calls], [Total Demand], 0)
+
+// ------------------------------------------------------------------------------
+// 2. RESOLUTION & OPERATIONAL EFFICIENCY
+// ------------------------------------------------------------------------------
+
+// Calls Resolved on First Contact
+[Resolved Calls] := 
+CALCULATE(
+    COUNT(Fact_Calls[Call_Id]),
+    Fact_Calls[Answered_YN] = "Y",
+    Fact_Calls[Resolved_YN] = "Y"
+)
+
+// First Contact Resolution Rate of Connected Calls (Operational FCR)
+[First Contact Resolution %] := 
+DIVIDE([Resolved Calls], [Answered Calls], 0)
+
+// Gross Resolution Rate Across Total Demand
+[Gross Resolution %] := 
+DIVIDE([Resolved Calls], [Total Demand], 0)
+
+// ------------------------------------------------------------------------------
+// 3. SPEED, HANDLE TIME & CSAT METRICS
+// ------------------------------------------------------------------------------
+
+// Average Speed of Answer in Seconds (ASA)
+[Average Speed of Answer (s)] := 
+AVERAGE(Fact_Calls[Speed_of_Answer_Sec])
+
+// Average Active Talk Duration (in Seconds)
+[Average Handle Time (s)] := 
+AVERAGE(Fact_Calls[Duration_Seconds])
+
+// Overall Customer Satisfaction Score (1.00 to 5.00)
+[Average CSAT] := 
+AVERAGE(Fact_Calls[Satisfaction_Rating])
+
+// Proportion of 4 and 5 Star Positive Survey Responses
+[Positive CSAT %] := 
+DIVIDE(
+    CALCULATE(COUNT(Fact_Calls[Satisfaction_Rating]), Fact_Calls[Satisfaction_Rating] >= 4),
+    COUNT(Fact_Calls[Satisfaction_Rating]),
+    0
+)

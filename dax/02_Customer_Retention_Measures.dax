@@ -1,0 +1,38 @@
+// ==============================================================================
+// PwC Switzerland Virtual Case Experience: Task 2 (Customer Retention & Churn)
+// Explicit DAX Measure Formulations
+// Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
+// ==============================================================================
+
+// Total Subscribed Accounts
+[Total Customers] := DISTINCTCOUNT(Fact_Churn[customerID])
+
+// Total Churned Customers
+[Churned Customers] := 
+CALCULATE(
+    COUNT(Fact_Churn[customerID]),
+    Fact_Churn[Churn] = "Yes"
+)
+
+// Gross Subscriber Attrition Rate %
+[Churn Rate %] := 
+DIVIDE([Churned Customers], [Total Customers], 0)
+
+// Total Monthly Recurring Revenue (MRR)
+[Total Monthly Charges] := SUM(Fact_Churn[MonthlyCharges])
+
+// Monthly Revenue Lost to Customer Churn
+[At-Risk MRR] := 
+CALCULATE(
+    SUM(Fact_Churn[MonthlyCharges]),
+    Fact_Churn[Churn] = "Yes"
+)
+
+// Average Monthly Spend per Subscriber
+[Avg Monthly Ticket] := AVERAGE(Fact_Churn[MonthlyCharges])
+
+// Technical Support Ticket Ratio
+[Avg Tech Tickets per Customer] := AVERAGE(Fact_Churn[numTechTickets])
+
+// Admin Ticket Ratio
+[Avg Admin Tickets per Customer] := AVERAGE(Fact_Churn[numAdminTickets])
