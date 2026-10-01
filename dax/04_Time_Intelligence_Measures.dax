@@ -1,0 +1,81 @@
+// ==============================================================================
+// 04_Time_Intelligence_Measures.dax
+// PwC Switzerland Virtual Case Experience: Enterprise Time Intelligence
+// Engine: VertiPaq In-Memory DAX (Storage Engine vs Formula Engine Optimized)
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// 1. Month-to-Date (MTD) Call Volume
+// Computes cumulative calls from the start of the current month
+// ------------------------------------------------------------------------------
+[Calls MTD] :=
+CALCULATE(
+    [Total Inbound Calls],
+    DATESMTD('DimDate'[Date])
+)
+
+// ------------------------------------------------------------------------------
+// 2. Quarter-to-Date (QTD) Call Volume
+// Aggregates operational call engagement across current quarter
+// ------------------------------------------------------------------------------
+[Calls QTD] :=
+CALCULATE(
+    [Total Inbound Calls],
+    DATESQTD('DimDate'[Date])
+)
+
+// ------------------------------------------------------------------------------
+// 3. Same Period Last Month (SPLY / MoM Comparative)
+// Offsets filter context by -1 month for longitudinal benchmarking
+// ------------------------------------------------------------------------------
+[Calls Prior Month] :=
+CALCULATE(
+    [Total Inbound Calls],
+    DATEADD('DimDate'[Date], -1, MONTH)
+)
+
+// ------------------------------------------------------------------------------
+// 4. Month-over-Month (MoM) Growth Percentage
+// Safe ratio calculation protecting against divide-by-zero on initial month
+// ------------------------------------------------------------------------------
+[Calls MoM Growth %] :=
+VAR CurrentMonth = [Total Inbound Calls]
+VAR PriorMonth = [Calls Prior Month]
+RETURN
+    DIVIDE(
+        CurrentMonth - PriorMonth,
+        PriorMonth,
+        BLANK()
+    )
+
+// ------------------------------------------------------------------------------
+// 5. 7-Day Rolling Moving Average (Smoothing Telephony Spike Noise)
+// Evaluates rolling 7-day window for true operational queue equilibrium
+// ------------------------------------------------------------------------------
+[Calls 7D Moving Avg] :=
+VAR LastSelectedDate = MAX('DimDate'[Date])
+VAR WindowPeriod = 
+    DATESINPERIOD(
+        'DimDate'[Date],
+        LastSelectedDate,
+        -7,
+        DAY
+    )
+RETURN
+    CALCULATE(
+        DIVIDE([Total Inbound Calls], 7, BLANK()),
+        WindowPeriod
+    )
+
+// ------------------------------------------------------------------------------
+// 6. Cumulative Churned MRR Run-Rate
+// Cumulative financial loss tracking customer termination impact over time
+// ------------------------------------------------------------------------------
+[Cumulative Churned Revenue] :=
+CALCULATE(
+    [Churned Monthly Charges],
+    FILTER(
+        ALLSELECTED('Fact_Churn'[tenure]),
+        'Fact_Churn'[tenure] <= MAX('Fact_Churn'[tenure])
+    )
+)

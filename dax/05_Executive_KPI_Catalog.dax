@@ -1,0 +1,205 @@
+// ==============================================================================
+// 05_Executive_KPI_Catalog.dax
+// PwC Switzerland Virtual Case Experience: Master Enterprise KPI Catalog
+// Architecture: Ralph Kimball Constellation / VertiPaq Execution Engine
+// ==============================================================================
+
+/*
+=================================================================================
+SECTION 1: TASK 1 - CALL CENTER PERFORMANCE & SLA METRICS
+Target Client: Claire (Call Center Operations Director)
+Fact Table: Fact_Calls (5,000 Records)
+=================================================================================
+*/
+
+// Total Inbound Volume
+[Total Inbound Calls] := COUNTROWS('Fact_Calls')
+
+// Answered Calls (Connection Achieved)
+[Calls Answered] := 
+CALCULATE(
+    COUNTROWS('Fact_Calls'),
+    'Fact_Calls'[Answered] = "Y"
+)
+
+// Abandoned Calls (Caller Disconnects in Queue)
+[Calls Abandoned] := 
+CALCULATE(
+    COUNTROWS('Fact_Calls'),
+    'Fact_Calls'[Answered] = "N"
+)
+
+// Inbound Abandonment Rate (%)
+[Abandonment Rate %] := 
+DIVIDE([Calls Abandoned], [Total Inbound Calls], 0)
+
+// Resolved Calls (Issue Closed Satisfactorily)
+[Calls Resolved] := 
+CALCULATE(
+    COUNTROWS('Fact_Calls'),
+    'Fact_Calls'[Resolved] = "Y"
+)
+
+// Resolution Efficiency (% of Answered Calls)
+[Resolution Rate %] := 
+DIVIDE([Calls Resolved], [Calls Answered], 0)
+
+// First Contact Resolution Index (% of Total Volume)
+[First Contact Resolution %] := 
+DIVIDE([Calls Resolved], [Total Inbound Calls], 0)
+
+// Average Speed of Answer in Seconds (Wait Time Triage)
+[Avg Speed of Answer (Sec)] := 
+AVERAGE('Fact_Calls'[Speed_Of_Answer_Sec])
+
+// Average Customer Satisfaction Score (1.00 - 5.00)
+[Avg Satisfaction Rating] := 
+AVERAGE('Fact_Calls'[Satisfaction_Rating])
+
+// Total Handling Time in Seconds
+[Total Talk Duration Sec] := 
+SUM('Fact_Calls'[Talk_Duration_Sec])
+
+// Average Handling Time in Seconds per Connected Call
+[Avg Handling Time (Sec)] := 
+DIVIDE([Total Talk Duration Sec], [Calls Answered], BLANK())
+
+
+/*
+=================================================================================
+SECTION 2: TASK 2 - CUSTOMER CHURN & MRR RETENTION
+Target Client: Retention Strategy Committee
+Fact Table: Fact_Churn (7,043 Accounts)
+=================================================================================
+*/
+
+// Total Customer Subscriber Base
+[Total Customers] := COUNTROWS('Fact_Churn')
+
+// Lost Customer Accounts
+[Churned Customers] := 
+CALCULATE(
+    COUNTROWS('Fact_Churn'),
+    'Fact_Churn'[Churn] = "Yes"
+)
+
+// Retained Active Subscribers
+[Retained Customers] := 
+CALCULATE(
+    COUNTROWS('Fact_Churn'),
+    'Fact_Churn'[Churn] = "No"
+)
+
+// Account Churn Rate (%)
+[Churn Rate %] := 
+DIVIDE([Churned Customers], [Total Customers], 0)
+
+// Total Monthly Recurring Revenue (MRR)
+[Total Monthly Charges] := SUM('Fact_Churn'[MonthlyCharges])
+
+// Realized Financial Churn (At-Risk MRR Lost)
+[Churned Monthly Charges] := 
+CALCULATE(
+    SUM('Fact_Churn'[MonthlyCharges]),
+    'Fact_Churn'[Churn] = "Yes"
+)
+
+// Financial Churn Elasticity (% of Total MRR Destroyed)
+[Financial Churn Rate %] := 
+DIVIDE([Churned Monthly Charges], [Total Monthly Charges], 0)
+
+// Cumulative Lifetime Billed Value
+[Total Lifetime Charges] := SUM('Fact_Churn'[TotalCharges])
+
+// Average Tenure in Months
+[Avg Tenure Months] := AVERAGE('Fact_Churn'[tenure])
+
+// Support Friction Index (Tickets per Customer)
+[Avg Service Tickets] := 
+AVERAGE('Fact_Churn'[Total_Service_Tickets])
+
+
+/*
+=================================================================================
+SECTION 3: TASK 3 - DIVERSITY & INCLUSION LEADERSHIP
+Target Client: Pharma Group AG Human Resources Board
+Fact Table: Fact_Employees (500 Personnel)
+=================================================================================
+*/
+
+// Total Corporate Headcount
+[Total Employees] := COUNTROWS('Fact_Employees')
+
+// Gender Representation Measures
+[Female Employees] := 
+CALCULATE(
+    COUNTROWS('Fact_Employees'),
+    'Fact_Employees'[Gender] = "Female"
+)
+
+[Male Employees] := 
+CALCULATE(
+    COUNTROWS('Fact_Employees'),
+    'Fact_Employees'[Gender] = "Male"
+)
+
+// Female Workforce Share (%)
+[% Female Representation] := 
+DIVIDE([Female Employees], [Total Employees], 0)
+
+// Total Promoted Personnel in FY21
+[Total Promoted FY21] := 
+CALCULATE(
+    COUNTROWS('Fact_Employees'),
+    'Fact_Employees'[Promoted_FY21] = "Yes"
+)
+
+// Promotion Velocity (% of Total Headcount)
+[Overall Promotion Rate %] := 
+DIVIDE([Total Promoted FY21], [Total Employees], 0)
+
+// Female Promoted Headcount
+[Female Promoted FY21] := 
+CALCULATE(
+    COUNTROWS('Fact_Employees'),
+    'Fact_Employees'[Promoted_FY21] = "Yes",
+    'Fact_Employees'[Gender] = "Female"
+)
+
+// Male Promoted Headcount
+[Male Promoted FY21] := 
+CALCULATE(
+    COUNTROWS('Fact_Employees'),
+    'Fact_Employees'[Promoted_FY21] = "Yes",
+    'Fact_Employees'[Gender] = "Male"
+)
+
+// Female Promotion Rate (% of Female Base)
+[Female Promotion Rate %] := 
+DIVIDE([Female Promoted FY21], [Female Employees], 0)
+
+// Male Promotion Rate (% of Male Base)
+[Male Promotion Rate %] := 
+DIVIDE([Male Promoted FY21], [Male Employees], 0)
+
+// Promotion Equity Index (Female vs Male Rate Ratio)
+[Promotion Equity Index] := 
+DIVIDE([Female Promotion Rate %], [Male Promotion Rate %], BLANK())
+
+// Corporate Attrition (FY20 Leavers)
+[FY20 Leavers] := 
+CALCULATE(
+    COUNTROWS('Fact_Employees'),
+    'Fact_Employees'[FY20_Leaver] = "Yes"
+)
+
+// Annual Turnover Rate (%)
+[Turnover Rate %] := 
+DIVIDE([FY20 Leavers], [Total Employees], 0)
+
+// Executive Parity Index (Female Share in Levels 1-2 vs Benchmark)
+[Executive Female Share %] := 
+CALCULATE(
+    DIVIDE([Female Employees], [Total Employees], 0),
+    'Fact_Employees'[Job_Level_Baseline] IN {1, 2}
+)
