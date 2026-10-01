@@ -109,20 +109,21 @@ shared stg_RawEmployees = let
     // 4. Normalize header text
     CleanedHeaders = Table.TransformColumnNames(PromotedHeaders, Text.Trim),
     
-    // 5. Enforce typed schema
+    // 5. Enforce typed schema (Matching exact PwC headers in Pharma Group AG)
     TypedTable = Table.TransformColumnTypes(CleanedHeaders, {
         {"Employee ID", Int64.Type},
         {"Gender", type text},
         {"Age group", type text},
         {"Department @01.07.2020", type text},
         {"Last Department in FY20", type text},
-        {"Job Level at 01.07.2020", Int64.Type},
+        {"Job Level before FY20 promotions", Int64.Type},
         {"Job Level after FY20 promotions", Int64.Type},
-        {"Promoted in FY21?", type text},
+        {"Promotion in FY21?", type text},
         {"FY20 Performance Rating", Int64.Type},
         {"FY19 Performance Rating", Int64.Type},
         {"FY20 leaver?", type text},
-        {"In base group?", type text},
+        {"In base group for Promotion FY21", type text},
+        {"In base group for turnover FY20", type text},
         {"Nationality 1", type text}
     })
 in

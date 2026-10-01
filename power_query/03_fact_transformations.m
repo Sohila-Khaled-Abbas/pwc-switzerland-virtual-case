@@ -76,13 +76,14 @@ shared Fact_Employees = let
         {"Employee ID", "Employee_ID"},
         {"Age group", "Age_Group"},
         {"Department @01.07.2020", "Department"},
-        {"Job Level at 01.07.2020", "Job_Level_Baseline"},
+        {"Job Level before FY20 promotions", "Job_Level_Baseline"},
         {"Job Level after FY20 promotions", "Job_Level_After_Promotions"},
-        {"Promoted in FY21?", "Promoted_FY21"},
+        {"Promotion in FY21?", "Promoted_FY21"},
         {"FY20 Performance Rating", "FY20_Rating"},
         {"FY19 Performance Rating", "FY19_Rating"},
         {"FY20 leaver?", "FY20_Leaver"},
-        {"In base group?", "In_Base_Group"},
+        {"In base group for Promotion FY21", "In_Base_Group_Promotion"},
+        {"In base group for turnover FY20", "In_Base_Group_Turnover"},
         {"Nationality 1", "Nationality"}
     }),
     

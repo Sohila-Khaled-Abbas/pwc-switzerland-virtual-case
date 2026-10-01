@@ -120,13 +120,14 @@ graph TD
 | `Age group` | String | No | 5 | None | Age classification bracket (`20-29`, `30-39`, `40-49`, `50-59`, `60-69`). |
 | `Department @01.07.2020`| String | No | 6 | **FK $\to$ DimDepartment** | Baseline organizational unit at start of evaluation period. |
 | `Last Department in FY20`| String | No | 6 | None | Organizational unit at conclusion of FY20 fiscal cycle. |
-| `Job Level at 01.07.2020`| Integer | No | 6 | **FK $\to$ Dim_CareerLadder** | Baseline executive tier: `1-Executive`, `2-Director`, `3-Senior Manager`, `4-Manager`, `5-Senior Specialist`, `6-Junior Officer`. |
+| `Job Level before FY20 promotions`| Integer | No | 6 | **FK $\to$ Dim_CareerLadder** | Baseline executive tier: `1-Executive`, `2-Director`, `3-Senior Manager`, `4-Manager`, `5-Senior Specialist`, `6-Junior Officer`. |
 | `Job Level after FY20 promotions`| Integer | No | 6 | None | Re-evaluated tier following FY20 promotion review committee. |
-| `Promoted in FY21?` | String | No | 2 | None | Binary flag (`Yes`, `No`) for career advancement in FY21. |
+| `Promotion in FY21?` | String | No | 2 | None | Binary flag (`Yes`, `No`) for career advancement in FY21. |
 | `FY20 Performance Rating`| Integer | No | 5 | None | Formal annual appraisal rating on a 1–5 scale. |
 | `FY19 Performance Rating`| Integer | **Yes** (38) | 5 | None | Preceding year appraisal rating. Null for hires onboarding in FY20. |
 | `FY20 leaver?` | String | No | 2 | None | Voluntary or involuntary departure flag (`Yes`, `No`). |
-| `In base group?` | String | No | 2 | None | Cohort inclusion flag for multi-year retention studies. |
+| `In base group for Promotion FY21`| String | No | 2 | None | Cohort inclusion flag for multi-year career advancement studies. |
+| `In base group for turnover FY20` | String | No | 2 | None | Cohort inclusion flag for annual turnover and attrition studies. |
 | `Nationality 1` | String | No | 2 | **FK $\to$ Dim_NationalityCensus** | Primary citizenship status (`Switzerland`, `Non-Switzerland`). |
 
 ---
