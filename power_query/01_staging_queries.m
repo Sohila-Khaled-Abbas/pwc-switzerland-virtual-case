@@ -49,8 +49,8 @@ shared stg_RawChurn = let
     // 1. Ingest customer subscription workbook
     Source = Excel.Workbook(File.Contents("data/02 Churn-Dataset.xlsx"), null, true),
     
-    // 2. Extract primary sheet data
-    DataSheet = Source{[Item="02 Churn-Dataset", Kind="Sheet"]}[Data],
+    // 2. Extract primary sheet data (PwC raw sheet tab is named "01 Churn-Dataset")
+    DataSheet = Source{[Item="01 Churn-Dataset", Kind="Sheet"]}[Data],
     
     // 3. Promote headers
     PromotedHeaders = Table.PromoteHeaders(DataSheet, [PromoteAllScalars=true]),
