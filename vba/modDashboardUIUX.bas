@@ -3,21 +3,34 @@ Option Explicit
 
 ' ==============================================================================
 ' PwC Switzerland Digital Accelerator — Executive Dashboard UI/UX Design System
-' Implements Modern Business Intelligence Card-Based Layouts & Brand Styling
-' Based on Industry UI/UX Best Practices (Treating Worksheets as Presentation Canvases)
+' Web-Application Style Dashboard Architecture & Presentation Canvas Engine
+' ==============================================================================
 '
-' Features:
-'   1. InitializeDashboardCanvas (Kills gridlines, headings, applies #F8FAFC canvas)
-'   2. BuildHeaderBanner (Corporate Charcoal ribbon, Tangerine accent, breadcrumbs)
-'   3. BuildKPICard (BAN containers with micro-labels, big metrics, status pills)
-'   4. BuildChartContainer (Floating card holders with rounded corners and drop shadows)
-'   5. DeclutterAndFormatChart (Strips chart background/borders for transparent docking)
-'   6. Individual Canvas Builders:
-'      - BuildCallCenterCanvas
-'      - BuildCustomerRetentionCanvas
-'      - BuildDiversityInclusionCanvas
-'   7. Master Orchestrator:
-'      - BuildAllDashboardCanvases
+' Design Philosophy:
+'   Treats the Excel worksheet as an executive web-application interface rather
+'   than a conventional spreadsheet grid. All visuals, filters, and KPI cards
+'   float in geometrically balanced, card-based containers over a clean canvas.
+'
+' Architecture:
+'   1. Top SaaS Navigation Bar:
+'      - Official PwC Color Logo (`assets/PwC_logo_rgb_colour_pos.png`)
+'      - Application Branding ("PwC Digital Intelligence Hub")
+'      - Interactive Tab Navigation Pills with active module highlighting
+'      - Live Data Model Status Indicator ("● LIVE MODEL | VertiPaq")
+'   2. Executive Hero Header:
+'      - Domain Title, Business Subtitle, and Web App Action Buttons
+'   3. BAN KPI Metric Strip (5 Pre-Sized Cards):
+'      - Pure design layout (NO hardcoded data; placeholder-driven for DAX linkage)
+'      - Top accent bars, uppercase micro-labels, and SLA benchmark targets
+'   4. Left Global Filter Drawer:
+'      - Dedicated container with pre-allocated slots for multi-select slicers
+'   5. 2x2 Visual Container Grid (4 Cards):
+'      - Pixel-perfect dimensions (476pt x 270pt) with dashed chart docking zones
+'   6. Transparent Chart Decluttering Engine:
+'      - Strips chart backgrounds/borders for 100% seamless docking
+'
+' Execution:
+'   Run `BuildAllDashboardCanvases` manually in Excel (Alt+F11 -> F5)
 ' ==============================================================================
 
 ' ------------------------------------------------------------------------------
@@ -29,19 +42,32 @@ Public Const PWC_CHARCOAL       As Long = 3877150    ' #1E293B - RGB(30, 41, 59)
 Public Const PWC_CANVAS_BG      As Long = 16579320   ' #F8FAFC - RGB(248, 250, 252)
 Public Const PWC_CARD_FILL      As Long = 16777215   ' #FFFFFF - RGB(255, 255, 255)
 Public Const PWC_CARD_BORDER    As Long = 15790322   ' #E2E8F0 - RGB(226, 232, 240)
+Public Const PWC_BORDER_DASHED  As Long = 13421772   ' #CBD5E1 - RGB(203, 213, 225)
+Public Const PWC_SLOT_FILL      As Long = 16448250   ' #FAFAFA - RGB(250, 250, 250)
 Public Const PWC_TEXT_TITLE     As Long = 3877150    ' #1E293B - RGB(30, 41, 59)
 Public Const PWC_TEXT_MUTED     As Long = 9141108    ' #64748B - RGB(100, 116, 139)
+Public Const PWC_TEXT_LIGHT     As Long = 12040119   ' #94A3B8 - RGB(148, 163, 184)
 Public Const PWC_SUCCESS_GREEN  As Long = 4363781    ' #059669 - RGB(5, 150, 105)
 Public Const PWC_ALERT_RED      As Long = 2500316    ' #DC2626 - RGB(220, 38, 38)
 Public Const PWC_WARNING_AMBER  As Long = 422009     ' #D97706 - RGB(217, 119, 6)
-Public Const PWC_ACCENT_BLUE    As Long = 16298552   ' #38BDF8 - RGB(56, 189, 248)
+Public Const PWC_PILL_BG        As Long = 16185073   ' #F1F5F9 - RGB(241, 245, 249)
 
 ' Default Enterprise Typography
 Public Const FONT_FAMILY        As String = "Segoe UI"
 
+' Layout Grid Dimensions (Modular 1214pt Canvas)
+Public Const CANVAS_LEFT        As Single = 24
+Public Const CANVAS_WIDTH       As Single = 1214
+Public Const CARD_GAP           As Single = 16
+Public Const KPI_WIDTH          As Single = 230
+Public Const KPI_HEIGHT         As Single = 84
+Public Const SLICER_WIDTH       As Single = 230
+Public Const SLICER_HEIGHT      As Single = 554
+Public Const VISUAL_WIDTH       As Single = 476
+Public Const VISUAL_HEIGHT      As Single = 270
+
 ' ==============================================================================
 ' 1. MASTER WORKSPACE CANVAS INITIALIZER
-' Hides gridlines, headings, and applies the neutral off-white canvas background
 ' ==============================================================================
 Public Sub InitializeDashboardCanvas(ws As Worksheet, Optional ByVal bgColor As Long = PWC_CANVAS_BG)
     On Error Resume Next
@@ -54,6 +80,10 @@ Public Sub InitializeDashboardCanvas(ws As Worksheet, Optional ByVal bgColor As 
     ActiveWindow.DisplayHeadings = False
     ActiveWindow.Zoom = 100
     
+    ' Standardize base column widths and row heights to prevent coordinate drift
+    ws.Columns("A:AZ").ColumnWidth = 11
+    ws.Rows("1:60").RowHeight = 20
+    
     ' Flood worksheet with uniform canvas background
     With ws.Cells.Interior
         .Pattern = xlSolid
@@ -64,131 +94,29 @@ Public Sub InitializeDashboardCanvas(ws As Worksheet, Optional ByVal bgColor As 
 End Sub
 
 ' ==============================================================================
-' 2. EXECUTIVE HEADER BANNER GENERATOR
-' Creates a sleek navigation bar with PwC brand accent bar, title & breadcrumbs
+' 2. WEB-APPLICATION TOP NAVIGATION BAR (WITH EMBEDDED PWC LOGO)
 ' ==============================================================================
-Public Sub BuildHeaderBanner(ws As Worksheet, _
-                            ByVal dashboardTitle As String, _
-                            ByVal subtitle As String, _
-                            Optional ByVal topPos As Single = 15, _
-                            Optional ByVal leftPos As Single = 20, _
-                            Optional ByVal bannerWidth As Single = 1200, _
-                            Optional ByVal bannerHeight As Single = 65)
-    Dim shpBanner As Shape
-    Dim shpAccent As Shape
-    Dim shpTitle As Shape
-    
-    ' 1. Base Banner Container (Card)
-    Set shpBanner = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, bannerWidth, bannerHeight)
-    With shpBanner
-        .Name = "Header_Banner"
-        .Fill.Solid
-        .Fill.ForeColor.RGB = PWC_CARD_FILL
-        .Line.ForeColor.RGB = PWC_CARD_BORDER
-        .Line.Weight = 1
-        .Adjustments.Item(1) = 0.08
-        ' Soft modern drop shadow
-        With .Shadow
-            .Type = msoShadow21
-            .Visible = msoTrue
-            .Blur = 8
-            .Transparency = 0.88
-            .OffsetX = 0
-            .OffsetY = 3
-        End With
-    End With
-    
-    ' 2. Left Brand Accent Bar (PwC Orange)
-    Set shpAccent = ws.Shapes.AddShape(msoShapeRectangle, leftPos, topPos + 6, 6, bannerHeight - 12)
-    With shpAccent
-        .Name = "Header_AccentBar"
-        .Fill.Solid
-        .Fill.ForeColor.RGB = PWC_ORANGE
-        .Line.Visible = msoFalse
-    End With
-    
-    ' 3. Title & Subtitle Text Box
-    Set shpTitle = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 22, topPos + 8, bannerWidth - 250, bannerHeight - 16)
-    With shpTitle
-        .Name = "Header_TitleText"
-        .Fill.Visible = msoFalse
-        .Line.Visible = msoFalse
-        With .TextFrame2
-            .MarginLeft = 0
-            .MarginTop = 0
-            .MarginRight = 0
-            .MarginBottom = 0
-            .WordWrap = msoFalse
-            With .TextRange
-                .Text = dashboardTitle & vbCrLf & subtitle
-                ' Title Formatting
-                With .Paragraphs(1).Font
-                    .Name = FONT_FAMILY
-                    .Size = 15
-                    .Bold = msoTrue
-                    .Fill.ForeColor.RGB = PWC_TEXT_TITLE
-                End With
-                ' Subtitle Formatting
-                With .Paragraphs(2).Font
-                    .Name = FONT_FAMILY
-                    .Size = 9
-                    .Bold = msoFalse
-                    .Fill.ForeColor.RGB = PWC_TEXT_MUTED
-                End With
-            End With
-        End With
-    End With
-    
-    ' 4. Breadcrumb Navigation Button (Back to Business Domains)
+Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
+    Dim wb As Workbook
     Dim shpNav As Shape
-    Set shpNav = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + bannerWidth - 190, topPos + 16, 175, 32)
-    With shpNav
-        .Name = "Header_NavDomains"
-        .Fill.Solid
-        .Fill.ForeColor.RGB = PWC_CHARCOAL
-        .Line.Visible = msoFalse
-        .Adjustments.Item(1) = 0.2
-        With .TextFrame2
-            .MarginLeft = 0
-            .MarginTop = 0
-            .MarginRight = 0
-            .MarginBottom = 0
-            .WordWrap = msoFalse
-            With .TextRange
-                .Text = "<-- Executive Hub"
-                .Font.Name = FONT_FAMILY
-                .Font.Size = 9.5
-                .Font.Bold = msoTrue
-                .Font.Fill.ForeColor.RGB = RGB(255, 255, 255)
-                .ParagraphFormat.Alignment = msoAlignCenter
-            End With
-        End With
-    End With
-    ws.Hyperlinks.Add Anchor:=shpNav, Address:="", SubAddress:="'01_Business_Domains'!A1"
-End Sub
-
-' ==============================================================================
-' 3. FLOATING KPI SCORECARD GENERATOR
-' Generates modern card components with large metrics, micro-labels & SLA pills
-' ==============================================================================
-Public Sub BuildKPICard(ws As Worksheet, _
-                        ByVal cardName As String, _
-                        ByVal leftPos As Single, _
-                        ByVal topPos As Single, _
-                        ByVal cardWidth As Single, _
-                        ByVal cardHeight As Single, _
-                        ByVal kpiLabel As String, _
-                        ByVal kpiValue As String, _
-                        ByVal kpiSubtext As String, _
-                        Optional ByVal statusColor As Long = PWC_ORANGE)
-    Dim shpCard As Shape
-    Dim shpAccentLine As Shape
-    Dim shpText As Shape
+    Dim shpLogo As Shape
+    Dim shpDivider As Shape
+    Dim shpBrand As Shape
+    Dim shpTab As Shape
+    Dim shpLive As Shape
+    Dim logoPath As String
+    Dim navTop As Single, navLeft As Single, navW As Single, navH As Single
     
-    ' 1. Card Container with Rounded Corners & Soft Drop Shadow
-    Set shpCard = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
-    With shpCard
-        .Name = "Card_" & cardName
+    Set wb = ws.Parent
+    navTop = 16
+    navLeft = CANVAS_LEFT
+    navW = CANVAS_WIDTH
+    navH = 52
+    
+    ' 1. Master Navigation Bar Container
+    Set shpNav = ws.Shapes.AddShape(msoShapeRoundedRectangle, navLeft, navTop, navW, navH)
+    With shpNav
+        .Name = "Nav_MasterBar"
         .Fill.Solid
         .Fill.ForeColor.RGB = PWC_CARD_FILL
         .Line.ForeColor.RGB = PWC_CARD_BORDER
@@ -197,57 +125,319 @@ Public Sub BuildKPICard(ws As Worksheet, _
         With .Shadow
             .Type = msoShadow21
             .Visible = msoTrue
+            .Blur = 8
+            .Transparency = 0.88
+            .OffsetX = 0
+            .OffsetY = 3
+        End With
+    End With
+    
+    ' 2. Official PwC Brand Logo Insertion
+    logoPath = wb.Path & "\assets\PwC_logo_rgb_colour_pos.png"
+    If Dir(logoPath) = "" Then
+        ' Fallback to standard project relative directory
+        logoPath = wb.Path & "\..\assets\PwC_logo_rgb_colour_pos.png"
+    End If
+    If Dir(logoPath) = "" Then
+        ' Fallback to absolute workspace path
+        logoPath = "d:\courses\Data Analysis 26-27\7-Introducation to Data Fields (Excel)\11_Demos_and_Workbooks\10_Projects_and_Demos\PWC\assets\PwC_logo_rgb_colour_pos.png"
+    End If
+    
+    If Dir(logoPath) <> "" Then
+        ' Embed picture permanently into workbook (SaveWithDocument = msoTrue)
+        ' Aspect Ratio ~1.552:1 (Original 1248 x 804). Height = 34pt, Width = 53pt
+        Set shpLogo = ws.Shapes.AddPicture(logoPath, msoFalse, msoTrue, navLeft + 16, navTop + 9, 53, 34)
+        shpLogo.Name = "Nav_PwCLogo"
+    End If
+    
+    ' 3. Subtle Vertical Divider
+    Set shpDivider = ws.Shapes.AddShape(msoShapeRectangle, navLeft + 80, navTop + 12, 1, 28)
+    With shpDivider
+        .Name = "Nav_Divider"
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CARD_BORDER
+        .Line.Visible = msoFalse
+    End With
+    
+    ' 4. Hub Brand & Subtitle
+    Set shpBrand = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, navLeft + 90, navTop + 9, 210, 34)
+    With shpBrand
+        .Name = "Nav_BrandText"
+        .Fill.Visible = msoFalse
+        .Line.Visible = msoFalse
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "PwC Digital Intelligence" & vbCrLf & "Executive Decision Hub"
+                With .Paragraphs(1).Font
+                    .Name = FONT_FAMILY: .Size = 11: .Bold = msoTrue
+                    .Fill.ForeColor.RGB = PWC_TEXT_TITLE
+                End With
+                With .Paragraphs(2).Font
+                    .Name = FONT_FAMILY: .Size = 8: .Bold = msoFalse
+                    .Fill.ForeColor.RGB = PWC_TEXT_MUTED
+                End With
+            End With
+        End With
+    End With
+    
+    ' 5. Web App Navigation Tabs (Pills)
+    Dim tabLeft As Single, tabTop As Single, tabW As Single, tabH As Single
+    tabTop = navTop + 12
+    tabH = 28
+    
+    ' Tab 1: Overview (Business Domains)
+    tabLeft = navLeft + 310
+    tabW = 95
+    Call CreateNavTabPill(ws, "Nav_Tab_Domains", tabLeft, tabTop, tabW, tabH, _
+                          "01 Domains", "'01_Business_Domains'!A1", (activeModuleCode = "DOM"))
+                          
+    ' Tab 2: Data Catalog
+    tabLeft = tabLeft + tabW + 8
+    tabW = 100
+    Call CreateNavTabPill(ws, "Nav_Tab_Catalog", tabLeft, tabTop, tabW, tabH, _
+                          "02 Catalog", "'02_Metadata_&_KPI_Catalog'!A1", (activeModuleCode = "CAT"))
+                          
+    ' Tab 3: Call Center Cockpit
+    tabLeft = tabLeft + tabW + 8
+    tabW = 115
+    Call CreateNavTabPill(ws, "Nav_Tab_CC", tabLeft, tabTop, tabW, tabH, _
+                          "03 Call Center", "'03_CallCenter_Cockpit'!A1", (activeModuleCode = "CC"))
+                          
+    ' Tab 4: Customer Retention Cockpit
+    tabLeft = tabLeft + tabW + 8
+    tabW = 125
+    Call CreateNavTabPill(ws, "Nav_Tab_CH", tabLeft, tabTop, tabW, tabH, _
+                          "04 Retention Risk", "'04_CustomerRetention_Cockpit'!A1", (activeModuleCode = "CH"))
+                          
+    ' Tab 5: Diversity & Inclusion Cockpit
+    tabLeft = tabLeft + tabW + 8
+    tabW = 120
+    Call CreateNavTabPill(ws, "Nav_Tab_DI", tabLeft, tabTop, tabW, tabH, _
+                          "05 D&I Parity", "'05_DiversityInclusion_Cockpit'!A1", (activeModuleCode = "DI"))
+                          
+    ' 6. Live Model Status Indicator (Right aligned)
+    Set shpLive = ws.Shapes.AddShape(msoShapeRoundedRectangle, navLeft + navW - 140, navTop + 12, 126, 28)
+    With shpLive
+        .Name = "Nav_StatusPill"
+        .Fill.Solid
+        .Fill.ForeColor.RGB = RGB(236, 253, 245)  ' Soft emerald background
+        .Line.ForeColor.RGB = RGB(167, 243, 208)  ' Emerald border
+        .Line.Weight = 1
+        .Adjustments.Item(1) = 0.5
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "[●] LIVE MODEL"
+                .Font.Name = FONT_FAMILY
+                .Font.Size = 8
+                .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_SUCCESS_GREEN
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+    End With
+End Sub
+
+Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
+                            ByVal leftPos As Single, ByVal topPos As Single, _
+                            ByVal pillWidth As Single, ByVal pillHeight As Single, _
+                            ByVal tabText As String, ByVal subAddress As String, _
+                            ByVal isActive As Boolean)
+    Dim shp As Shape
+    Set shp = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, pillWidth, pillHeight)
+    With shp
+        .Name = shapeName
+        .Adjustments.Item(1) = 0.25
+        If isActive Then
+            .Fill.Solid
+            .Fill.ForeColor.RGB = PWC_ORANGE
+            .Line.Visible = msoFalse
+            With .TextFrame2
+                .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+                .WordWrap = msoFalse
+                With .TextRange
+                    .Text = tabText
+                    .Font.Name = FONT_FAMILY: .Font.Size = 8.5: .Font.Bold = msoTrue
+                    .Font.Fill.ForeColor.RGB = RGB(255, 255, 255)
+                    .ParagraphFormat.Alignment = msoAlignCenter
+                End With
+            End With
+        Else
+            .Fill.Solid
+            .Fill.ForeColor.RGB = PWC_PILL_BG
+            .Line.ForeColor.RGB = PWC_CARD_BORDER
+            .Line.Weight = 1
+            With .TextFrame2
+                .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+                .WordWrap = msoFalse
+                With .TextRange
+                    .Text = tabText
+                    .Font.Name = FONT_FAMILY: .Font.Size = 8.5: .Font.Bold = msoTrue
+                    .Font.Fill.ForeColor.RGB = PWC_TEXT_MUTED
+                    .ParagraphFormat.Alignment = msoAlignCenter
+                End With
+            End With
+            On Error Resume Next
+            ws.Hyperlinks.Add Anchor:=shp, Address:="", SubAddress:=subAddress
+            On Error GoTo 0
+        End If
+    End With
+End Sub
+
+' ==============================================================================
+' 3. EXECUTIVE HERO HEADER WITH ACTION CONTROLS
+' ==============================================================================
+Public Sub BuildHeroHeader(ws As Worksheet, _
+                           ByVal dashboardTitle As String, _
+                           ByVal subtitle As String, _
+                           Optional ByVal topPos As Single = 76)
+    Dim shpTitle As Shape
+    Dim shpClearBtn As Shape
+    Dim shpExportBtn As Shape
+    Dim heroW As Single
+    heroW = CANVAS_WIDTH
+    
+    ' 1. Title & Context Description
+    Set shpTitle = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, CANVAS_LEFT, topPos, heroW - 240, 46)
+    With shpTitle
+        .Name = "Hero_TitleText"
+        .Fill.Visible = msoFalse
+        .Line.Visible = msoFalse
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = dashboardTitle & vbCrLf & subtitle
+                With .Paragraphs(1).Font
+                    .Name = FONT_FAMILY: .Size = 16: .Bold = msoTrue
+                    .Fill.ForeColor.RGB = PWC_TEXT_TITLE
+                End With
+                With .Paragraphs(2).Font
+                    .Name = FONT_FAMILY: .Size = 9: .Bold = msoFalse
+                    .Fill.ForeColor.RGB = PWC_TEXT_MUTED
+                End With
+            End With
+        End With
+    End With
+    
+    ' 2. Web App Action Button: Clear Slicers
+    Set shpClearBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT + heroW - 220, topPos + 6, 100, 28)
+    With shpClearBtn
+        .Name = "Hero_BtnResetSlicers"
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CARD_FILL
+        .Line.ForeColor.RGB = PWC_CARD_BORDER
+        .Line.Weight = 1
+        .Adjustments.Item(1) = 0.25
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "Reset Filters"
+                .Font.Name = FONT_FAMILY: .Font.Size = 8.5: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_TEXT_TITLE
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+        .OnAction = "ResetAllSlicers"
+    End With
+    
+    ' 3. Web App Action Button: Export PDF
+    Set shpExportBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT + heroW - 110, topPos + 6, 110, 28)
+    With shpExportBtn
+        .Name = "Hero_BtnExportPDF"
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CHARCOAL
+        .Line.Visible = msoFalse
+        .Adjustments.Item(1) = 0.25
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "Export PDF"
+                .Font.Name = FONT_FAMILY: .Font.Size = 8.5: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = RGB(255, 255, 255)
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+        .OnAction = "ExportDashboardToPDF"
+    End With
+End Sub
+
+' ==============================================================================
+' 4. FLOATING BAN KPI METRIC CARD (NO HARDCODED DATA - DESIGN READY)
+' ==============================================================================
+Public Sub BuildKPICard(ws As Worksheet, _
+                        ByVal cardName As String, _
+                        ByVal leftPos As Single, _
+                        ByVal topPos As Single, _
+                        ByVal cardWidth As Single, _
+                        ByVal cardHeight As Single, _
+                        ByVal kpiLabel As String, _
+                        ByVal targetSubtext As String, _
+                        Optional ByVal accentColor As Long = PWC_ORANGE)
+    Dim shpCard As Shape
+    Dim shpAccentLine As Shape
+    Dim shpText As Shape
+    
+    ' 1. Card Container with Rounded Corners & Diffused Shadow
+    Set shpCard = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
+    With shpCard
+        .Name = "Card_" & cardName
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CARD_FILL
+        .Line.ForeColor.RGB = PWC_CARD_BORDER
+        .Line.Weight = 1
+        .Adjustments.Item(1) = 0.1
+        With .Shadow
+            .Type = msoShadow21
+            .Visible = msoTrue
             .Blur = 6
-            .Transparency = 0.85
+            .Transparency = 0.86
             .OffsetX = 0
             .OffsetY = 2
         End With
     End With
     
     ' 2. Top Color Indicator Line
-    Set shpAccentLine = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 12, topPos + 6, cardWidth - 24, 3)
+    Set shpAccentLine = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 12, topPos + 5, cardWidth - 24, 3)
     With shpAccentLine
         .Name = "Accent_" & cardName
         .Fill.Solid
-        .Fill.ForeColor.RGB = statusColor
+        .Fill.ForeColor.RGB = accentColor
         .Line.Visible = msoFalse
         .Adjustments.Item(1) = 0.5
     End With
     
-    ' 3. KPI Text Content
-    Set shpText = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 12, topPos + 12, cardWidth - 24, cardHeight - 16)
+    ' 3. Metric Text Box: Label, Clean Placeholder Value ("—"), and SLA Target
+    Set shpText = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 11, cardWidth - 28, cardHeight - 16)
     With shpText
         .Name = "Text_" & cardName
         .Fill.Visible = msoFalse
         .Line.Visible = msoFalse
         With .TextFrame2
-            .MarginLeft = 0
-            .MarginTop = 0
-            .MarginRight = 0
-            .MarginBottom = 0
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoTrue
             With .TextRange
-                .Text = UCase(kpiLabel) & vbCrLf & kpiValue & vbCrLf & kpiSubtext
-                ' Label
+                ' Formatted with clean placeholder: Ready to be linked to DAX measures or cell values
+                .Text = UCase(kpiLabel) & vbCrLf & "—" & vbCrLf & targetSubtext
+                ' Label (Uppercase Micro-Label)
                 With .Paragraphs(1).Font
-                    .Name = FONT_FAMILY
-                    .Size = 8
-                    .Bold = msoTrue
+                    .Name = FONT_FAMILY: .Size = 8: .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_MUTED
                 End With
-                ' Big Value Callout
+                ' Big Value Callout Placeholder
                 With .Paragraphs(2).Font
-                    .Name = FONT_FAMILY
-                    .Size = 20
-                    .Bold = msoTrue
+                    .Name = FONT_FAMILY: .Size = 22: .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_TITLE
                 End With
-                ' Subtext / Target Status
+                ' Benchmark / SLA Target Subtext
                 With .Paragraphs(3).Font
-                    .Name = FONT_FAMILY
-                    .Size = 8
-                    .Bold = msoFalse
-                    .Fill.ForeColor.RGB = statusColor
+                    .Name = FONT_FAMILY: .Size = 8: .Bold = msoFalse
+                    .Fill.ForeColor.RGB = accentColor
                 End With
             End With
         End With
@@ -255,8 +445,127 @@ Public Sub BuildKPICard(ws As Worksheet, _
 End Sub
 
 ' ==============================================================================
-' 4. VISUAL CONTAINER CARD (CHART / SLICER HOLDER)
-' Creates container boxes where charts float cleanly with unified card styling
+' 5. LEFT GLOBAL FILTER DRAWER (SLICER CONTAINER)
+' ==============================================================================
+Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
+                                     ByVal panelName As String, _
+                                     ByVal leftPos As Single, _
+                                     ByVal topPos As Single, _
+                                     ByVal panelWidth As Single, _
+                                     ByVal panelHeight As Single, _
+                                     ByVal slot1Label As String, _
+                                     ByVal slot2Label As String, _
+                                     ByVal slot3Label As String)
+    Dim shpPanel As Shape
+    Dim shpHeader As Shape
+    Dim shpSlot1 As Shape, shpSlot2 As Shape, shpSlot3 As Shape
+    Dim shpFooter As Shape
+    
+    ' 1. Outer Container Card
+    Set shpPanel = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, panelWidth, panelHeight)
+    With shpPanel
+        .Name = "Panel_" & panelName
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CARD_FILL
+        .Line.ForeColor.RGB = PWC_CARD_BORDER
+        .Line.Weight = 1
+        .Adjustments.Item(1) = 0.05
+        With .Shadow
+            .Type = msoShadow21: .Visible = msoTrue: .Blur = 8: .Transparency = 0.88: .OffsetX = 0: .OffsetY = 3
+        End With
+    End With
+    
+    ' 2. Panel Header Text
+    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 12, panelWidth - 28, 36)
+    With shpHeader
+        .Name = "Header_" & panelName
+        .Fill.Visible = msoFalse
+        .Line.Visible = msoFalse
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "GLOBAL FILTERS" & vbCrLf & "Interactive Slicer Drawer"
+                With .Paragraphs(1).Font
+                    .Name = FONT_FAMILY: .Size = 10.5: .Bold = msoTrue
+                    .Fill.ForeColor.RGB = PWC_TEXT_TITLE
+                End With
+                With .Paragraphs(2).Font
+                    .Name = FONT_FAMILY: .Size = 8: .Fill.ForeColor.RGB = PWC_TEXT_MUTED
+                End With
+            End With
+        End With
+    End With
+    
+    ' 3. Filter Slot 1 (Primary Dimension)
+    Set shpSlot1 = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 12, topPos + 54, panelWidth - 24, 145)
+    With shpSlot1
+        .Name = "Slot1_" & panelName
+        .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
+        .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
+        .Adjustments.Item(1) = 0.06
+        With .TextFrame2
+            .MarginLeft = 8: .MarginTop = 8: .MarginRight = 8: .MarginBottom = 8
+            With .TextRange
+                .Text = "[ Slicer Slot 1: " & slot1Label & " ]" & vbCrLf & vbCrLf & "Insert Slicer from Data Model & position here."
+                .Font.Name = FONT_FAMILY: .Font.Size = 8: .Font.Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+    End With
+    
+    ' 4. Filter Slot 2 (Secondary Dimension)
+    Set shpSlot2 = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 12, topPos + 210, panelWidth - 24, 145)
+    With shpSlot2
+        .Name = "Slot2_" & panelName
+        .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
+        .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
+        .Adjustments.Item(1) = 0.06
+        With .TextFrame2
+            .MarginLeft = 8: .MarginTop = 8: .MarginRight = 8: .MarginBottom = 8
+            With .TextRange
+                .Text = "[ Slicer Slot 2: " & slot2Label & " ]" & vbCrLf & vbCrLf & "Insert Slicer from Data Model & position here."
+                .Font.Name = FONT_FAMILY: .Font.Size = 8: .Font.Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+    End With
+    
+    ' 5. Filter Slot 3 (Tertiary Dimension)
+    Set shpSlot3 = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 12, topPos + 366, panelWidth - 24, 135)
+    With shpSlot3
+        .Name = "Slot3_" & panelName
+        .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
+        .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
+        .Adjustments.Item(1) = 0.06
+        With .TextFrame2
+            .MarginLeft = 8: .MarginTop = 8: .MarginRight = 8: .MarginBottom = 8
+            With .TextRange
+                .Text = "[ Slicer Slot 3: " & slot3Label & " ]" & vbCrLf & vbCrLf & "Insert Slicer from Data Model & position here."
+                .Font.Name = FONT_FAMILY: .Font.Size = 8: .Font.Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+    End With
+    
+    ' 6. Helper Guidance Text at bottom
+    Set shpFooter = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 12, topPos + 510, panelWidth - 24, 34)
+    With shpFooter
+        .Name = "Footer_" & panelName
+        .Fill.Visible = msoFalse: .Line.Visible = msoFalse
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoTrue
+            With .TextRange
+                .Text = "Multi-select slicers dynamically filter all visual containers via Data Model connections."
+                .Font.Name = FONT_FAMILY: .Font.Size = 7.5: .Font.Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+            End With
+        End With
+    End With
+End Sub
+
+' ==============================================================================
+' 6. VISUAL CONTAINER CARD (CHART DOCKING FRAME)
 ' ==============================================================================
 Public Sub BuildChartContainer(ws As Worksheet, _
                                ByVal containerName As String, _
@@ -265,11 +574,14 @@ Public Sub BuildChartContainer(ws As Worksheet, _
                                ByVal cardWidth As Single, _
                                ByVal cardHeight As Single, _
                                ByVal chartTitle As String, _
-                               Optional ByVal chartSubtitle As String = "")
+                               ByVal chartSubtitle As String, _
+                               ByVal chartTypeBadge As String)
     Dim shpContainer As Shape
     Dim shpHeader As Shape
+    Dim shpBadge As Shape
+    Dim shpDockingZone As Shape
     
-    ' 1. Card Container
+    ' 1. Base Floating Card Container
     Set shpContainer = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
     With shpContainer
         .Name = "Container_" & containerName
@@ -277,59 +589,92 @@ Public Sub BuildChartContainer(ws As Worksheet, _
         .Fill.ForeColor.RGB = PWC_CARD_FILL
         .Line.ForeColor.RGB = PWC_CARD_BORDER
         .Line.Weight = 1
-        .Adjustments.Item(1) = 0.05
+        .Adjustments.Item(1) = 0.04
         With .Shadow
-            .Type = msoShadow21
-            .Visible = msoTrue
-            .Blur = 8
-            .Transparency = 0.88
-            .OffsetX = 0
-            .OffsetY = 3
+            .Type = msoShadow21: .Visible = msoTrue: .Blur = 8: .Transparency = 0.88: .OffsetX = 0: .OffsetY = 3
         End With
     End With
     
-    ' 2. Container Header Title
-    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 16, topPos + 10, cardWidth - 32, 34)
+    ' 2. Container Header Title & Subtitle
+    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 16, topPos + 10, cardWidth - 140, 36)
     With shpHeader
         .Name = "Header_" & containerName
         .Fill.Visible = msoFalse
         .Line.Visible = msoFalse
         With .TextFrame2
-            .MarginLeft = 0
-            .MarginTop = 0
-            .MarginRight = 0
-            .MarginBottom = 0
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
             With .TextRange
-                If Len(chartSubtitle) > 0 Then
-                    .Text = chartTitle & vbCrLf & chartSubtitle
-                    With .Paragraphs(1).Font
-                        .Name = FONT_FAMILY
-                        .Size = 11
-                        .Bold = msoTrue
-                        .Fill.ForeColor.RGB = PWC_TEXT_TITLE
-                    End With
-                    With .Paragraphs(2).Font
-                        .Name = FONT_FAMILY
-                        .Size = 8
-                        .Fill.ForeColor.RGB = PWC_TEXT_MUTED
-                    End With
-                Else
-                    .Text = chartTitle
-                    With .Paragraphs(1).Font
-                        .Name = FONT_FAMILY
-                        .Size = 11
-                        .Bold = msoTrue
-                        .Fill.ForeColor.RGB = PWC_TEXT_TITLE
-                    End With
-                End If
+                .Text = chartTitle & vbCrLf & chartSubtitle
+                With .Paragraphs(1).Font
+                    .Name = FONT_FAMILY: .Size = 10.5: .Bold = msoTrue
+                    .Fill.ForeColor.RGB = PWC_TEXT_TITLE
+                End With
+                With .Paragraphs(2).Font
+                    .Name = FONT_FAMILY: .Size = 8: .Bold = msoFalse
+                    .Fill.ForeColor.RGB = PWC_TEXT_MUTED
+                End With
+            End With
+        End With
+    End With
+    
+    ' 3. Visual Type Badge (Top Right)
+    Set shpBadge = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + cardWidth - 116, topPos + 10, 102, 22)
+    With shpBadge
+        .Name = "Badge_" & containerName
+        .Fill.Solid: .Fill.ForeColor.RGB = PWC_PILL_BG
+        .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 0.75
+        .Adjustments.Item(1) = 0.25
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = chartTypeBadge
+                .Font.Name = FONT_FAMILY: .Font.Size = 7.5: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_TEXT_MUTED
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+    End With
+    
+    ' 4. Visual Docking Drop Zone (Watermarked Placeholder)
+    Dim dockLeft As Single, dockTop As Single, dockW As Single, dockH As Single
+    dockLeft = leftPos + 14
+    dockTop = topPos + 48
+    dockW = cardWidth - 28
+    dockH = cardHeight - 60
+    
+    Set shpDockingZone = ws.Shapes.AddShape(msoShapeRoundedRectangle, dockLeft, dockTop, dockW, dockH)
+    With shpDockingZone
+        .Name = "DockZone_" & containerName
+        .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
+        .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
+        .Adjustments.Item(1) = 0.04
+        With .TextFrame2
+            .MarginLeft = 12: .MarginTop = 12: .MarginRight = 12: .MarginBottom = 12
+            With .TextRange
+                .Text = "[ PIVOTCHART DOCKING ZONE ]" & vbCrLf & _
+                        "Insert PivotChart or Table into this card boundary." & vbCrLf & _
+                        "Run DeclutterAndFormatChart for transparent integration."
+                With .Paragraphs(1).Font
+                    .Name = FONT_FAMILY: .Size = 9: .Bold = msoTrue
+                    .Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+                End With
+                With .Paragraphs(2).Font
+                    .Name = FONT_FAMILY: .Size = 8: .Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+                End With
+                With .Paragraphs(3).Font
+                    .Name = FONT_FAMILY: .Size = 7.5: .Italic = msoTrue
+                    .Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+                End With
+                .ParagraphFormat.Alignment = msoAlignCenter
             End With
         End With
     End With
 End Sub
 
 ' ==============================================================================
-' 5. CHART TRANSPARENCY & DECLUTTERING FORMATTER
-' Strips chart borders & background fills so charts seamlessly dock inside cards
+' 7. CHART TRANSPARENCY & DECLUTTERING FORMATTER
 ' ==============================================================================
 Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
     On Error Resume Next
@@ -372,10 +717,11 @@ Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
             End If
         End With
     End With
+    On Error GoTo 0
 End Sub
 
 ' ==============================================================================
-' 6. DASHBOARD 1: CALL CENTER OPERATIONS COCKPIT
+' 8. DASHBOARD 1: CALL CENTER OPERATIONS COCKPIT
 ' ==============================================================================
 Public Sub BuildCallCenterCanvas()
     Dim wb As Workbook
@@ -403,62 +749,81 @@ Public Sub BuildCallCenterCanvas()
     ' 1. Canvas Setup
     InitializeDashboardCanvas ws, PWC_CANVAS_BG
     
-    ' 2. Header Banner
-    BuildHeaderBanner ws, _
-                      "PwC Switzerland | Call Centre Operations Cockpit", _
-                      "Operational SLA Monitoring, Abandonment Bottleneck Triage & Agent Performance (Q1 2021)", _
-                      15, 20, 1180, 60
+    ' 2. Web App Top Navigation Bar with Logo
+    BuildWebTopNavBar ws, "CC"
     
-    ' 3. Row of 5 Floating KPI Cards (Width 224, Gap 15)
-    Dim cardW As Single, cardH As Single, cardTop As Single
-    cardW = 224
-    cardH = 86
-    cardTop = 88
+    ' 3. Executive Hero Header with Action Buttons
+    BuildHeroHeader ws, _
+                    "Call Centre Operations & SLA Performance Cockpit", _
+                    "Operational SLA Monitoring, Queue Abandonment Forensics & Agent Quality Auditing (Q1 2021)", _
+                    76
     
-    BuildKPICard ws, "CC_TotalDemand", 20, cardTop, cardW, cardH, _
-                 "Total Inbound Calls", "5,000", "Gross Volume | 100% Captured", PWC_TEXT_TITLE
+    ' 4. Row of 5 Floating BAN KPI Metric Cards (Pure Design - No Hardcoded Data)
+    Dim cardTop As Single
+    cardTop = 130
+    
+    BuildKPICard ws, "CC_TotalDemand", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Total Call Intake", "Gross Intake Demand | 100% Logged", PWC_TEXT_TITLE
                  
-    BuildKPICard ws, "CC_Answered", 259, cardTop, cardW, cardH, _
-                 "Calls Answered", "81.08%", "4,054 Connected | Target > 80% [OK]", PWC_SUCCESS_GREEN
+    BuildKPICard ws, "CC_Answered", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Operational Answer Rate", "SLA Target: >= 80.0% Connected", PWC_SUCCESS_GREEN
                  
-    BuildKPICard ws, "CC_Abandoned", 498, cardTop, cardW, cardH, _
-                 "Abandonment Rate", "18.92%", "946 Queue Drops | Target < 15% [ALERT]", PWC_ALERT_RED
+    BuildKPICard ws, "CC_Abandoned", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Queue Abandonment Rate", "SLA Threshold: <= 15.0% Dropped", PWC_ALERT_RED
                  
-    BuildKPICard ws, "CC_ASA", 737, cardTop, cardW, cardH, _
-                 "Avg Speed of Answer", "67.52 s", "Queue Wait Time | Target < 60s [WARN]", PWC_WARNING_AMBER
+    BuildKPICard ws, "CC_ASA", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Avg Speed of Answer", "Target: <= 60.0 Seconds Queue Wait", PWC_WARNING_AMBER
                  
-    BuildKPICard ws, "CC_CSAT", 976, cardTop, cardW, cardH, _
-                 "Average CSAT", "3.40 / 5.0", "4,054 Ratings | Target > 3.50 [WARN]", PWC_ORANGE
+    BuildKPICard ws, "CC_CSAT", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Average CSAT Rating", "Service Benchmark: >= 3.50 / 5.0", PWC_ORANGE
                  
-    ' 4. Left Slicer Control Panel Container
-    BuildChartContainer ws, "CC_Slicers", 20, 186, 224, 530, _
-                        "Interactive Filter Panel", _
-                        "Global Slicers: Date, Topic & Agent"
-                        
-    ' 5. Chart / Visual Containers (Middle & Right Columns)
-    ' Middle Column (Width 465)
-    BuildChartContainer ws, "CC_HourlyVolume", 259, 186, 465, 255, _
+    ' 5. Left Slicer Control Panel Container
+    Dim bodyTop As Single
+    bodyTop = 226
+    
+    BuildSlicerPanelContainer ws, "CC_Slicers", CANVAS_LEFT, bodyTop, SLICER_WIDTH, SLICER_HEIGHT, _
+                              "Date Period (Month)", _
+                              "Inquiry Topic Tier", _
+                              "Representative Agent"
+                              
+    ' 6. Visual Containers Grid (2 Columns x 2 Rows)
+    Dim colMidLeft As Single, colRightLeft As Single
+    colMidLeft = CANVAS_LEFT + SLICER_WIDTH + CARD_GAP         ' 270 pt
+    colRightLeft = colMidLeft + VISUAL_WIDTH + CARD_GAP       ' 762 pt
+    
+    Dim rowTopPos As Single, rowBottomPos As Single
+    rowTopPos = bodyTop                                       ' 226 pt
+    rowBottomPos = rowTopPos + VISUAL_HEIGHT + 14             ' 510 pt
+    
+    ' Middle-Top: Hourly Call Volume & Queue Arrival
+    BuildChartContainer ws, "CC_HourlyVolume", colMidLeft, rowTopPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Intraday Demand Surge & Queue Triage", _
-                        "Hourly Inbound Calls (09:00 - 18:00) vs Daily Connection Status"
+                        "Hourly Call Arrival Pattern (09:00 - 18:00) vs Pickup Status", _
+                        "Column Chart"
                         
-    BuildChartContainer ws, "CC_TopicBreakdown", 259, 453, 465, 263, _
+    ' Middle-Bottom: Topic SLA Breakdown
+    BuildChartContainer ws, "CC_TopicBreakdown", colMidLeft, rowBottomPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Inquiry Topic SLA Compliance & Speed", _
-                        "Streaming, Tech Support, Payment, Billing & Contract Tiers"
+                        "Contract, Tech Support, Payment, Billing & Admin Volume Breakdown", _
+                        "Clustered Bar"
                         
-    ' Right Column (Width 476)
-    BuildChartContainer ws, "CC_AgentQuadrant", 736, 186, 464, 255, _
-                        "Agent Performance Matrix", _
-                        "Handle Time Efficiency vs Calls Handled per Representative"
+    ' Right-Top: Agent Performance Quadrant
+    BuildChartContainer ws, "CC_AgentQuadrant", colRightLeft, rowTopPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
+                        "Representative Efficiency Matrix", _
+                        "Speed of Answer vs Resolution Rate by Representative", _
+                        "Scatter Plot"
                         
-    BuildChartContainer ws, "CC_AgentScorecard", 736, 453, 464, 263, _
+    ' Right-Bottom: Agent Quality & CSAT Audit
+    BuildChartContainer ws, "CC_AgentScorecard", colRightLeft, rowBottomPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Representative Quality & CSAT Audit", _
-                        "FCR %, Speed of Answer, CSAT & Assigned Performance Tier"
+                        "FCR %, Answer Speed, CSAT Ratings & Assigned Tier", _
+                        "Matrix Table"
                         
     ws.Range("A1").Select
 End Sub
 
 ' ==============================================================================
-' 7. DASHBOARD 2: CUSTOMER CHURN & RETENTION COCKPIT
+' 9. DASHBOARD 2: CUSTOMER CHURN & REVENUE RISK COCKPIT
 ' ==============================================================================
 Public Sub BuildCustomerRetentionCanvas()
     Dim wb As Workbook
@@ -486,60 +851,81 @@ Public Sub BuildCustomerRetentionCanvas()
     ' 1. Canvas Setup
     InitializeDashboardCanvas ws, PWC_CANVAS_BG
     
-    ' 2. Header Banner
-    BuildHeaderBanner ws, _
-                      "PwC Switzerland | Customer Churn & Revenue Risk Cockpit", _
-                      "Subscriber Attrition Forensics, ARR Exposure ($2.86M) & Contract Longevity (7,043 Accounts)", _
-                      15, 20, 1180, 60
+    ' 2. Web App Top Navigation Bar with Logo
+    BuildWebTopNavBar ws, "CH"
     
-    ' 3. Row of 5 Floating KPI Cards
-    Dim cardW As Single, cardH As Single, cardTop As Single
-    cardW = 224
-    cardH = 86
-    cardTop = 88
+    ' 3. Executive Hero Header with Action Buttons
+    BuildHeroHeader ws, _
+                    "Customer Retention & Revenue Risk Cockpit", _
+                    "Subscriber Attrition Forensics, ARR Revenue Exposure & Commitment Contract Vulnerability", _
+                    76
     
-    BuildKPICard ws, "CH_Subscribers", 20, cardTop, cardW, cardH, _
-                 "Total Subscriber Base", "7,043", "Active Subscription Portfolio", PWC_TEXT_TITLE
+    ' 4. Row of 5 Floating BAN KPI Metric Cards (Pure Design - No Hardcoded Data)
+    Dim cardTop As Single
+    cardTop = 130
+    
+    BuildKPICard ws, "CH_Subscribers", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Total Active Accounts", "Total Active Subscriber Portfolio", PWC_TEXT_TITLE
                  
-    BuildKPICard ws, "CH_ChurnRate", 259, cardTop, cardW, cardH, _
-                 "Customer Churn Rate", "26.54%", "1,869 Terminations | Target < 20% [ALERT]", PWC_ALERT_RED
+    BuildKPICard ws, "CH_ChurnRate", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Customer Churn Rate", "Operational Target: < 20.0% Churn", PWC_ALERT_RED
                  
-    BuildKPICard ws, "CH_ARRRisk", 498, cardTop, cardW, cardH, _
-                 "Annual Revenue at Risk", "$2.86M", "Annualized MRR Lost | $238.4K/Mo [ALERT]", PWC_ORANGE
+    BuildKPICard ws, "CH_ARRRisk", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Annual Revenue at Risk", "Annualized Lost ARR Exposure", PWC_ORANGE
                  
-    BuildKPICard ws, "CH_M2MChurn", 737, cardTop, cardW, cardH, _
-                 "Month-to-Month Churn", "42.71%", "1,655 Lost Accounts | Target < 25% [CRITICAL]", PWC_ALERT_RED
+    BuildKPICard ws, "CH_M2MChurn", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Month-to-Month Churn", "Target: < 25.0% Commitment Retention", PWC_ALERT_RED
                  
-    BuildKPICard ws, "CH_Tickets", 976, cardTop, cardW, cardH, _
-                 "Tech Tickets per Churn", "1.42", "Friction Window: 3+ Tickets Spikes Churn", PWC_WARNING_AMBER
+    BuildKPICard ws, "CH_Tickets", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Tech Tickets per Churn", "Friction Index: 3+ Tickets Spikes Churn", PWC_WARNING_AMBER
                  
-    ' 4. Left Slicer Control Panel Container
-    BuildChartContainer ws, "CH_Slicers", 20, 186, 224, 530, _
-                        "Interactive Filter Panel", _
-                        "Global Slicers: Contract, Payment & Internet"
-                        
-    ' 5. Chart / Visual Containers (Middle & Right Columns)
-    BuildChartContainer ws, "CH_ContractRisk", 259, 186, 465, 255, _
+    ' 5. Left Slicer Control Panel Container
+    Dim bodyTop As Single
+    bodyTop = 226
+    
+    BuildSlicerPanelContainer ws, "CH_Slicers", CANVAS_LEFT, bodyTop, SLICER_WIDTH, SLICER_HEIGHT, _
+                              "Commitment Contract", _
+                              "Payment Method Tier", _
+                              "Internet Service Type"
+                              
+    ' 6. Visual Containers Grid (2 Columns x 2 Rows)
+    Dim colMidLeft As Single, colRightLeft As Single
+    colMidLeft = CANVAS_LEFT + SLICER_WIDTH + CARD_GAP         ' 270 pt
+    colRightLeft = colMidLeft + VISUAL_WIDTH + CARD_GAP       ' 762 pt
+    
+    Dim rowTopPos As Single, rowBottomPos As Single
+    rowTopPos = bodyTop                                       ' 226 pt
+    rowBottomPos = rowTopPos + VISUAL_HEIGHT + 14             ' 510 pt
+    
+    ' Middle-Top: Churn by Contract
+    BuildChartContainer ws, "CH_ContractRisk", colMidLeft, rowTopPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Churn Rate % by Commitment Contract", _
-                        "Month-to-Month (42.7%) vs 1-Year (11.3%) vs 2-Year (2.8%)"
+                        "Month-to-Month Vulnerability vs 1-Year & 2-Year Commitments", _
+                        "Column Chart"
                         
-    BuildChartContainer ws, "CH_TenureCohort", 259, 453, 465, 263, _
+    ' Middle-Bottom: Tenure Cohort Attrition Curve
+    BuildChartContainer ws, "CH_TenureCohort", colMidLeft, rowBottomPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Tenure Attrition Curve & Vulnerability", _
-                        "Early Risk Cohort (Months 1-12) vs Established Subscribers"
+                        "Early Risk Window (Months 1-12) vs Established Subscribers", _
+                        "Area / Line Chart"
                         
-    BuildChartContainer ws, "CH_PaymentFriction", 736, 186, 464, 255, _
+    ' Right-Top: Payment Method Friction
+    BuildChartContainer ws, "CH_PaymentFriction", colRightLeft, rowTopPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Payment Method Risk Diagnostics", _
-                        "Electronic Check Latency vs Automated Credit Card & Bank Wire"
+                        "Electronic Check Friction vs Automated Credit Card & Bank Transfers", _
+                        "Clustered Bar"
                         
-    BuildChartContainer ws, "CH_ServiceMatrix", 736, 453, 464, 263, _
+    ' Right-Bottom: Service Matrix & Tech Add-ons
+    BuildChartContainer ws, "CH_ServiceMatrix", colRightLeft, rowBottomPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Internet Service & Add-On Protection", _
-                        "Fiber Optic Churn vs DSL & Online Tech Support Bundles"
+                        "Fiber Optic Churn Exposure vs Online Security & Tech Support", _
+                        "Matrix Table"
                         
     ws.Range("A1").Select
 End Sub
 
 ' ==============================================================================
-' 8. DASHBOARD 3: DIVERSITY, EQUITY & INCLUSION COCKPIT
+' 10. DASHBOARD 3: DIVERSITY, EQUITY & INCLUSION COCKPIT
 ' ==============================================================================
 Public Sub BuildDiversityInclusionCanvas()
     Dim wb As Workbook
@@ -567,61 +953,81 @@ Public Sub BuildDiversityInclusionCanvas()
     ' 1. Canvas Setup
     InitializeDashboardCanvas ws, PWC_CANVAS_BG
     
-    ' 2. Header Banner
-    BuildHeaderBanner ws, _
-                      "PwC Switzerland | Diversity, Equity & Executive Parity Cockpit", _
-                      "Workforce Pipeline Governance, Broken Rung Diagnostics & Promotion Velocity (500 Employees)", _
-                      15, 20, 1180, 60
+    ' 2. Web App Top Navigation Bar with Logo
+    BuildWebTopNavBar ws, "DI"
     
-    ' 3. Row of 5 Floating KPI Cards
-    Dim cardW As Single, cardH As Single, cardTop As Single
-    cardW = 224
-    cardH = 86
-    cardTop = 88
+    ' 3. Executive Hero Header with Action Buttons
+    BuildHeroHeader ws, _
+                    "Diversity, Equity & Executive Parity Cockpit", _
+                    "Workforce Pipeline Governance, Broken Rung Diagnostics & Promotion Velocity Parity (FY21)", _
+                    76
     
-    BuildKPICard ws, "DI_Workforce", 20, cardTop, cardW, cardH, _
-                 "Total Corporate Census", "500", "Workforce Personnel Base", PWC_TEXT_TITLE
+    ' 4. Row of 5 Floating BAN KPI Metric Cards (Pure Design - No Hardcoded Data)
+    Dim cardTop As Single
+    cardTop = 130
+    
+    BuildKPICard ws, "DI_Workforce", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Total Corporate Census", "Active Enterprise Headcount Base", PWC_TEXT_TITLE
                  
-    BuildKPICard ws, "DI_FemaleShare", 259, cardTop, cardW, cardH, _
-                 "Female Headcount Share", "41.00%", "205 Female | Corporate Parity Target: 50% [WARN]", PWC_WARNING_AMBER
+    BuildKPICard ws, "DI_FemaleShare", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Female Headcount Share", "Corporate Parity Target: 50.0%", PWC_WARNING_AMBER
                  
-    BuildKPICard ws, "DI_BrokenRung", 498, cardTop, cardW, cardH, _
-                 "Broken Rung Cliff", "-19.67%", "Manager 34.3% -> Sr Mgr 14.6% [CRITICAL]", PWC_ALERT_RED
+    BuildKPICard ws, "DI_BrokenRung", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Broken Rung Cliff Gap", "Critical Manager -> Sr Mgr Pipeline Leak", PWC_ALERT_RED
                  
-    BuildKPICard ws, "DI_PromoShare", 737, cardTop, cardW, cardH, _
-                 "FY21 Promotions Awarded", "35.29%", "18 Female of 51 Total Promotions [WARN]", PWC_ORANGE
+    BuildKPICard ws, "DI_PromoShare", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "FY21 Promotions Awarded", "Promotions Gender Parity Baseline", PWC_ORANGE
                  
-    BuildKPICard ws, "DI_TimeInGrade", 976, cardTop, cardW, cardH, _
-                 "Promotion Velocity Lag", "+5.6 Mos", "Female Time-in-Grade Promotion Gap [ALERT]", PWC_ALERT_RED
+    BuildKPICard ws, "DI_TimeInGrade", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
+                 "Promotion Velocity Gap", "Target: Zero Gender Velocity Variance", PWC_ALERT_RED
                  
-    ' 4. Left Slicer Control Panel Container
-    BuildChartContainer ws, "DI_Slicers", 20, 186, 224, 530, _
-                        "Interactive Filter Panel", _
-                        "Global Slicers: Department, Job Level & Age"
-                        
-    ' 5. Chart / Visual Containers (Middle & Right Columns)
-    BuildChartContainer ws, "DI_PipelineFunnel", 259, 186, 465, 255, _
+    ' 5. Left Slicer Control Panel Container
+    Dim bodyTop As Single
+    bodyTop = 226
+    
+    BuildSlicerPanelContainer ws, "DI_Slicers", CANVAS_LEFT, bodyTop, SLICER_WIDTH, SLICER_HEIGHT, _
+                              "Department Group", _
+                              "Job Level Tier", _
+                              "Age Demographic Cohort"
+                              
+    ' 6. Visual Containers Grid (2 Columns x 2 Rows)
+    Dim colMidLeft As Single, colRightLeft As Single
+    colMidLeft = CANVAS_LEFT + SLICER_WIDTH + CARD_GAP         ' 270 pt
+    colRightLeft = colMidLeft + VISUAL_WIDTH + CARD_GAP       ' 762 pt
+    
+    Dim rowTopPos As Single, rowBottomPos As Single
+    rowTopPos = bodyTop                                       ' 226 pt
+    rowBottomPos = rowTopPos + VISUAL_HEIGHT + 14             ' 510 pt
+    
+    ' Middle-Top: Workforce Funnel / Broken Rung
+    BuildChartContainer ws, "DI_PipelineFunnel", colMidLeft, rowTopPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Workforce Hierarchy & Broken Rung Funnel", _
-                        "Female vs Male Representation across Corporate Grades 1 to 6"
+                        "Female vs Male Representation across Corporate Grades 1 to 6", _
+                        "Funnel / Bar"
                         
-    BuildChartContainer ws, "DI_DeptParity", 259, 453, 465, 263, _
+    ' Middle-Bottom: Departmental Representation
+    BuildChartContainer ws, "DI_DeptParity", colMidLeft, rowBottomPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Departmental Representation & Target Gaps", _
-                        "HR, Finance, Operations, Sales, Marketing & Strategy"
+                        "Operations, Sales, Finance, HR, IT & Strategy Headcount", _
+                        "Clustered Column"
                         
-    BuildChartContainer ws, "DI_PromoVelocity", 736, 186, 464, 255, _
-                        "Average Time in Grade Prior to Promotion", _
-                        "Longitudinal Promotion Velocity Comparison by Gender"
+    ' Right-Top: Promotion Velocity Gap
+    BuildChartContainer ws, "DI_PromoVelocity", colRightLeft, rowTopPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
+                        "Promotion Velocity & Time in Grade", _
+                        "Longitudinal Time-in-Grade Velocity Comparison by Gender", _
+                        "Bar Chart"
                         
-    BuildChartContainer ws, "DI_PerformanceAudit", 736, 453, 464, 263, _
+    ' Right-Bottom: Performance Appraisal & Equity Audit
+    BuildChartContainer ws, "DI_PerformanceAudit", colRightLeft, rowBottomPos, VISUAL_WIDTH, VISUAL_HEIGHT, _
                         "Performance Appraisal & Promotion Equity", _
-                        "FY20 Appraisal Ratings (1-4) vs Actual FY21 Promotion Rate"
+                        "FY20 Appraisal Rating vs Actual FY21 Promotion Award Rate", _
+                        "Matrix Table"
                         
     ws.Range("A1").Select
 End Sub
 
 ' ==============================================================================
-' 9. MASTER ONE-CLICK BUILDER: INITIALIZE ALL 3 DASHBOARD CANVASES
-' Builds all 3 presentation canvases with zero manual clicking
+' 11. MASTER ONE-CLICK BUILDER: INITIALIZE ALL 3 DASHBOARD CANVASES
 ' ==============================================================================
 Public Sub BuildAllDashboardCanvases()
     Dim prevScreenUpdating As Boolean
@@ -638,18 +1044,26 @@ Public Sub BuildAllDashboardCanvases()
     Call BuildDiversityInclusionCanvas
     
     ' Return focus to Call Center Cockpit
+    On Error Resume Next
     ActiveWorkbook.Worksheets("03_CallCenter_Cockpit").Activate
+    On Error GoTo 0
     
     Application.ScreenUpdating = prevScreenUpdating
     Application.DisplayAlerts = prevAlerts
     
     If Application.UserControl Then
-        MsgBox "PwC Executive Dashboard Canvases successfully generated!" & vbCrLf & vbCrLf & _
-               "Created 3 Presentation Canvases:" & vbCrLf & _
-               "  • '03_CallCenter_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
-               "  • '04_CustomerRetention_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
-               "  • '05_DiversityInclusion_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & vbCrLf & _
-               "All canvases styled with PwC brand colors (#1E293B, #D04A02, #F8FAFC) and ready for visual insertion.", _
+        MsgBox "PwC Web-App Style Dashboard Canvases successfully created!" & vbCrLf & vbCrLf & _
+               "Created 3 Interactive Canvases:" & vbCrLf & _
+               "  1. '03_CallCenter_Cockpit'" & vbCrLf & _
+               "  2. '04_CustomerRetention_Cockpit'" & vbCrLf & _
+               "  3. '05_DiversityInclusion_Cockpit'" & vbCrLf & vbCrLf & _
+               "Key Features Implemented:" & vbCrLf & _
+               "  • Web-App Top Navigation Bar with Embedded Official PwC Logo" & vbCrLf & _
+               "  • Interactive Tab Navigation with Active Module Highlights" & vbCrLf & _
+               "  • 5 BAN KPI Cards formatted with clean design placeholders (No hardcoded data)" & vbCrLf & _
+               "  • Left Global Filter Drawer with dedicated Slicer Slots" & vbCrLf & _
+               "  • 2x2 Grid of 4 Visual Containers with dashed docking zones" & vbCrLf & _
+               "  • 100% Pixel-Perfect Alignment (1214pt standard modular grid)", _
                vbInformation, "PwC Design System Automation"
     End If
 End Sub

@@ -90,51 +90,46 @@ Each card should follow a strict typographic hierarchy:
 
 ## 💻 Automated Implementation via VBA
 
-The repository includes a ready-to-run automation module at [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas):
+The repository includes an enterprise automation engine at [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas):
 
 ```mermaid
 graph TD
-    A["Sub BuildFullCallCentreCockpit()"] --> B["1. InitializeDashboardCanvas (Hides Grids, Sets #F8FAFC)"]
-    A --> C["2. BuildHeaderBanner (PwC Logo Bar + Executive Title)"]
-    A --> D["3. BuildKPICard (5 Floating Cards with Soft Shadows & Accents)"]
-    A --> E["4. BuildChartContainer (4 Chart Floating Cards)"]
-    A --> F["5. DeclutterAndFormatChart (Sets Transparent Backgrounds)"]
+    A["Public Sub BuildAllDashboardCanvases()"] --> B["1. InitializeDashboardCanvas (Hides Grids, Sets #F8FAFC, Standardizes Columns)"]
+    A --> C["2. BuildWebTopNavBar (Embeds PwC Logo, Navigation Pills, Live Status Pill)"]
+    A --> D["3. BuildHeroHeader (Domain Title, Operational Subtitle, Action Buttons)"]
+    A --> E["4. BuildKPICard (5 BAN Cards: Clean '—' Placeholders + SLA Targets)"]
+    A --> F["5. BuildSlicerPanelContainer (Left Slicer Drawer with 3 Filter Slots)"]
+    A --> G["6. BuildChartContainer (4 Cards with Dashed Drop Zones & Badges)"]
+    A --> H["7. DeclutterAndFormatChart (Strips Borders & Sets 100% Transparency)"]
 ```
 
-### Quick Code Snippet: Setting up the Executive Canvas
+### 1. Web-App Top Navigation Bar with Embedded PwC Logo
+
+The VBA routine embeds the official PwC brand logo (`assets/PwC_logo_rgb_colour_pos.png`) directly into the master navigation ribbon with `SaveWithDocument = msoTrue`, pairs it with app branding, creates interactive tab navigation pills with active module highlights, and right-aligns a live VertiPaq status pill:
 
 ```vba
-' Apply canvas settings to worksheet
-Public Sub SetupCanvas(ws As Worksheet)
-    ActiveWindow.DisplayGridlines = False
-    ActiveWindow.DisplayHeadings = False
-    ActiveWindow.Zoom = 100
-    ws.Cells.Interior.Color = RGB(248, 250, 252) ' #F8FAFC
-End Sub
+' Embedded Logo insertion snippet from modDashboardUIUX.bas:
+logoPath = wb.Path & "\assets\PwC_logo_rgb_colour_pos.png"
+If Dir(logoPath) <> "" Then
+    ' Embed permanently into workbook (SaveWithDocument = msoTrue)
+    Set shpLogo = ws.Shapes.AddPicture(logoPath, msoFalse, msoTrue, navLeft + 16, navTop + 9, 53, 34)
+    shpLogo.Name = "Nav_PwCLogo"
+End If
 ```
 
-### Quick Code Snippet: Building a Modern Shadowed Card
+### 2. BAN KPI Metric Cards (Placeholder-Driven Architecture)
+
+Rather than hardcoding arbitrary static figures, the UI/UX engine formats the KPI cards with clean placeholders (`"—"`) and clear operational SLA targets, making the cards immediately ready for DAX / formula connection:
 
 ```vba
-Public Sub AddFloatingCard(ws As Worksheet, left As Single, top As Single, w As Single, h As Single)
-    Dim shp As Shape
-    Set shp = ws.Shapes.AddShape(msoShapeRoundedRectangle, left, top, w, h)
-    With shp
-        .Fill.Solid
-        .Fill.ForeColor.RGB = RGB(255, 255, 255) ' Pure White
-        .Line.ForeColor.RGB = RGB(226, 232, 240) ' Soft Border
-        .Line.Weight = 1
-        .Adjustments.Item(1) = 0.1 ' Gentle rounded corners
-        With .Shadow
-            .Type = msoShadow21
-            .Visible = msoTrue
-            .Blur = 8
-            .Transparency = 0.88
-            .OffsetY = 3
-        End With
-    End With
-End Sub
+' KPI Card creation snippet:
+BuildKPICard ws, "CC_Answered", 270, 130, 230, 84, _
+             "Operational Answer Rate", "SLA Target: >= 80.0% Connected", PWC_SUCCESS_GREEN
 ```
+
+### 3. Visual Docking Zones & Chart Decluttering
+
+Each visual container card features a dashed docking zone (`msoLineDash`) watermarked with `[ PIVOTCHART DOCKING ZONE ]`. Once a PivotChart is snapped into the frame, calling `DeclutterAndFormatChart(chtObj)` strips the chart's borders and backgrounds, achieving 100% seamless transparency inside the card.
 
 ---
 

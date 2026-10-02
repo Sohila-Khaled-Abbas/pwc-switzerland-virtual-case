@@ -130,51 +130,133 @@ flowchart TD
 
 > [!IMPORTANT]
 > **The Golden UI/UX Rule: Build the Canvas BEFORE Inserting Visuals.**  
-> Conventional Excel users create messy dashboards by generating PivotCharts first and awkwardly arranging them over harsh green gridlines.  
-> **Tier-1 Management Consulting Best Practice**: Treat the Excel worksheet like a **Figma / PowerPoint presentation slide**. Use VBA to programmatically construct the entire layout canvas, floating rounded card containers, drop shadows, and brand banners **before** docking any PivotCharts or Slicers.
+> Conventional Excel users create cluttered dashboards by generating PivotCharts first and awkwardly arranging them over harsh spreadsheet gridlines.  
+> **Tier-1 Management Consulting Best Practice**: Treat the Excel worksheet like a **modern Web Application (SaaS) Interface**. Use VBA to programmatically generate the entire visual scaffold—including the top navigation bar, embedded PwC color logo, interactive tab pills, live status indicators, 5 BAN KPI card containers, global slicer drawer, and chart docking frames—**before** docking any PivotCharts or wiring DAX measures.
 
-#### Step 6.1: Automated 1-Click Canvas Generation via VBA (`modDashboardUIUX.bas`)
-1. In Excel, press `Alt + F11` to open the Visual Basic Editor.
-2. Ensure [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas) is imported into your VBA project.
-3. Execute the master orchestrator macro:
-   ```vba
-   Sub RunCanvasGenerator()
-       Call modDashboardUIUX.BuildAllDashboardCanvases
-   End Sub
-   ```
-4. **What the Automation Builds Instantly**:
-   - **3 Dedicated Cockpit Worksheets**:
-     - `03_CallCenter_Cockpit` (PwC Tangerine Tab `#D04A02`)
-     - `04_CustomerRetention_Cockpit` (PwC Charcoal Tab `#1E293B`)
-     - `05_DiversityInclusion_Cockpit` (PwC Muted Slate Tab `#64748B`)
-   - **Canvas Environmental Controls**: Floods each sheet with neutral off-white canvas `#F8FAFC`, hides default gridlines (`DisplayGridlines = False`), hides row/column headers (`DisplayHeadings = False`), and standardizes zoom to 100%.
-   - **Executive Header Banners**: Floating card with left PwC Tangerine accent line (6pt), 15pt bold title, 9pt subtitle, and `<-- Executive Hub` return breadcrumb hyperlinked to `01_Business_Domains`.
-   - **Top KPI Scorecard Ribbon**: 5 floating BAN cards per cockpit (`cardW = 224px`, `cardH = 86px`) featuring top colored accent lines, 8pt micro-labels, 20pt bold numeric metrics, and status pills.
-   - **Left Interactive Slicer Panel**: Dedicated vertical card container (`224px × 530px`) reserved for global multi-select filter controls.
-   - **4 Visual Container Cards**: Floating white rounded cards (`Adjustments = 0.05`, 1px `#E2E8F0` border, `msoShadow21` diffused drop shadow) pre-positioned with 11pt bold chart titles and subtitles ready for chart docking.
+```mermaid
+flowchart TD
+    subgraph Step1["Step 6.1: Manual VBA Automation"]
+        A["Open PWC_Switzerland_Virtual_Case.xlsm"] --> B["Alt + F11 (VBA Editor)"]
+        B --> C["Run modDashboardUIUX.BuildAllDashboardCanvases"]
+    end
 
-#### Step 6.2: Docking PivotCharts & Visuals into Pre-Formed Outlines
-Once the background containers exist, insert your domain visuals directly into the card outlines:
-1. **Intraday Surge / Contract Churn / Funnel Chart** $\to$ Snap into Middle-Top Container (`259, 186, 465, 255`).
-2. **Topic SLA / Tenure Attrition / Dept Parity Chart** $\to$ Snap into Middle-Bottom Container (`259, 453, 465, 263`).
-3. **Agent Quadrant / Payment Risk / Promo Velocity Chart** $\to$ Snap into Right-Top Container (`736, 186, 464, 255`).
-4. **Agent Scorecard / Add-on Matrix / Appraisal Audit Table** $\to$ Snap into Right-Bottom Container (`736, 453, 464, 263`).
+    subgraph Step2["Step 6.2: Generated Web-App Layout (Zero Data Hardcoded)"]
+        C --> D1["1. Top SaaS Nav Bar (Embedded PwC Logo + Nav Tabs + Live Pill)"]
+        C --> D2["2. Executive Hero Header (Domain Title + Action Buttons)"]
+        C --> D3["3. 5 BAN KPI Metric Cards (Clean '—' Placeholders + SLA Targets)"]
+        C --> D4["4. Left Global Filter Drawer (3 Designated Slicer Slots)"]
+        C --> D5["5. 2x2 Grid of 4 Visual Containers (Dashed Docking Zones)"]
+    end
 
-#### Step 6.3: Applying Transparent Chart Decluttering
-To eliminate chart clashing, run the decluttering routine on each inserted PivotChart:
+    subgraph Step3["Step 6.3: Visual & KPI Docking"]
+        D3 --> E1["Link DAX Measures into KPI Cards"]
+        D4 --> E2["Insert Slicers into Filter Slots & Wire Multi-Pivot Connections"]
+        D5 --> E3["Dock PivotCharts into Container Frames"]
+        E3 --> E4["Run DeclutterAndFormatChart (100% Transparent Overlays)"]
+    end
+```
+
+---
+
+#### Step 6.1: Manual Execution of the Canvas Generator (`modDashboardUIUX.bas`)
+You execute the automated UI/UX engine **manually** inside Excel. Follow these exact steps:
+
+1. **Open the Master Macro-Enabled Workbook**:
+   - Open `PWC_Switzerland_Virtual_Case.xlsm` in Microsoft Excel.
+2. **Open the Visual Basic Editor**:
+   - Press `Alt + F11` (or click **Developer** tab $\to$ **Visual Basic**).
+3. **Verify the Module**:
+   - In the Project Explorer window (top-left), ensure `modDashboardUIUX` is present under the `Modules` folder.
+   - If missing, click **File** $\to$ **Import File...** $\to$ navigate and select [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas).
+4. **Execute the Master Orchestrator Macro**:
+   - Double-click `modDashboardUIUX` to open the code.
+   - Scroll to the bottom to `Public Sub BuildAllDashboardCanvases()`.
+   - Place your cursor inside the subroutine and press **`F5`** (or click the green **Run Sub/UserForm** button on the toolbar).
+   - Alternatively, from the Excel interface, press `Alt + F8` (or click **Developer** $\to$ **Macros**), select `BuildAllDashboardCanvases`, and click **Run**.
+5. **Confirmation**:
+   - An executive confirmation dialog will appear summarizing the 3 generated cockpits. Click **OK**.
+
+---
+
+#### Step 6.2: Web-App Interface Anatomy & Layout Grid
+The VBA automation constructs a responsive, mathematically balanced **1214pt modular grid** (`Left = 24pt` to `Right = 1238pt`):
+
+| UI Component | X / Left (pt) | Y / Top (pt) | Width (pt) | Height (pt) | Web App Design Characteristics |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Top SaaS Navigation Bar** | `24` | `16` | `1214` | `52` | Embeds official PwC color logo (`assets/PwC_logo_rgb_colour_pos.png`), brand title, 5 navigation pill tabs (`01 Domains`, `02 Catalog`, `03 CC`, `04 CH`, `05 DI`) with active state fill (`#D04A02`), and live VertiPaq status pill (`[●] LIVE MODEL`). |
+| **Executive Hero Header** | `24` | `76` | `1214` | `46` | Domain title (16pt bold `#1E293B`), operational subtitle (9pt `#64748B`), and SaaS action buttons (`Reset Filters` & `Export PDF`). |
+| **5 BAN KPI Scorecards** | `24` + `246` step | `130` | `230` each | `84` | Pure design cards with top color accent line (3pt), uppercase micro-label (8pt), clean numeric placeholder (`"—"`, 22pt bold), and SLA benchmark target subtext. **Zero hardcoded numbers!** |
+| **Left Global Filter Drawer** | `24` | `226` | `230` | `554` | Dedicated sidebar containing 3 pre-styled dashed docking slots (`Slot 1: Date`, `Slot 2: Topic/Contract/Dept`, `Slot 3: Agent/Payment/JobLevel`) with helper guidance. |
+| **Middle-Top Visual Card** | `270` | `226` | `476` | `270` | Card header with title, subtitle, visual badge, and interior dashed drop zone (`448pt × 210pt`) watermarked: `[ PIVOTCHART DOCKING ZONE ]`. |
+| **Middle-Bottom Visual Card**| `270` | `510` | `476` | `270` | Identical 476×270 geometry; perfectly aligned with KPI Cards 2 & 3. |
+| **Right-Top Visual Card** | `762` | `226` | `476` | `270` | Identical 476×270 geometry; perfectly aligned with KPI Cards 4 & 5. |
+| **Right-Bottom Visual Card** | `762` | `510` | `476` | `270` | Identical 476×270 geometry; reserved for representative audit matrix or deep dive breakdown. |
+
+---
+
+#### Step 6.3: Connecting DAX Measures into the Pre-Formed BAN KPI Cards
+The generated KPI cards contain clean `"—"` placeholders. To link them to your Data Model:
+
+1. **Option A: Formula-Linked Text Boxes (Recommended)**:
+   - Click on the text box inside the card (e.g. `Text_CC_TotalDemand`).
+   - Click into the Excel **Formula Bar** (`fx`).
+   - Type `=SheetName!CellAddress` (e.g., pointing to a cell populated by `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Demand]")`).
+   - Press **Enter**. The big metric value will now dynamically update whenever slicers change!
+2. **Option B: Embedded CUBE Functions in Auxiliary Cells**:
+   - In row 65 (below the visual fold) or on a hidden staging sheet, place your `CUBEVALUE` formulas referencing the explicit DAX measures engineered in Phase 5.
+   - Point each KPI card's text frame to the corresponding auxiliary cell.
+
+---
+
+#### Step 6.4: Docking PivotCharts into the 4 Container Frames
+Insert PivotCharts from your VertiPaq Data Model and snap them into the dashed docking zones:
+
+* **Call Center Cockpit (`03_CallCenter_Cockpit`)**:
+  1. *Middle-Top*: Intraday Demand Surge $\to$ Snap into `CC_HourlyVolume` (`270, 226, 476, 270`).
+  2. *Middle-Bottom*: Topic SLA Breakdown $\to$ Snap into `CC_TopicBreakdown` (`270, 510, 476, 270`).
+  3. *Right-Top*: Representative Efficiency Matrix $\to$ Snap into `CC_AgentQuadrant` (`762, 226, 476, 270`).
+  4. *Right-Bottom*: Agent Quality & CSAT Audit Table $\to$ Snap into `CC_AgentScorecard` (`762, 510, 476, 270`).
+
+* **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**:
+  1. *Middle-Top*: Churn Rate by Contract $\to$ Snap into `CH_ContractRisk` (`270, 226, 476, 270`).
+  2. *Middle-Bottom*: Tenure Attrition Curve $\to$ Snap into `CH_TenureCohort` (`270, 510, 476, 270`).
+  3. *Right-Top*: Payment Method Friction $\to$ Snap into `CH_PaymentFriction` (`762, 226, 476, 270`).
+  4. *Right-Bottom*: Internet Service & Tech Add-on Matrix $\to$ Snap into `CH_ServiceMatrix` (`762, 510, 476, 270`).
+
+* **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**:
+  1. *Middle-Top*: Workforce Broken Rung Funnel $\to$ Snap into `DI_PipelineFunnel` (`270, 226, 476, 270`).
+  2. *Middle-Bottom*: Departmental Representation Bar $\to$ Snap into `DI_DeptParity` (`270, 510, 476, 270`).
+  3. *Right-Top*: Promotion Velocity by Gender $\to$ Snap into `DI_PromoVelocity` (`762, 226, 476, 270`).
+  4. *Right-Bottom*: Appraisal vs Promotion Audit Matrix $\to$ Snap into `DI_PerformanceAudit` (`762, 510, 476, 270`).
+
+---
+
+#### Step 6.5: Applying Transparent Chart Decluttering
+To eliminate spreadsheet clashing and give charts the native look of a custom SaaS web app, run the decluttering routine on each inserted PivotChart:
+
 ```vba
+' Execute in the VBA Immediate Window (Ctrl + G) or via a helper macro:
 Call modDashboardUIUX.DeclutterAndFormatChart(ActiveSheet.ChartObjects("YourChartName"))
 ```
-* **Effects**: Sets `.ChartArea.Format.Fill.Visible = msoFalse` (100% transparent), strips outer chart borders, softens gridlines to 0.75pt `#E2E8F0`, and sets axis typography to 8.5pt Segoe UI. The chart seamlessly dissolves into the white container card!
 
-#### Step 6.4: Wiring Global Interactive Slicers
-1. Insert Slicers from the Data Model fields into the Left Slicer Panel:
-   - **Call Center**: `DimDate[Month_Name]`, `DimTopic[Topic]`, `DimAgent[Agent]`.
-   - **Customer Churn**: `DimContract[Contract]`, `Fact_Churn[PaymentMethod]`, `Fact_Churn[InternetService]`.
-   - **Diversity & Inclusion**: `DimDepartment[Department]`, `Fact_Employees[Executive_Tier]`, `Fact_Employees[Age_Group]`.
-2. Connect Slicers across all dashboard PivotTables: Right-click Slicer $\to$ **Report Connections** $\to$ check all PivotTables on that cockpit.
-3. Style Slicers in **PwC Tangerine Theme** (`#D04A02` selected, `#F1F5F9` unselected).
-     - Diversity & Inclusion: `Department`, `Age_Group`, `Job_Level`.
+* **Visual Transformation**:
+  - Sets `.ChartArea.Format.Fill.Visible = msoFalse` (100% transparent).
+  - Sets `.PlotArea.Format.Fill.Visible = msoFalse` (100% transparent).
+  - Strips all exterior chart borders (`.Line.Visible = msoFalse`).
+  - Softens gridlines to 0.75pt `#E2E8F0` and unifies typography to 8.5pt Segoe UI (`#64748B`).
+  - The chart seamlessly floats inside the card container!
+
+---
+
+#### Step 6.6: Wiring Global Interactive Slicers into the Filter Drawer
+1. Insert Slicers from the VertiPaq Data Model fields into the 3 designated slots in the Left Slicer Drawer:
+   - **Call Center**: `DimDate[Month_Name]` (Slot 1), `DimTopic[Topic]` (Slot 2), `DimAgent[Agent]` (Slot 3).
+   - **Customer Churn**: `DimContract[Contract]` (Slot 1), `Fact_Churn[PaymentMethod]` (Slot 2), `Fact_Churn[InternetService]` (Slot 3).
+   - **Diversity & Inclusion**: `DimDepartment[Department]` (Slot 1), `Fact_Employees[Job_Level]` (Slot 2), `Fact_Employees[Age_Group]` (Slot 3).
+2. **Connect Slicers across all Dashboard Visuals**:
+   - Right-click each Slicer $\to$ **Report Connections...** $\to$ check all PivotTables on that cockpit.
+3. **Apply PwC Brand Styling**:
+   - Right-click Slicer $\to$ Slicer Styles $\to$ select custom style featuring PwC Tangerine (`#D04A02`) for selected items and clean off-white (`#F1F5F9`) for unselected items.
 
 ---
 
