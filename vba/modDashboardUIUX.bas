@@ -492,32 +492,54 @@ Public Sub BuildKPICard(ws As Worksheet, _
         .Adjustments.Item(1) = 0.5
     End With
     
-    ' 3. Metric Text Box: Label, Value, and Target
-    Set shpText = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 11, cardWidth - 28, cardHeight - 16)
-    With shpText
-        .Name = "Text_" & cardName
-        .Fill.Visible = msoFalse
-        .Line.Visible = msoFalse
+    ' 3A. Metric Label (Fixed Header)
+    Dim shpLabel As Shape, shpValue As Shape, shpSubtext As Shape
+    Set shpLabel = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 10, cardWidth - 28, 16)
+    With shpLabel
+        .Name = "Label_" & cardName
+        .Fill.Visible = msoFalse: .Line.Visible = msoFalse
         With .TextFrame2
             .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
-            .WordWrap = msoTrue
+            .WordWrap = msoFalse
             With .TextRange
-                .Text = UCase(kpiLabel) & vbCrLf & kpiValue & vbCrLf & targetSubtext
-                ' Label (Uppercase Micro-Label)
-                With .Paragraphs(1).Font
-                    .Name = FONT_FAMILY: .Size = 8: .Bold = msoTrue
-                    .Fill.ForeColor.RGB = PWC_TEXT_MUTED
-                End With
-                ' Big Value Callout
-                With .Paragraphs(2).Font
-                    .Name = FONT_FAMILY: .Size = 22: .Bold = msoTrue
-                    .Fill.ForeColor.RGB = PWC_TEXT_TITLE
-                End With
-                ' Benchmark / SLA Target Subtext
-                With .Paragraphs(3).Font
-                    .Name = FONT_FAMILY: .Size = 8: .Bold = msoFalse
-                    .Fill.ForeColor.RGB = accentColor
-                End With
+                .Text = UCase(kpiLabel)
+                .Font.Name = FONT_FAMILY: .Font.Size = 8: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_TEXT_MUTED
+            End With
+        End With
+    End With
+    
+    ' 3B. Metric Value Callout (Independent Shape -- Can be Formula-Linked via Formula Bar!)
+    Set shpValue = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 24, cardWidth - 28, 36)
+    With shpValue
+        .Name = "Value_" & cardName
+        .Fill.Visible = msoFalse: .Line.Visible = msoFalse
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.MarginLeft = 0: .TextFrame.MarginRight = 0: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
+        With .TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = kpiValue
+                .Font.Name = FONT_FAMILY: .Font.Size = 22: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_TEXT_TITLE
+            End With
+        End With
+    End With
+    
+    ' 3C. Benchmark / SLA Target Subtext (Fixed Footer)
+    Set shpSubtext = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 60, cardWidth - 28, 16)
+    With shpSubtext
+        .Name = "Subtext_" & cardName
+        .Fill.Visible = msoFalse: .Line.Visible = msoFalse
+        With .TextFrame2
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = targetSubtext
+                .Font.Name = FONT_FAMILY: .Font.Size = 8: .Font.Bold = msoFalse
+                .Font.Fill.ForeColor.RGB = accentColor
             End With
         End With
     End With
@@ -526,18 +548,25 @@ End Sub
 ' Helper Subroutine to Programmatically Set or Update KPI Card Values
 Public Sub SetKPICardValue(ws As Worksheet, ByVal cardName As String, _
                            ByVal newValue As String, Optional ByVal newSubtext As String = "")
+    Dim shpValue As Shape
+    Dim shpSub As Shape
     Dim shpText As Shape
-    Dim oldLabel As String
     On Error Resume Next
+    Set shpValue = ws.Shapes("Value_" & cardName)
+    If Not shpValue Is Nothing Then
+        shpValue.TextFrame2.TextRange.Text = newValue
+        If Len(Trim(newSubtext)) > 0 Then
+            Set shpSub = ws.Shapes("Subtext_" & cardName)
+            If Not shpSub Is Nothing Then shpSub.TextFrame2.TextRange.Text = newSubtext
+        End If
+        Exit Sub
+    End If
+    ' Fallback to legacy single textbox if present
     Set shpText = ws.Shapes("Text_" & cardName)
     If Not shpText Is Nothing Then
         With shpText.TextFrame2.TextRange
-            oldLabel = .Paragraphs(1).Text
-            If Len(Trim(newSubtext)) = 0 And .Paragraphs.Count >= 3 Then
-                newSubtext = .Paragraphs(3).Text
-            End If
             .Paragraphs(2).Text = newValue & vbCrLf
-            If Len(Trim(newSubtext)) > 0 Then
+            If Len(Trim(newSubtext)) > 0 And .Paragraphs.Count >= 3 Then
                 .Paragraphs(3).Text = newSubtext
             End If
         End With

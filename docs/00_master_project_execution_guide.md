@@ -204,16 +204,84 @@ The VBA automation constructs a responsive, mathematically balanced **1214pt mod
 ---
 
 #### Step 6.3: Connecting DAX Measures into the Pre-Formed BAN KPI Cards
-The generated KPI cards contain clean `"—"` placeholders. To link them to your Data Model:
 
-1. **Option A: Formula-Linked Text Boxes (Recommended)**:
-   - Click on the text box inside the card (e.g. `Text_CC_TotalDemand`).
-   - Click into the Excel **Formula Bar** (`fx`).
-   - Type `=SheetName!CellAddress` (e.g., pointing to a cell populated by `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Demand]")`).
-   - Press **Enter**. The big metric value will now dynamically update whenever slicers change!
-2. **Option B: Embedded CUBE Functions in Auxiliary Cells**:
-   - In row 65 (below the visual fold) or on a hidden staging sheet, place your `CUBEVALUE` formulas referencing the explicit DAX measures engineered in Phase 5.
-   - Point each KPI card's text frame to the corresponding auxiliary cell.
+> [!WARNING]
+> **Common Excel Error Resolution: *"This formula is missing a range reference or a defined name"***
+> If you received this error dialog when typing in the Formula Bar, it occurs due to two Excel constraints:
+> 1. **Shape Formula Bar Rule**: Excel shapes and text boxes **CANNOT** evaluate functions like `=CUBEVALUE(...)`, `=SUM(...)`, or calculations directly. A shape's formula bar accepts **only a direct cell reference** (e.g., `='03_CallCenter_Cockpit'!$AA$65`) or a **Defined Range Name**. The `CUBEVALUE` formula must reside in a worksheet cell first!
+> 2. **Single Quotation Rule**: When referencing a worksheet whose name starts with a number or contains special characters (like `'03_CallCenter_Cockpit'`), the sheet name **must be enclosed in single quotes**: `='03_CallCenter_Cockpit'!$AA$65`. If quotes are omitted (e.g. `=03_CallCenter_Cockpit!AA65`), Excel parses `03` as a number, fails to recognize the sheet, and throws this error.
+> 3. **Independent Value Shape**: Each KPI card is built with an independent callout shape (`Value_<cardName>`). Clicking on this shape allows you to link the metric number without overwriting the title label (`Label_<cardName>`) or target subtext (`Subtext_<cardName>`).
+
+Follow these **step-by-step manual instructions** to link your DAX measures dynamically:
+
+---
+
+##### Step-by-Step Manual Workflow: Auxiliary CUBE Staging Cells (Standard Enterprise Method)
+
+1. **Step 1: Scroll to the Staging Area Below the Canvas Fold**:
+   On your active dashboard sheet (e.g., `03_CallCenter_Cockpit`), click into row 65 (below the visual grid):
+   - Cell `AA65` $\to$ KPI 1 Value
+   - Cell `AB65` $\to$ KPI 2 Value
+   - Cell `AC65` $\to$ KPI 3 Value
+   - Cell `AD65` $\to$ KPI 4 Value
+   - Cell `AE65` $\to$ KPI 5 Value
+
+2. **Step 2: Enter the CUBEVALUE Formulas into the Cells**:
+   Enter the following formulas directly into the regular Excel cells (NOT inside shapes):
+
+   * **For `03_CallCenter_Cockpit`**:
+     * `AA65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]")`
+     * `AB65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Answer Rate %]")`
+     * `AC65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Abandonment Rate %]")`
+     * `AD65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Avg Speed of Answer]")`
+     * `AE65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Avg CSAT Rating]")`
+
+   * **For `04_CustomerRetention_Cockpit`**:
+     * `AA65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Customers]")`
+     * `AB65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Churn Rate %]")`
+     * `AC65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Revenue at Risk]")`
+     * `AD65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Contract M2M Churn Rate %]")`
+     * `AE65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Tech Tickets per Customer]")`
+
+   * **For `05_DiversityInclusion_Cockpit`**:
+     * `AA65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Headcount]")`
+     * `AB65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Female Headcount Share %]")`
+     * `AC65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Broken Rung Gap]")`
+     * `AD65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Female Promotion Share %]")`
+     * `AE65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Time in Grade Gap]")`
+
+3. **Step 3: Format the Staging Cells**:
+   Apply formatting directly to the cells (`Ctrl + 1`):
+   - Whole counts: `#,##0` (e.g., `5,000` or `7,043`)
+   - Percentages: `0.00%` (e.g., `81.08%` or `26.54%`)
+   - Durations: `#,##0.0 "s"` (e.g., `67.5 s`)
+   - Currency: `$#,##0.00` (e.g., `$2.86M` or `$2,860,000.00`)
+
+4. **Step 4: Select the Shape Border in the KPI Card**:
+   - On the KPI card, click directly on the big number placeholder (`"--"`).
+   - **Crucial**: Ensure the shape's **solid outline border** is selected. Do **NOT** double-click inside the text (there must be NO blinking text cursor inside).
+   - The Name Box in the top-left will show `Value_CC_TotalDemand` (or your card's value shape name).
+
+5. **Step 5: Link the Shape in the Formula Bar**:
+   - Click into the Excel **Formula Bar** at the top (`fx`).
+   - Type `= `
+   - Click on cell `AA65` (or type `='03_CallCenter_Cockpit'!$AA$65`).
+   - Press **Enter**.
+
+6. **Step 6: Slicer Interactivity**:
+   - To make the `CUBEVALUE` formulas react to dashboard slicers dynamically, add the slicer names as arguments:
+     `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]", Slicer_Month, Slicer_Topic)`
+   - The KPI card value will now update in real-time as slicer selections change, with the title and SLA subtext remaining perfectly formatted!
+
+---
+
+##### Alternative: Instant Populating via VBA Macro (`SetKPICardValue`)
+If you prefer to populate initial static values or test card rendering without manual cell formulas:
+- In the VBA Immediate Window (`Ctrl + G`), run:
+  ```vba
+  modDashboardUIUX.SetKPICardValue Worksheets("03_CallCenter_Cockpit"), "CC_TotalDemand", "5,000"
+  modDashboardUIUX.SetKPICardValue Worksheets("03_CallCenter_Cockpit"), "CC_Answered", "81.08%"
+  ```
 
 ---
 
