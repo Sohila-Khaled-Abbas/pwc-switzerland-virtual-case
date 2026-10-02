@@ -2,6 +2,7 @@
 // 05_Executive_KPI_Catalog.dax
 // PwC Switzerland Virtual Case Experience: Master Enterprise KPI Catalog
 // Architecture: Ralph Kimball Constellation / VertiPaq Execution Engine
+// Explicit DAX Measure Formulations & Data Type Registry
 // ==============================================================================
 
 /*
@@ -13,9 +14,11 @@ Fact Table: Fact_Calls (5,000 Records)
 */
 
 // Total Inbound Volume
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Inbound Calls] := COUNTROWS('Fact_Calls')
 
 // Answered Calls (Connection Achieved)
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Calls Answered] := 
 CALCULATE(
     COUNTROWS('Fact_Calls'),
@@ -23,6 +26,7 @@ CALCULATE(
 )
 
 // Abandoned Calls (Caller Disconnects in Queue)
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Calls Abandoned] := 
 CALCULATE(
     COUNTROWS('Fact_Calls'),
@@ -30,10 +34,12 @@ CALCULATE(
 )
 
 // Inbound Abandonment Rate (%)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Abandonment Rate %] := 
 DIVIDE([Calls Abandoned], [Total Inbound Calls], 0)
 
 // Resolved Calls (Issue Closed Satisfactorily)
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Calls Resolved] := 
 CALCULATE(
     COUNTROWS('Fact_Calls'),
@@ -41,26 +47,32 @@ CALCULATE(
 )
 
 // Resolution Efficiency (% of Answered Calls)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Resolution Rate %] := 
 DIVIDE([Calls Resolved], [Calls Answered], 0)
 
 // First Contact Resolution Index (% of Total Volume)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [First Contact Resolution %] := 
 DIVIDE([Calls Resolved], [Total Inbound Calls], 0)
 
 // Average Speed of Answer in Seconds (Wait Time Triage)
+// Data Type: Decimal Number | Format: #,##0.00 "s"
 [Avg Speed of Answer (Sec)] := 
 AVERAGE('Fact_Calls'[Speed_Of_Answer_Sec])
 
 // Average Customer Satisfaction Score (1.00 - 5.00)
+// Data Type: Decimal Number | Format: 0.00
 [Avg Satisfaction Rating] := 
 AVERAGE('Fact_Calls'[Satisfaction_Rating])
 
 // Total Handling Time in Seconds
+// Data Type: Decimal Number | Format: #,##0 "s"
 [Total Talk Duration Sec] := 
 SUM('Fact_Calls'[Talk_Duration_Sec])
 
 // Average Handling Time in Seconds per Connected Call
+// Data Type: Decimal Number | Format: #,##0.00 "s"
 [Avg Handling Time (Sec)] := 
 DIVIDE([Total Talk Duration Sec], [Calls Answered], BLANK())
 
@@ -74,9 +86,11 @@ Fact Table: Fact_Churn (7,043 Accounts)
 */
 
 // Total Customer Subscriber Base
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Customers] := COUNTROWS('Fact_Churn')
 
 // Lost Customer Accounts
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Churned Customers] := 
 CALCULATE(
     COUNTROWS('Fact_Churn'),
@@ -84,6 +98,7 @@ CALCULATE(
 )
 
 // Retained Active Subscribers
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Retained Customers] := 
 CALCULATE(
     COUNTROWS('Fact_Churn'),
@@ -91,13 +106,16 @@ CALCULATE(
 )
 
 // Account Churn Rate (%)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Churn Rate %] := 
 DIVIDE([Churned Customers], [Total Customers], 0)
 
 // Total Monthly Recurring Revenue (MRR)
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Total Monthly Charges] := SUM('Fact_Churn'[MonthlyCharges])
 
 // Realized Financial Churn (At-Risk MRR Lost)
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Churned Monthly Charges] := 
 CALCULATE(
     SUM('Fact_Churn'[MonthlyCharges]),
@@ -105,16 +123,20 @@ CALCULATE(
 )
 
 // Financial Churn Elasticity (% of Total MRR Destroyed)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Financial Churn Rate %] := 
 DIVIDE([Churned Monthly Charges], [Total Monthly Charges], 0)
 
 // Cumulative Lifetime Billed Value
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Total Lifetime Charges] := SUM('Fact_Churn'[TotalCharges])
 
 // Average Tenure in Months
+// Data Type: Decimal Number | Format: 0.0
 [Avg Tenure Months] := AVERAGE('Fact_Churn'[tenure])
 
 // Support Friction Index (Tickets per Customer)
+// Data Type: Decimal Number | Format: 0.00
 [Avg Service Tickets] := 
 AVERAGE('Fact_Churn'[Total_Service_Tickets])
 
@@ -128,15 +150,19 @@ Fact Table: Fact_Employees (500 Personnel)
 */
 
 // Total Corporate Headcount
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Employees] := COUNTROWS('Fact_Employees')
 
 // Gender Representation Measures
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Female Employees] := 
 CALCULATE(
     COUNTROWS('Fact_Employees'),
     'Fact_Employees'[Gender] = "Female"
 )
 
+// Male Headcount
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Male Employees] := 
 CALCULATE(
     COUNTROWS('Fact_Employees'),
@@ -144,10 +170,12 @@ CALCULATE(
 )
 
 // Female Workforce Share (%)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [% Female Representation] := 
 DIVIDE([Female Employees], [Total Employees], 0)
 
 // Total Promoted Personnel in FY21
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Promoted FY21] := 
 CALCULATE(
     COUNTROWS('Fact_Employees'),
@@ -155,10 +183,12 @@ CALCULATE(
 )
 
 // Promotion Velocity (% of Total Headcount)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Overall Promotion Rate %] := 
 DIVIDE([Total Promoted FY21], [Total Employees], 0)
 
 // Female Promoted Headcount
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Female Promoted FY21] := 
 CALCULATE(
     COUNTROWS('Fact_Employees'),
@@ -167,6 +197,7 @@ CALCULATE(
 )
 
 // Male Promoted Headcount
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Male Promoted FY21] := 
 CALCULATE(
     COUNTROWS('Fact_Employees'),
@@ -175,18 +206,22 @@ CALCULATE(
 )
 
 // Female Promotion Rate (% of Female Base)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Female Promotion Rate %] := 
 DIVIDE([Female Promoted FY21], [Female Employees], 0)
 
 // Male Promotion Rate (% of Male Base)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Male Promotion Rate %] := 
 DIVIDE([Male Promoted FY21], [Male Employees], 0)
 
 // Promotion Equity Index (Female vs Male Rate Ratio)
+// Data Type: Decimal Number | Format: 0.00
 [Promotion Equity Index] := 
 DIVIDE([Female Promotion Rate %], [Male Promotion Rate %], BLANK())
 
 // Corporate Attrition (FY20 Leavers)
+// Data Type: Whole Number (Integer) | Format: #,##0
 [FY20 Leavers] := 
 CALCULATE(
     COUNTROWS('Fact_Employees'),
@@ -194,10 +229,12 @@ CALCULATE(
 )
 
 // Annual Turnover Rate (%)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Turnover Rate %] := 
 DIVIDE([FY20 Leavers], [Total Employees], 0)
 
 // Executive Parity Index (Female Share in Levels 1-2 vs Benchmark)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Executive Female Share %] := 
 CALCULATE(
     DIVIDE([Female Employees], [Total Employees], 0),

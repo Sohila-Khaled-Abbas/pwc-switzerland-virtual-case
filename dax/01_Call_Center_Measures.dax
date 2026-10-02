@@ -1,6 +1,6 @@
 // ==============================================================================
 // PwC Switzerland Virtual Case Experience: Task 1 (Call Centre Performance)
-// Explicit DAX Measure Formulations
+// Explicit DAX Measure Formulations & Data Type Registry
 // Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
 // ==============================================================================
 
@@ -9,9 +9,11 @@
 // ------------------------------------------------------------------------------
 
 // Total Inbound Call Inquiries Offered (Gross Demand)
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Demand] := DISTINCTCOUNT(Fact_Calls[Call_Id])
 
 // Successfully Connected Calls
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Answered Calls] := 
 CALCULATE(
     COUNT(Fact_Calls[Call_Id]),
@@ -19,6 +21,7 @@ CALCULATE(
 )
 
 // Calls Abandoned in Queue before Agent Pickup
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Abandoned Calls] := 
 CALCULATE(
     COUNT(Fact_Calls[Call_Id]),
@@ -26,10 +29,12 @@ CALCULATE(
 )
 
 // Operational Answer Rate % (Target >= 80%)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Answer Rate %] := 
 DIVIDE([Answered Calls], [Total Demand], 0)
 
 // Queue Abandonment Rate % (Target <= 15%)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Abandonment Rate %] := 
 DIVIDE([Abandoned Calls], [Total Demand], 0)
 
@@ -38,6 +43,7 @@ DIVIDE([Abandoned Calls], [Total Demand], 0)
 // ------------------------------------------------------------------------------
 
 // Calls Resolved on First Contact
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Resolved Calls] := 
 CALCULATE(
     COUNT(Fact_Calls[Call_Id]),
@@ -46,10 +52,12 @@ CALCULATE(
 )
 
 // First Contact Resolution Rate of Connected Calls (Operational FCR)
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [First Contact Resolution %] := 
 DIVIDE([Resolved Calls], [Answered Calls], 0)
 
 // Gross Resolution Rate Across Total Demand
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Gross Resolution %] := 
 DIVIDE([Resolved Calls], [Total Demand], 0)
 
@@ -58,18 +66,22 @@ DIVIDE([Resolved Calls], [Total Demand], 0)
 // ------------------------------------------------------------------------------
 
 // Average Speed of Answer in Seconds (ASA)
+// Data Type: Decimal Number | Format: #,##0.00 "s"
 [Average Speed of Answer (s)] := 
 AVERAGE(Fact_Calls[Speed_Of_Answer_Sec])
 
 // Average Active Talk Duration (in Seconds)
+// Data Type: Decimal Number | Format: #,##0.00 "s"
 [Average Handle Time (s)] := 
 AVERAGE(Fact_Calls[Talk_Duration_Sec])
 
 // Overall Customer Satisfaction Score (1.00 to 5.00)
+// Data Type: Decimal Number | Format: 0.00
 [Average CSAT] := 
 AVERAGE(Fact_Calls[Satisfaction_Rating])
 
 // Proportion of 4 and 5 Star Positive Survey Responses
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Positive CSAT %] := 
 DIVIDE(
     CALCULATE(COUNT(Fact_Calls[Satisfaction_Rating]), Fact_Calls[Satisfaction_Rating] >= 4),

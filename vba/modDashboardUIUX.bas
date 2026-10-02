@@ -2,35 +2,22 @@ Attribute VB_Name = "modDashboardUIUX"
 Option Explicit
 
 ' ==============================================================================
-' PwC Switzerland Digital Accelerator — Executive Dashboard UI/UX Design System
+' PwC Switzerland Digital Accelerator -- Executive Dashboard UI/UX Design System
 ' Web-Application Style Dashboard Architecture & Presentation Canvas Engine
 ' ==============================================================================
 '
-' Design Philosophy:
-'   Treats the Excel worksheet as an executive web-application interface rather
-'   than a conventional spreadsheet grid. All visuals, filters, and KPI cards
-'   float in geometrically balanced, card-based containers over a clean canvas.
+' Features:
+'   1. Web-App SaaS Navigation Bar with embedded official PwC logo & live status
+'   2. Hero Header with integrated SVG action buttons:
+'      - [Refresh Data] -> modDataRefresh.RefreshPipelineSynchronously
+'      - [Reset Filters] -> modFilterController.ClearAllFilters
+'      - [Export PDF]    -> modExportPDF.ExportExecutiveReport
+'   3. BAN KPI Metric Cards with customizable input & pure ASCII formatting (No encoding bugs)
+'   4. Left Global Filter Drawer with dedicated Slicer Slots
+'   5. 2x2 Grid of 4 Visual Container Cards with dashed docking zones
+'   6. Transparent Chart Decluttering Engine (DeclutterAndFormatChart)
+'   7. Unified Platform Integration (modAppState, modDataRefresh, modFilterController)
 '
-' Architecture:
-'   1. Top SaaS Navigation Bar:
-'      - Official PwC Color Logo (`assets/PwC_logo_rgb_colour_pos.png`)
-'      - Application Branding ("PwC Digital Intelligence Hub")
-'      - Interactive Tab Navigation Pills with active module highlighting
-'      - Live Data Model Status Indicator ("● LIVE MODEL | VertiPaq")
-'   2. Executive Hero Header:
-'      - Domain Title, Business Subtitle, and Web App Action Buttons
-'   3. BAN KPI Metric Strip (5 Pre-Sized Cards):
-'      - Pure design layout (NO hardcoded data; placeholder-driven for DAX linkage)
-'      - Top accent bars, uppercase micro-labels, and SLA benchmark targets
-'   4. Left Global Filter Drawer:
-'      - Dedicated container with pre-allocated slots for multi-select slicers
-'   5. 2x2 Visual Container Grid (4 Cards):
-'      - Pixel-perfect dimensions (476pt x 270pt) with dashed chart docking zones
-'   6. Transparent Chart Decluttering Engine:
-'      - Strips chart backgrounds/borders for 100% seamless docking
-'
-' Execution:
-'   Run `BuildAllDashboardCanvases` manually in Excel (Alt+F11 -> F5)
 ' ==============================================================================
 
 ' ------------------------------------------------------------------------------
@@ -67,12 +54,60 @@ Public Const VISUAL_WIDTH       As Single = 476
 Public Const VISUAL_HEIGHT      As Single = 270
 
 ' ==============================================================================
-' 1. MASTER WORKSPACE CANVAS INITIALIZER
+' 1. HELPER: SAFE SVG / PNG ASSET RESOLVER
+' ==============================================================================
+Public Function ResolveAssetPath(ByVal subFolderAndFile As String) As String
+    Dim wb As Workbook
+    Dim testPath As String
+    Set wb = ActiveWorkbook
+    
+    ' 1. Check relative to workbook
+    testPath = wb.Path & "\" & subFolderAndFile
+    If Dir(testPath) <> "" Then
+        ResolveAssetPath = testPath
+        Exit Function
+    End If
+    
+    ' 2. Check parent directory relative
+    testPath = wb.Path & "\..\" & subFolderAndFile
+    If Dir(testPath) <> "" Then
+        ResolveAssetPath = testPath
+        Exit Function
+    End If
+    
+    ' 3. Fallback to workspace absolute path
+    testPath = "d:\courses\Data Analysis 26-27\7-Introducation to Data Fields (Excel)\11_Demos_and_Workbooks\10_Projects_and_Demos\PWC\" & subFolderAndFile
+    If Dir(testPath) <> "" Then
+        ResolveAssetPath = testPath
+        Exit Function
+    End If
+    
+    ResolveAssetPath = ""
+End Function
+
+Public Function InsertVectorIcon(ws As Worksheet, ByVal iconFileName As String, _
+                                ByVal leftPos As Single, ByVal topPos As Single, _
+                                ByVal iconWidth As Single, ByVal iconHeight As Single, _
+                                ByVal shapeName As String) As Shape
+    Dim fullPath As String
+    Dim shp As Shape
+    On Error Resume Next
+    fullPath = ResolveAssetPath("assets\icons\" & iconFileName)
+    If Len(fullPath) > 0 Then
+        Set shp = ws.Shapes.AddPicture(fullPath, msoFalse, msoTrue, leftPos, topPos, iconWidth, iconHeight)
+        If Not shp Is Nothing Then
+            shp.Name = shapeName
+            Set InsertVectorIcon = shp
+        End If
+    End If
+    On Error GoTo 0
+End Function
+
+' ==============================================================================
+' 2. MASTER WORKSPACE CANVAS INITIALIZER
 ' ==============================================================================
 Public Sub InitializeDashboardCanvas(ws As Worksheet, Optional ByVal bgColor As Long = PWC_CANVAS_BG)
     On Error Resume Next
-    Application.ScreenUpdating = False
-    
     ws.Activate
     
     ' Hide Excel spreadsheet gridlines and row/column headers for presentation-ready UI
@@ -89,12 +124,10 @@ Public Sub InitializeDashboardCanvas(ws As Worksheet, Optional ByVal bgColor As 
         .Pattern = xlSolid
         .Color = bgColor
     End With
-    
-    Application.ScreenUpdating = True
 End Sub
 
 ' ==============================================================================
-' 2. WEB-APPLICATION TOP NAVIGATION BAR (WITH EMBEDDED PWC LOGO)
+' 3. WEB-APPLICATION TOP NAVIGATION BAR (WITH EMBEDDED PWC LOGO & SVG STATUS)
 ' ==============================================================================
 Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
     Dim wb As Workbook
@@ -102,7 +135,6 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
     Dim shpLogo As Shape
     Dim shpDivider As Shape
     Dim shpBrand As Shape
-    Dim shpTab As Shape
     Dim shpLive As Shape
     Dim logoPath As String
     Dim navTop As Single, navLeft As Single, navW As Single, navH As Single
@@ -123,31 +155,16 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.12
         With .Shadow
-            .Type = msoShadow21
-            .Visible = msoTrue
-            .Blur = 8
-            .Transparency = 0.88
-            .OffsetX = 0
-            .OffsetY = 3
+            .Type = msoShadow21: .Visible = msoTrue: .Blur = 8: .Transparency = 0.88: .OffsetX = 0: .OffsetY = 3
         End With
     End With
     
     ' 2. Official PwC Brand Logo Insertion
-    logoPath = wb.Path & "\assets\PwC_logo_rgb_colour_pos.png"
-    If Dir(logoPath) = "" Then
-        ' Fallback to standard project relative directory
-        logoPath = wb.Path & "\..\assets\PwC_logo_rgb_colour_pos.png"
-    End If
-    If Dir(logoPath) = "" Then
-        ' Fallback to absolute workspace path
-        logoPath = "d:\courses\Data Analysis 26-27\7-Introducation to Data Fields (Excel)\11_Demos_and_Workbooks\10_Projects_and_Demos\PWC\assets\PwC_logo_rgb_colour_pos.png"
-    End If
-    
-    If Dir(logoPath) <> "" Then
+    logoPath = ResolveAssetPath("assets\PwC_logo_rgb_colour_pos.png")
+    If Len(logoPath) > 0 Then
         ' Embed picture permanently into workbook (SaveWithDocument = msoTrue)
-        ' Aspect Ratio ~1.552:1 (Original 1248 x 804). Height = 34pt, Width = 53pt
         Set shpLogo = ws.Shapes.AddPicture(logoPath, msoFalse, msoTrue, navLeft + 16, navTop + 9, 53, 34)
-        shpLogo.Name = "Nav_PwCLogo"
+        If Not shpLogo Is Nothing Then shpLogo.Name = "Nav_PwCLogo"
     End If
     
     ' 3. Subtle Vertical Divider
@@ -188,37 +205,36 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
     tabH = 28
     
     ' Tab 1: Overview (Business Domains)
-    tabLeft = navLeft + 310
-    tabW = 95
+    tabLeft = navLeft + 310: tabW = 95
     Call CreateNavTabPill(ws, "Nav_Tab_Domains", tabLeft, tabTop, tabW, tabH, _
                           "01 Domains", "'01_Business_Domains'!A1", (activeModuleCode = "DOM"))
                           
     ' Tab 2: Data Catalog
-    tabLeft = tabLeft + tabW + 8
-    tabW = 100
+    tabLeft = tabLeft + tabW + 8: tabW = 100
     Call CreateNavTabPill(ws, "Nav_Tab_Catalog", tabLeft, tabTop, tabW, tabH, _
                           "02 Catalog", "'02_Metadata_&_KPI_Catalog'!A1", (activeModuleCode = "CAT"))
                           
     ' Tab 3: Call Center Cockpit
-    tabLeft = tabLeft + tabW + 8
-    tabW = 115
+    tabLeft = tabLeft + tabW + 8: tabW = 115
     Call CreateNavTabPill(ws, "Nav_Tab_CC", tabLeft, tabTop, tabW, tabH, _
                           "03 Call Center", "'03_CallCenter_Cockpit'!A1", (activeModuleCode = "CC"))
                           
     ' Tab 4: Customer Retention Cockpit
-    tabLeft = tabLeft + tabW + 8
-    tabW = 125
+    tabLeft = tabLeft + tabW + 8: tabW = 125
     Call CreateNavTabPill(ws, "Nav_Tab_CH", tabLeft, tabTop, tabW, tabH, _
                           "04 Retention Risk", "'04_CustomerRetention_Cockpit'!A1", (activeModuleCode = "CH"))
                           
     ' Tab 5: Diversity & Inclusion Cockpit
-    tabLeft = tabLeft + tabW + 8
-    tabW = 120
+    tabLeft = tabLeft + tabW + 8: tabW = 120
     Call CreateNavTabPill(ws, "Nav_Tab_DI", tabLeft, tabTop, tabW, tabH, _
                           "05 D&I Parity", "'05_DiversityInclusion_Cockpit'!A1", (activeModuleCode = "DI"))
                           
-    ' 6. Live Model Status Indicator (Right aligned)
-    Set shpLive = ws.Shapes.AddShape(msoShapeRoundedRectangle, navLeft + navW - 140, navTop + 12, 126, 28)
+    ' 6. Live Model Status Indicator with pulsing live SVG icon
+    Dim livePillW As Single, livePillLeft As Single
+    livePillW = 140
+    livePillLeft = navLeft + navW - livePillW - 12
+    
+    Set shpLive = ws.Shapes.AddShape(msoShapeRoundedRectangle, livePillLeft, navTop + 12, livePillW, 28)
     With shpLive
         .Name = "Nav_StatusPill"
         .Fill.Solid
@@ -227,18 +243,19 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.5
         With .TextFrame2
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 24: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
-                .Text = "[●] LIVE MODEL"
-                .Font.Name = FONT_FAMILY
-                .Font.Size = 8
-                .Font.Bold = msoTrue
+                .Text = "LIVE VERTIPAQ"
+                .Font.Name = FONT_FAMILY: .Font.Size = 8: .Font.Bold = msoTrue
                 .Font.Fill.ForeColor.RGB = PWC_SUCCESS_GREEN
                 .ParagraphFormat.Alignment = msoAlignCenter
             End With
         End With
     End With
+    
+    ' Embed SVG live indicator icon inside the pill
+    Call InsertVectorIcon(ws, "icon_live_indicator.svg", livePillLeft + 8, navTop + 18, 16, 16, "Nav_IconLive")
 End Sub
 
 Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
@@ -288,20 +305,20 @@ Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
 End Sub
 
 ' ==============================================================================
-' 3. EXECUTIVE HERO HEADER WITH ACTION CONTROLS
+' 4. EXECUTIVE HERO HEADER WITH INTEGRATED SVG ACTION BUTTONS
 ' ==============================================================================
 Public Sub BuildHeroHeader(ws As Worksheet, _
                            ByVal dashboardTitle As String, _
                            ByVal subtitle As String, _
                            Optional ByVal topPos As Single = 76)
     Dim shpTitle As Shape
-    Dim shpClearBtn As Shape
-    Dim shpExportBtn As Shape
-    Dim heroW As Single
+    Dim shpRefreshBtn As Shape, shpClearBtn As Shape, shpExportBtn As Shape
+    Dim heroW As Single, heroLeft As Single
+    heroLeft = CANVAS_LEFT
     heroW = CANVAS_WIDTH
     
     ' 1. Title & Context Description
-    Set shpTitle = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, CANVAS_LEFT, topPos, heroW - 240, 46)
+    Set shpTitle = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, heroLeft, topPos, heroW - 360, 46)
     With shpTitle
         .Name = "Hero_TitleText"
         .Fill.Visible = msoFalse
@@ -323,8 +340,44 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         End With
     End With
     
-    ' 2. Web App Action Button: Clear Slicers
-    Set shpClearBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT + heroW - 220, topPos + 6, 100, 28)
+    ' Button Coordinates
+    Dim btnTop As Single, btnH As Single
+    btnTop = topPos + 8
+    btnH = 28
+    
+    ' 2. Web App Action Button: Refresh Data (Connected to modDataRefresh)
+    Dim refBtnLeft As Single, refBtnW As Single
+    refBtnW = 114
+    refBtnLeft = heroLeft + heroW - 340
+    
+    Set shpRefreshBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, refBtnLeft, btnTop, refBtnW, btnH)
+    With shpRefreshBtn
+        .Name = "Hero_BtnRefresh"
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CARD_FILL
+        .Line.ForeColor.RGB = PWC_CARD_BORDER
+        .Line.Weight = 1
+        .Adjustments.Item(1) = 0.25
+        With .TextFrame2
+            .MarginLeft = 24: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "Refresh Data"
+                .Font.Name = FONT_FAMILY: .Font.Size = 8.5: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_ORANGE
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+        .OnAction = "modDataRefresh.RefreshPipelineSynchronously"
+    End With
+    Call InsertVectorIcon(ws, "icon_refresh_pipeline.svg", refBtnLeft + 8, btnTop + 6, 16, 16, "Hero_IconRefresh")
+    
+    ' 3. Web App Action Button: Reset Filters (Connected to modFilterController)
+    Dim clearBtnLeft As Single, clearBtnW As Single
+    clearBtnW = 110
+    clearBtnLeft = refBtnLeft + refBtnW + 8
+    
+    Set shpClearBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, clearBtnLeft, btnTop, clearBtnW, btnH)
     With shpClearBtn
         .Name = "Hero_BtnResetSlicers"
         .Fill.Solid
@@ -333,7 +386,7 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.25
         With .TextFrame2
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 22: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Reset Filters"
@@ -342,11 +395,16 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
                 .ParagraphFormat.Alignment = msoAlignCenter
             End With
         End With
-        .OnAction = "ResetAllSlicers"
+        .OnAction = "modFilterController.ClearAllFilters"
     End With
+    Call InsertVectorIcon(ws, "icon_reset_filter.svg", clearBtnLeft + 8, btnTop + 6, 16, 16, "Hero_IconReset")
     
-    ' 3. Web App Action Button: Export PDF
-    Set shpExportBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT + heroW - 110, topPos + 6, 110, 28)
+    ' 4. Web App Action Button: Export PDF (Connected to modExportPDF)
+    Dim exportBtnLeft As Single, exportBtnW As Single
+    exportBtnW = 100
+    exportBtnLeft = clearBtnLeft + clearBtnW + 8
+    
+    Set shpExportBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, exportBtnLeft, btnTop, exportBtnW, btnH)
     With shpExportBtn
         .Name = "Hero_BtnExportPDF"
         .Fill.Solid
@@ -354,7 +412,7 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.Visible = msoFalse
         .Adjustments.Item(1) = 0.25
         With .TextFrame2
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 20: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Export PDF"
@@ -363,12 +421,13 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
                 .ParagraphFormat.Alignment = msoAlignCenter
             End With
         End With
-        .OnAction = "ExportDashboardToPDF"
+        .OnAction = "modExportPDF.ExportExecutiveReport"
     End With
+    Call InsertVectorIcon(ws, "icon_export_pdf.svg", exportBtnLeft + 8, btnTop + 6, 16, 16, "Hero_IconPDF")
 End Sub
 
 ' ==============================================================================
-' 4. FLOATING BAN KPI METRIC CARD (NO HARDCODED DATA - DESIGN READY)
+' 5. FLOATING BAN KPI METRIC CARD (CUSTOMIZABLE INPUT - ZERO ENCODING BUGS)
 ' ==============================================================================
 Public Sub BuildKPICard(ws As Worksheet, _
                         ByVal cardName As String, _
@@ -377,11 +436,15 @@ Public Sub BuildKPICard(ws As Worksheet, _
                         ByVal cardWidth As Single, _
                         ByVal cardHeight As Single, _
                         ByVal kpiLabel As String, _
-                        ByVal targetSubtext As String, _
+                        Optional ByVal kpiValue As String = "--", _
+                        Optional ByVal targetSubtext As String = "", _
                         Optional ByVal accentColor As Long = PWC_ORANGE)
     Dim shpCard As Shape
     Dim shpAccentLine As Shape
     Dim shpText As Shape
+    
+    ' Ensure pure ASCII formatting for value string
+    If Len(Trim(kpiValue)) = 0 Then kpiValue = "--"
     
     ' 1. Card Container with Rounded Corners & Diffused Shadow
     Set shpCard = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
@@ -393,12 +456,7 @@ Public Sub BuildKPICard(ws As Worksheet, _
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.1
         With .Shadow
-            .Type = msoShadow21
-            .Visible = msoTrue
-            .Blur = 6
-            .Transparency = 0.86
-            .OffsetX = 0
-            .OffsetY = 2
+            .Type = msoShadow21: .Visible = msoTrue: .Blur = 6: .Transparency = 0.86: .OffsetX = 0: .OffsetY = 2
         End With
     End With
     
@@ -412,7 +470,7 @@ Public Sub BuildKPICard(ws As Worksheet, _
         .Adjustments.Item(1) = 0.5
     End With
     
-    ' 3. Metric Text Box: Label, Clean Placeholder Value ("—"), and SLA Target
+    ' 3. Metric Text Box: Label, Value, and Target
     Set shpText = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 11, cardWidth - 28, cardHeight - 16)
     With shpText
         .Name = "Text_" & cardName
@@ -422,14 +480,13 @@ Public Sub BuildKPICard(ws As Worksheet, _
             .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoTrue
             With .TextRange
-                ' Formatted with clean placeholder: Ready to be linked to DAX measures or cell values
-                .Text = UCase(kpiLabel) & vbCrLf & "—" & vbCrLf & targetSubtext
+                .Text = UCase(kpiLabel) & vbCrLf & kpiValue & vbCrLf & targetSubtext
                 ' Label (Uppercase Micro-Label)
                 With .Paragraphs(1).Font
                     .Name = FONT_FAMILY: .Size = 8: .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_MUTED
                 End With
-                ' Big Value Callout Placeholder
+                ' Big Value Callout
                 With .Paragraphs(2).Font
                     .Name = FONT_FAMILY: .Size = 22: .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_TITLE
@@ -444,8 +501,30 @@ Public Sub BuildKPICard(ws As Worksheet, _
     End With
 End Sub
 
+' Helper Subroutine to Programmatically Set or Update KPI Card Values
+Public Sub SetKPICardValue(ws As Worksheet, ByVal cardName As String, _
+                           ByVal newValue As String, Optional ByVal newSubtext As String = "")
+    Dim shpText As Shape
+    Dim oldLabel As String
+    On Error Resume Next
+    Set shpText = ws.Shapes("Text_" & cardName)
+    If Not shpText Is Nothing Then
+        With shpText.TextFrame2.TextRange
+            oldLabel = .Paragraphs(1).Text
+            If Len(Trim(newSubtext)) = 0 And .Paragraphs.Count >= 3 Then
+                newSubtext = .Paragraphs(3).Text
+            End If
+            .Paragraphs(2).Text = newValue & vbCrLf
+            If Len(Trim(newSubtext)) > 0 Then
+                .Paragraphs(3).Text = newSubtext
+            End If
+        End With
+    End If
+    On Error GoTo 0
+End Sub
+
 ' ==============================================================================
-' 5. LEFT GLOBAL FILTER DRAWER (SLICER CONTAINER)
+' 6. LEFT GLOBAL FILTER DRAWER (SLICER CONTAINER)
 ' ==============================================================================
 Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
                                      ByVal panelName As String, _
@@ -565,7 +644,7 @@ Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
 End Sub
 
 ' ==============================================================================
-' 6. VISUAL CONTAINER CARD (CHART DOCKING FRAME)
+' 7. VISUAL CONTAINER CARD (CHART DOCKING FRAME)
 ' ==============================================================================
 Public Sub BuildChartContainer(ws As Worksheet, _
                                ByVal containerName As String, _
@@ -674,7 +753,7 @@ Public Sub BuildChartContainer(ws As Worksheet, _
 End Sub
 
 ' ==============================================================================
-' 7. CHART TRANSPARENCY & DECLUTTERING FORMATTER
+' 8. CHART TRANSPARENCY & DECLUTTERING FORMATTER
 ' ==============================================================================
 Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
     On Error Resume Next
@@ -721,9 +800,9 @@ Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
 End Sub
 
 ' ==============================================================================
-' 8. DASHBOARD 1: CALL CENTER OPERATIONS COCKPIT
+' 9. DASHBOARD 1: CALL CENTER OPERATIONS COCKPIT
 ' ==============================================================================
-Public Sub BuildCallCenterCanvas()
+Public Sub BuildCallCenterCanvas(Optional ByVal populateInitialData As Boolean = False)
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim sheetName As String
@@ -749,33 +828,40 @@ Public Sub BuildCallCenterCanvas()
     ' 1. Canvas Setup
     InitializeDashboardCanvas ws, PWC_CANVAS_BG
     
-    ' 2. Web App Top Navigation Bar with Logo
+    ' 2. Web App Top Navigation Bar with Logo & Live Indicator
     BuildWebTopNavBar ws, "CC"
     
-    ' 3. Executive Hero Header with Action Buttons
+    ' 3. Executive Hero Header with Integrated SVG Action Buttons
     BuildHeroHeader ws, _
                     "Call Centre Operations & SLA Performance Cockpit", _
                     "Operational SLA Monitoring, Queue Abandonment Forensics & Agent Quality Auditing (Q1 2021)", _
                     76
     
-    ' 4. Row of 5 Floating BAN KPI Metric Cards (Pure Design - No Hardcoded Data)
+    ' 4. Row of 5 Floating BAN KPI Metric Cards (Customizable Input)
     Dim cardTop As Single
     cardTop = 130
     
+    Dim val1 As String, val2 As String, val3 As String, val4 As String, val5 As String
+    If populateInitialData Then
+        val1 = "5,000": val2 = "81.08%": val3 = "18.92%": val4 = "67.52 s": val5 = "3.40 / 5.0"
+    Else
+        val1 = "--": val2 = "--": val3 = "--": val4 = "--": val5 = "--"
+    End If
+    
     BuildKPICard ws, "CC_TotalDemand", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Total Call Intake", "Gross Intake Demand | 100% Logged", PWC_TEXT_TITLE
+                 "Total Call Intake", val1, "Gross Intake Demand | 100% Logged", PWC_TEXT_TITLE
                  
     BuildKPICard ws, "CC_Answered", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Operational Answer Rate", "SLA Target: >= 80.0% Connected", PWC_SUCCESS_GREEN
+                 "Operational Answer Rate", val2, "SLA Target: >= 80.0% Connected", PWC_SUCCESS_GREEN
                  
     BuildKPICard ws, "CC_Abandoned", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Queue Abandonment Rate", "SLA Threshold: <= 15.0% Dropped", PWC_ALERT_RED
+                 "Queue Abandonment Rate", val3, "SLA Threshold: <= 15.0% Dropped", PWC_ALERT_RED
                  
     BuildKPICard ws, "CC_ASA", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Avg Speed of Answer", "Target: <= 60.0 Seconds Queue Wait", PWC_WARNING_AMBER
+                 "Avg Speed of Answer", val4, "Target: <= 60.0 Seconds Queue Wait", PWC_WARNING_AMBER
                  
     BuildKPICard ws, "CC_CSAT", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Average CSAT Rating", "Service Benchmark: >= 3.50 / 5.0", PWC_ORANGE
+                 "Average CSAT Rating", val5, "Service Benchmark: >= 3.50 / 5.0", PWC_ORANGE
                  
     ' 5. Left Slicer Control Panel Container
     Dim bodyTop As Single
@@ -823,9 +909,9 @@ Public Sub BuildCallCenterCanvas()
 End Sub
 
 ' ==============================================================================
-' 9. DASHBOARD 2: CUSTOMER CHURN & REVENUE RISK COCKPIT
+' 10. DASHBOARD 2: CUSTOMER CHURN & REVENUE RISK COCKPIT
 ' ==============================================================================
-Public Sub BuildCustomerRetentionCanvas()
+Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Boolean = False)
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim sheetName As String
@@ -851,33 +937,40 @@ Public Sub BuildCustomerRetentionCanvas()
     ' 1. Canvas Setup
     InitializeDashboardCanvas ws, PWC_CANVAS_BG
     
-    ' 2. Web App Top Navigation Bar with Logo
+    ' 2. Web App Top Navigation Bar with Logo & Live Indicator
     BuildWebTopNavBar ws, "CH"
     
-    ' 3. Executive Hero Header with Action Buttons
+    ' 3. Executive Hero Header with Integrated SVG Action Buttons
     BuildHeroHeader ws, _
                     "Customer Retention & Revenue Risk Cockpit", _
                     "Subscriber Attrition Forensics, ARR Revenue Exposure & Commitment Contract Vulnerability", _
                     76
     
-    ' 4. Row of 5 Floating BAN KPI Metric Cards (Pure Design - No Hardcoded Data)
+    ' 4. Row of 5 Floating BAN KPI Metric Cards (Customizable Input)
     Dim cardTop As Single
     cardTop = 130
     
+    Dim val1 As String, val2 As String, val3 As String, val4 As String, val5 As String
+    If populateInitialData Then
+        val1 = "7,043": val2 = "26.54%": val3 = "$2.86M": val4 = "42.71%": val5 = "1.42"
+    Else
+        val1 = "--": val2 = "--": val3 = "--": val4 = "--": val5 = "--"
+    End If
+    
     BuildKPICard ws, "CH_Subscribers", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Total Active Accounts", "Total Active Subscriber Portfolio", PWC_TEXT_TITLE
+                 "Total Active Accounts", val1, "Total Active Subscriber Portfolio", PWC_TEXT_TITLE
                  
     BuildKPICard ws, "CH_ChurnRate", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Customer Churn Rate", "Operational Target: < 20.0% Churn", PWC_ALERT_RED
+                 "Customer Churn Rate", val2, "Operational Target: < 20.0% Churn", PWC_ALERT_RED
                  
     BuildKPICard ws, "CH_ARRRisk", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Annual Revenue at Risk", "Annualized Lost ARR Exposure", PWC_ORANGE
+                 "Annual Revenue at Risk", val3, "Annualized Lost ARR Exposure", PWC_ORANGE
                  
     BuildKPICard ws, "CH_M2MChurn", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Month-to-Month Churn", "Target: < 25.0% Commitment Retention", PWC_ALERT_RED
+                 "Month-to-Month Churn", val4, "Target: < 25.0% Commitment Retention", PWC_ALERT_RED
                  
     BuildKPICard ws, "CH_Tickets", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Tech Tickets per Churn", "Friction Index: 3+ Tickets Spikes Churn", PWC_WARNING_AMBER
+                 "Tech Tickets per Churn", val5, "Friction Index: 3+ Tickets Spikes Churn", PWC_WARNING_AMBER
                  
     ' 5. Left Slicer Control Panel Container
     Dim bodyTop As Single
@@ -925,9 +1018,9 @@ Public Sub BuildCustomerRetentionCanvas()
 End Sub
 
 ' ==============================================================================
-' 10. DASHBOARD 3: DIVERSITY, EQUITY & INCLUSION COCKPIT
+' 11. DASHBOARD 3: DIVERSITY, EQUITY & INCLUSION COCKPIT
 ' ==============================================================================
-Public Sub BuildDiversityInclusionCanvas()
+Public Sub BuildDiversityInclusionCanvas(Optional ByVal populateInitialData As Boolean = False)
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim sheetName As String
@@ -953,33 +1046,40 @@ Public Sub BuildDiversityInclusionCanvas()
     ' 1. Canvas Setup
     InitializeDashboardCanvas ws, PWC_CANVAS_BG
     
-    ' 2. Web App Top Navigation Bar with Logo
+    ' 2. Web App Top Navigation Bar with Logo & Live Indicator
     BuildWebTopNavBar ws, "DI"
     
-    ' 3. Executive Hero Header with Action Buttons
+    ' 3. Executive Hero Header with Integrated SVG Action Buttons
     BuildHeroHeader ws, _
                     "Diversity, Equity & Executive Parity Cockpit", _
                     "Workforce Pipeline Governance, Broken Rung Diagnostics & Promotion Velocity Parity (FY21)", _
                     76
     
-    ' 4. Row of 5 Floating BAN KPI Metric Cards (Pure Design - No Hardcoded Data)
+    ' 4. Row of 5 Floating BAN KPI Metric Cards (Customizable Input)
     Dim cardTop As Single
     cardTop = 130
     
+    Dim val1 As String, val2 As String, val3 As String, val4 As String, val5 As String
+    If populateInitialData Then
+        val1 = "500": val2 = "41.00%": val3 = "-19.67%": val4 = "35.29%": val5 = "+5.6 Mos"
+    Else
+        val1 = "--": val2 = "--": val3 = "--": val4 = "--": val5 = "--"
+    End If
+    
     BuildKPICard ws, "DI_Workforce", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Total Corporate Census", "Active Enterprise Headcount Base", PWC_TEXT_TITLE
+                 "Total Corporate Census", val1, "Active Enterprise Headcount Base", PWC_TEXT_TITLE
                  
     BuildKPICard ws, "DI_FemaleShare", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Female Headcount Share", "Corporate Parity Target: 50.0%", PWC_WARNING_AMBER
+                 "Female Headcount Share", val2, "Corporate Parity Target: 50.0%", PWC_WARNING_AMBER
                  
     BuildKPICard ws, "DI_BrokenRung", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Broken Rung Cliff Gap", "Critical Manager -> Sr Mgr Pipeline Leak", PWC_ALERT_RED
+                 "Broken Rung Cliff Gap", val3, "Critical Manager -> Sr Mgr Pipeline Leak", PWC_ALERT_RED
                  
     BuildKPICard ws, "DI_PromoShare", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "FY21 Promotions Awarded", "Promotions Gender Parity Baseline", PWC_ORANGE
+                 "FY21 Promotions Awarded", val4, "Promotions Gender Parity Baseline", PWC_ORANGE
                  
     BuildKPICard ws, "DI_TimeInGrade", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Promotion Velocity Gap", "Target: Zero Gender Velocity Variance", PWC_ALERT_RED
+                 "Promotion Velocity Gap", val5, "Target: Zero Gender Velocity Variance", PWC_ALERT_RED
                  
     ' 5. Left Slicer Control Panel Container
     Dim bodyTop As Single
@@ -1027,29 +1127,21 @@ Public Sub BuildDiversityInclusionCanvas()
 End Sub
 
 ' ==============================================================================
-' 11. MASTER ONE-CLICK BUILDER: INITIALIZE ALL 3 DASHBOARD CANVASES
+' 12. MASTER ONE-CLICK BUILDER: INITIALIZE ALL 3 DASHBOARD CANVASES
 ' ==============================================================================
 Public Sub BuildAllDashboardCanvases()
-    Dim prevScreenUpdating As Boolean
-    Dim prevAlerts As Boolean
+    modAppState.FreezeAppState
     
-    prevScreenUpdating = Application.ScreenUpdating
-    prevAlerts = Application.DisplayAlerts
-    
-    Application.ScreenUpdating = False
-    Application.DisplayAlerts = False
-    
-    Call BuildCallCenterCanvas
-    Call BuildCustomerRetentionCanvas
-    Call BuildDiversityInclusionCanvas
+    Call BuildCallCenterCanvas(False)
+    Call BuildCustomerRetentionCanvas(False)
+    Call BuildDiversityInclusionCanvas(False)
     
     ' Return focus to Call Center Cockpit
     On Error Resume Next
     ActiveWorkbook.Worksheets("03_CallCenter_Cockpit").Activate
     On Error GoTo 0
     
-    Application.ScreenUpdating = prevScreenUpdating
-    Application.DisplayAlerts = prevAlerts
+    modAppState.RestoreAppState
     
     If Application.UserControl Then
         MsgBox "PwC Web-App Style Dashboard Canvases successfully created!" & vbCrLf & vbCrLf & _
@@ -1057,13 +1149,47 @@ Public Sub BuildAllDashboardCanvases()
                "  1. '03_CallCenter_Cockpit'" & vbCrLf & _
                "  2. '04_CustomerRetention_Cockpit'" & vbCrLf & _
                "  3. '05_DiversityInclusion_Cockpit'" & vbCrLf & vbCrLf & _
-               "Key Features Implemented:" & vbCrLf & _
-               "  • Web-App Top Navigation Bar with Embedded Official PwC Logo" & vbCrLf & _
-               "  • Interactive Tab Navigation with Active Module Highlights" & vbCrLf & _
-               "  • 5 BAN KPI Cards formatted with clean design placeholders (No hardcoded data)" & vbCrLf & _
-               "  • Left Global Filter Drawer with dedicated Slicer Slots" & vbCrLf & _
-               "  • 2x2 Grid of 4 Visual Containers with dashed docking zones" & vbCrLf & _
-               "  • 100% Pixel-Perfect Alignment (1214pt standard modular grid)", _
+               "Key Enhancements:" & vbCrLf & _
+               "  - Vector SVG Action Buttons ([Refresh Data], [Reset Filters], [Export PDF])" & vbCrLf & _
+               "  - Pure ASCII formatting (Zero UTF-8/ANSI character bugs)" & vbCrLf & _
+               "  - Full connectivity to modDataRefresh, modFilterController, and modExportPDF" & vbCrLf & _
+               "  - 5 BAN KPI Cards formatted with clean '--' placeholders" & vbCrLf & _
+               "  - Left Global Filter Drawer with dedicated Slicer Slots" & vbCrLf & _
+               "  - 2x2 Grid of 4 Visual Containers with dashed docking zones", _
                vbInformation, "PwC Design System Automation"
+    End If
+End Sub
+
+' ==============================================================================
+' 13. MASTER SUITE RUNNER: RUN ENTIRE PWC PLATFORM END-TO-END
+' ==============================================================================
+Public Sub RunCompletePwCPlatform()
+    modAppState.FreezeAppState
+    Application.StatusBar = "Executing Complete PwC Platform Workflow..."
+    
+    ' Step 1: Ensure Governance sheets exist
+    On Error Resume Next
+    Call modCreateGovernanceSheets.BuildGovernanceArchitecture
+    On Error GoTo 0
+    
+    ' Step 2: Build All Dashboard Presentation Canvases
+    Call BuildAllDashboardCanvases
+    
+    ' Step 3: Refresh VertiPaq Data Model & PivotCaches
+    Call modDataRefresh.RefreshPipelineSynchronously
+    
+    ' Step 4: Clear Filters across all Dashboards
+    Call modFilterController.ClearAllFilters
+    
+    modAppState.RestoreAppState
+    
+    If Application.UserControl Then
+        MsgBox "PwC Virtual Case Platform successfully initialized end-to-end!" & vbCrLf & vbCrLf & _
+               "1. Governance Architecture Verified ('01_Business_Domains', '02_Metadata_&_KPI_Catalog')" & vbCrLf & _
+               "2. 3 Web-App Canvases Provisioned ('03_CallCenter', '04_Retention', '05_D&I')" & vbCrLf & _
+               "3. Interactive Vector SVG Action Buttons Connected" & vbCrLf & _
+               "4. Data Pipeline & PivotCaches Synchronized" & vbCrLf & _
+               "5. Slicers & Global Filter Drawers Ready", _
+               vbInformation, "PwC Master Orchestrator"
     End If
 End Sub

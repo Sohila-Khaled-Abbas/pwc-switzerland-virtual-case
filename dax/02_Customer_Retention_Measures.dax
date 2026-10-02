@@ -1,13 +1,15 @@
 // ==============================================================================
 // PwC Switzerland Virtual Case Experience: Task 2 (Customer Retention & Churn)
-// Explicit DAX Measure Formulations
+// Explicit DAX Measure Formulations & Data Type Registry
 // Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
 // ==============================================================================
 
 // Total Subscribed Accounts
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Customers] := DISTINCTCOUNT(Fact_Churn[customerID])
 
 // Total Churned Customers
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Churned Customers] := 
 CALCULATE(
     COUNT(Fact_Churn[customerID]),
@@ -15,13 +17,16 @@ CALCULATE(
 )
 
 // Gross Subscriber Attrition Rate %
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Churn Rate %] := 
 DIVIDE([Churned Customers], [Total Customers], 0)
 
 // Total Monthly Recurring Revenue (MRR)
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Total Monthly Charges] := SUM(Fact_Churn[MonthlyCharges])
 
 // Monthly Revenue Lost to Customer Churn
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [At-Risk MRR] := 
 CALCULATE(
     SUM(Fact_Churn[MonthlyCharges]),
@@ -29,10 +34,13 @@ CALCULATE(
 )
 
 // Average Monthly Spend per Subscriber
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Avg Monthly Ticket] := AVERAGE(Fact_Churn[MonthlyCharges])
 
 // Technical Support Ticket Ratio
+// Data Type: Decimal Number | Format: 0.00
 [Avg Tech Tickets per Customer] := AVERAGE(Fact_Churn[numTechTickets])
 
 // Admin Ticket Ratio
+// Data Type: Decimal Number | Format: 0.00
 [Avg Admin Tickets per Customer] := AVERAGE(Fact_Churn[numAdminTickets])

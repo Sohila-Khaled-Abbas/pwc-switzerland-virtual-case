@@ -1,13 +1,15 @@
 // ==============================================================================
 // PwC Switzerland Virtual Case Experience: Task 3 (Diversity & Inclusion)
-// Explicit DAX Measure Formulations
+// Explicit DAX Measure Formulations & Data Type Registry
 // Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
 // ==============================================================================
 
 // Total Active Workforce Personnel
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Employees] := DISTINCTCOUNT(Fact_Employees[Employee_ID])
 
 // Female Workforce Headcount
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Female Count] := 
 CALCULATE(
     COUNT(Fact_Employees[Employee_ID]),
@@ -15,6 +17,7 @@ CALCULATE(
 )
 
 // Male Workforce Headcount
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Male Count] := 
 CALCULATE(
     COUNT(Fact_Employees[Employee_ID]),
@@ -22,10 +25,12 @@ CALCULATE(
 )
 
 // Overall Female Workforce Representation Ratio
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Female Representation %] := 
 DIVIDE([Female Count], [Total Employees], 0)
 
 // Total Career Progressions Awarded in FY21
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Total Promotions FY21] := 
 CALCULATE(
     COUNT(Fact_Employees[Employee_ID]),
@@ -33,6 +38,7 @@ CALCULATE(
 )
 
 // Share of FY21 Promotions Awarded to Female Staff
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Female Promotion %] := 
 DIVIDE(
     CALCULATE(
@@ -45,6 +51,7 @@ DIVIDE(
 )
 
 // Total Workforce Leavers in FY20
+// Data Type: Whole Number (Integer) | Format: #,##0
 [Turnover Count FY20] := 
 CALCULATE(
     COUNT(Fact_Employees[Employee_ID]),
@@ -52,5 +59,6 @@ CALCULATE(
 )
 
 // Annual Turnover / Attrition Rate %
+// Data Type: Percentage (Decimal) | Format: 0.00%
 [Turnover Rate %] := 
 DIVIDE([Turnover Count FY20], [Total Employees], 0)

@@ -2,11 +2,13 @@
 // 04_Time_Intelligence_Measures.dax
 // PwC Switzerland Virtual Case Experience: Enterprise Time Intelligence
 // Engine: VertiPaq In-Memory DAX (Storage Engine vs Formula Engine Optimized)
+// Explicit DAX Measure Formulations & Data Type Registry
 // ==============================================================================
 
 // ------------------------------------------------------------------------------
 // 1. Month-to-Date (MTD) Call Volume
 // Computes cumulative calls from the start of the current month
+// Data Type: Whole Number (Integer) | Format: #,##0
 // ------------------------------------------------------------------------------
 [Calls MTD] :=
 CALCULATE(
@@ -17,6 +19,7 @@ CALCULATE(
 // ------------------------------------------------------------------------------
 // 2. Quarter-to-Date (QTD) Call Volume
 // Aggregates operational call engagement across current quarter
+// Data Type: Whole Number (Integer) | Format: #,##0
 // ------------------------------------------------------------------------------
 [Calls QTD] :=
 CALCULATE(
@@ -27,6 +30,7 @@ CALCULATE(
 // ------------------------------------------------------------------------------
 // 3. Same Period Last Month (SPLY / MoM Comparative)
 // Offsets filter context by -1 month for longitudinal benchmarking
+// Data Type: Whole Number (Integer) | Format: #,##0
 // ------------------------------------------------------------------------------
 [Calls Prior Month] :=
 CALCULATE(
@@ -37,6 +41,7 @@ CALCULATE(
 // ------------------------------------------------------------------------------
 // 4. Month-over-Month (MoM) Growth Percentage
 // Safe ratio calculation protecting against divide-by-zero on initial month
+// Data Type: Percentage (Decimal) | Format: +0.00%;-0.00%;0.00%
 // ------------------------------------------------------------------------------
 [Calls MoM Growth %] :=
 VAR CurrentMonth = [Total Inbound Calls]
@@ -51,6 +56,7 @@ RETURN
 // ------------------------------------------------------------------------------
 // 5. 7-Day Rolling Moving Average (Smoothing Telephony Spike Noise)
 // Evaluates rolling 7-day window for true operational queue equilibrium
+// Data Type: Decimal Number | Format: #,##0.0
 // ------------------------------------------------------------------------------
 [Calls 7D Moving Avg] :=
 VAR LastSelectedDate = MAX('DimDate'[Date])
@@ -70,6 +76,7 @@ RETURN
 // ------------------------------------------------------------------------------
 // 6. Cumulative Churned MRR Run-Rate
 // Cumulative financial loss tracking customer termination impact over time
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
 // ------------------------------------------------------------------------------
 [Cumulative Churned Revenue] :=
 CALCULATE(

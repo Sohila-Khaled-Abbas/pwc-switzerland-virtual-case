@@ -4,6 +4,31 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.5.0] - 2026-10-02
+
+### 🔧 Fixed & Enhanced
+- **Text Encoding Bug Elimination (`vba/modDashboardUIUX.bas`)**:
+  - Eliminated `â€”` and `â— ` character corruption by migrating all strings and comments to 100% 7-bit pure ASCII (`"--"` placeholder, `LIVE VERTIPAQ` pill).
+- **Vector SVG Action Icons (`assets/icons/`)**:
+  - Authored 4 production-grade vector SVG icons themed in PwC corporate colors:
+    - `icon_reset_filter.svg`: Charcoal `#1E293B` and Tangerine `#D04A02` filter reset funnel.
+    - `icon_export_pdf.svg`: Crisp white `#FFFFFF` executive document download icon.
+    - `icon_refresh_pipeline.svg`: Tangerine `#D04A02` circular synchronization arrows.
+    - `icon_live_indicator.svg`: Emerald `#059669` pulsing live status badge.
+  - Automatically embeds SVG vector icons inside the header buttons and status pill.
+- **Cross-Script Ecosystem Connectivity**:
+  - Wired `Reset Filters` action button directly to `modFilterController.ClearAllFilters`.
+  - Wired `Export PDF` action button directly to `modExportPDF.ExportExecutiveReport` (with dynamic active cockpit naming).
+  - Added `Refresh Data` action button wired directly to `modDataRefresh.RefreshPipelineSynchronously`.
+  - Added master platform orchestrator: `RunCompletePwCPlatform()` to execute governance verification, canvas creation, data model refresh, and filter resets end-to-end.
+- **KPI Card Input Customization**:
+  - Added optional `kpiValue` argument to `BuildKPICard` and implemented `SetKPICardValue(ws, cardName, newValue, subtext)` for dynamic metric updates.
+- **Explicit DAX Data Type & Format String Registry**:
+  - Annotated all explicit measures across `dax/01_Call_Center_Measures.dax`, `dax/02_Customer_Retention_Measures.dax`, `dax/03_Diversity_Inclusion_Measures.dax`, `dax/04_Time_Intelligence_Measures.dax`, and `dax/05_Executive_KPI_Catalog.dax` with strict data types (`Whole Number`, `Percentage`, `Decimal Number`, `Currency`) and format strings (`#,##0`, `0.00%`, `$#,##0.00`, `#,##0.00 "s"`).
+  - Updated `docs/04_dax_and_kpi_glossary.md` and `docs/00_master_project_execution_guide.md` accordingly.
+
+---
+
 ## [2.4.0] - 2026-10-02
 
 ### 🚀 Added & Redesigned
