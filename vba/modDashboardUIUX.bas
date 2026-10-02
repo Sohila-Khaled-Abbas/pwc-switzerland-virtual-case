@@ -626,6 +626,9 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
     Dim cellRef As String
     Dim shpValue As Shape
     
+    ' Ensure staging columns are wide enough to prevent numeric overflow (###)
+    ws.Columns("AA:AE").ColumnWidth = 18
+    
     For i = 1 To 5
         ' 1. Set Staging Header in Row 64
         With ws.Range(cols(i) & "64")
