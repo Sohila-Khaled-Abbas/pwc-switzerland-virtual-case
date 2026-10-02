@@ -15,14 +15,14 @@
 [Answered Calls] := 
 CALCULATE(
     COUNT(Fact_Calls[Call_Id]),
-    Fact_Calls[Answered_YN] = "Y"
+    Fact_Calls[Answered] = "Y"
 )
 
 // Calls Abandoned in Queue before Agent Pickup
 [Abandoned Calls] := 
 CALCULATE(
     COUNT(Fact_Calls[Call_Id]),
-    Fact_Calls[Answered_YN] = "N"
+    Fact_Calls[Answered] = "N"
 )
 
 // Operational Answer Rate % (Target >= 80%)
@@ -41,8 +41,8 @@ DIVIDE([Abandoned Calls], [Total Demand], 0)
 [Resolved Calls] := 
 CALCULATE(
     COUNT(Fact_Calls[Call_Id]),
-    Fact_Calls[Answered_YN] = "Y",
-    Fact_Calls[Resolved_YN] = "Y"
+    Fact_Calls[Answered] = "Y",
+    Fact_Calls[Resolved] = "Y"
 )
 
 // First Contact Resolution Rate of Connected Calls (Operational FCR)
@@ -59,11 +59,11 @@ DIVIDE([Resolved Calls], [Total Demand], 0)
 
 // Average Speed of Answer in Seconds (ASA)
 [Average Speed of Answer (s)] := 
-AVERAGE(Fact_Calls[Speed_of_Answer_Sec])
+AVERAGE(Fact_Calls[Speed_Of_Answer_Sec])
 
 // Average Active Talk Duration (in Seconds)
 [Average Handle Time (s)] := 
-AVERAGE(Fact_Calls[Duration_Seconds])
+AVERAGE(Fact_Calls[Talk_Duration_Sec])
 
 // Overall Customer Satisfaction Score (1.00 to 5.00)
 [Average CSAT] := 

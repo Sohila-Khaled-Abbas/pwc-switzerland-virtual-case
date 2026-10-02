@@ -5,19 +5,19 @@
 // ==============================================================================
 
 // Total Active Workforce Personnel
-[Total Employees] := DISTINCTCOUNT(Fact_Employees[Employee ID])
+[Total Employees] := DISTINCTCOUNT(Fact_Employees[Employee_ID])
 
 // Female Workforce Headcount
 [Female Count] := 
 CALCULATE(
-    COUNT(Fact_Employees[Employee ID]),
+    COUNT(Fact_Employees[Employee_ID]),
     Fact_Employees[Gender] = "Female"
 )
 
 // Male Workforce Headcount
 [Male Count] := 
 CALCULATE(
-    COUNT(Fact_Employees[Employee ID]),
+    COUNT(Fact_Employees[Employee_ID]),
     Fact_Employees[Gender] = "Male"
 )
 
@@ -28,16 +28,16 @@ DIVIDE([Female Count], [Total Employees], 0)
 // Total Career Progressions Awarded in FY21
 [Total Promotions FY21] := 
 CALCULATE(
-    COUNT(Fact_Employees[Employee ID]),
-    Fact_Employees[Promotion in FY21?] = "Yes"
+    COUNT(Fact_Employees[Employee_ID]),
+    Fact_Employees[Promoted_FY21] = "Yes"
 )
 
 // Share of FY21 Promotions Awarded to Female Staff
 [Female Promotion %] := 
 DIVIDE(
     CALCULATE(
-        COUNT(Fact_Employees[Employee ID]),
-        Fact_Employees[Promotion in FY21?] = "Yes",
+        COUNT(Fact_Employees[Employee_ID]),
+        Fact_Employees[Promoted_FY21] = "Yes",
         Fact_Employees[Gender] = "Female"
     ),
     [Total Promotions FY21],
@@ -47,8 +47,8 @@ DIVIDE(
 // Total Workforce Leavers in FY20
 [Turnover Count FY20] := 
 CALCULATE(
-    COUNT(Fact_Employees[Employee ID]),
-    Fact_Employees[FY20 leaver?] = "Yes"
+    COUNT(Fact_Employees[Employee_ID]),
+    Fact_Employees[FY20_Leaver] = "Yes"
 )
 
 // Annual Turnover / Attrition Rate %

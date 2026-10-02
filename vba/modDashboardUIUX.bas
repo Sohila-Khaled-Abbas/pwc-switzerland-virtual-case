@@ -5,17 +5,31 @@ Option Explicit
 ' PwC Switzerland Digital Accelerator — Executive Dashboard UI/UX Design System
 ' Implements Modern Business Intelligence Card-Based Layouts & Brand Styling
 ' Based on Industry UI/UX Best Practices (Treating Worksheets as Presentation Canvases)
+'
+' Features:
+'   1. InitializeDashboardCanvas (Kills gridlines, headings, applies #F8FAFC canvas)
+'   2. BuildHeaderBanner (Corporate Charcoal ribbon, Tangerine accent, breadcrumbs)
+'   3. BuildKPICard (BAN containers with micro-labels, big metrics, status pills)
+'   4. BuildChartContainer (Floating card holders with rounded corners and drop shadows)
+'   5. DeclutterAndFormatChart (Strips chart background/borders for transparent docking)
+'   6. Individual Canvas Builders:
+'      - BuildCallCenterCanvas
+'      - BuildCustomerRetentionCanvas
+'      - BuildDiversityInclusionCanvas
+'   7. Master Orchestrator:
+'      - BuildAllDashboardCanvases
 ' ==============================================================================
 
 ' ------------------------------------------------------------------------------
 ' PwC Enterprise Brand Color Constants (RGB Values)
 ' ------------------------------------------------------------------------------
 Public Const PWC_ORANGE         As Long = 133288     ' #D04A02 - RGB(208, 74, 2)
-Public Const PWC_DARK_SLATE     As Long = 2758415    ' #0F172A - RGB(42, 23, 15) -> RGB(15, 23, 42)
+Public Const PWC_DARK_SLATE     As Long = 2758415    ' #0F172A - RGB(15, 23, 42)
+Public Const PWC_CHARCOAL       As Long = 3877150    ' #1E293B - RGB(30, 41, 59)
 Public Const PWC_CANVAS_BG      As Long = 16579320   ' #F8FAFC - RGB(248, 250, 252)
 Public Const PWC_CARD_FILL      As Long = 16777215   ' #FFFFFF - RGB(255, 255, 255)
 Public Const PWC_CARD_BORDER    As Long = 15790322   ' #E2E8F0 - RGB(226, 232, 240)
-Public Const PWC_TEXT_TITLE     As Long = 2434341    ' #1E293B - RGB(30, 41, 59)
+Public Const PWC_TEXT_TITLE     As Long = 3877150    ' #1E293B - RGB(30, 41, 59)
 Public Const PWC_TEXT_MUTED     As Long = 9141108    ' #64748B - RGB(100, 116, 139)
 Public Const PWC_SUCCESS_GREEN  As Long = 4363781    ' #059669 - RGB(5, 150, 105)
 Public Const PWC_ALERT_RED      As Long = 2500316    ' #DC2626 - RGB(220, 38, 38)
@@ -27,7 +41,7 @@ Public Const FONT_FAMILY        As String = "Segoe UI"
 
 ' ==============================================================================
 ' 1. MASTER WORKSPACE CANVAS INITIALIZER
-' Hides gridlines, headers, and applies the neutral off-white canvas background
+' Hides gridlines, headings, and applies the neutral off-white canvas background
 ' ==============================================================================
 Public Sub InitializeDashboardCanvas(ws As Worksheet, Optional ByVal bgColor As Long = PWC_CANVAS_BG)
     On Error Resume Next
@@ -51,7 +65,7 @@ End Sub
 
 ' ==============================================================================
 ' 2. EXECUTIVE HEADER BANNER GENERATOR
-' Creates a sleek navigation bar with PwC brand accent bar, title & metadata
+' Creates a sleek navigation bar with PwC brand accent bar, title & breadcrumbs
 ' ==============================================================================
 Public Sub BuildHeaderBanner(ws As Worksheet, _
                             ByVal dashboardTitle As String, _
@@ -110,20 +124,47 @@ Public Sub BuildHeaderBanner(ws As Worksheet, _
                 ' Title Formatting
                 With .Paragraphs(1).Font
                     .Name = FONT_FAMILY
-                    .Size = 16
+                    .Size = 15
                     .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_TITLE
                 End With
                 ' Subtitle Formatting
                 With .Paragraphs(2).Font
                     .Name = FONT_FAMILY
-                    .Size = 9.5
+                    .Size = 9
                     .Bold = msoFalse
                     .Fill.ForeColor.RGB = PWC_TEXT_MUTED
                 End With
             End With
         End With
     End With
+    
+    ' 4. Breadcrumb Navigation Button (Back to Business Domains)
+    Dim shpNav As Shape
+    Set shpNav = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + bannerWidth - 190, topPos + 16, 175, 32)
+    With shpNav
+        .Name = "Header_NavDomains"
+        .Fill.Solid
+        .Fill.ForeColor.RGB = PWC_CHARCOAL
+        .Line.Visible = msoFalse
+        .Adjustments.Item(1) = 0.2
+        With .TextFrame2
+            .MarginLeft = 0
+            .MarginTop = 0
+            .MarginRight = 0
+            .MarginBottom = 0
+            .WordWrap = msoFalse
+            With .TextRange
+                .Text = "<-- Executive Hub"
+                .Font.Name = FONT_FAMILY
+                .Font.Size = 9.5
+                .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = RGB(255, 255, 255)
+                .ParagraphFormat.Alignment = msoAlignCenter
+            End With
+        End With
+    End With
+    ws.Hyperlinks.Add Anchor:=shpNav, Address:="", SubAddress:="'01_Business_Domains'!A1"
 End Sub
 
 ' ==============================================================================
@@ -174,7 +215,7 @@ Public Sub BuildKPICard(ws As Worksheet, _
     End With
     
     ' 3. KPI Text Content
-    Set shpText = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 12, topPos + 14, cardWidth - 24, cardHeight - 20)
+    Set shpText = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 12, topPos + 12, cardWidth - 24, cardHeight - 16)
     With shpText
         .Name = "Text_" & cardName
         .Fill.Visible = msoFalse
@@ -190,21 +231,21 @@ Public Sub BuildKPICard(ws As Worksheet, _
                 ' Label
                 With .Paragraphs(1).Font
                     .Name = FONT_FAMILY
-                    .Size = 8.5
+                    .Size = 8
                     .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_MUTED
                 End With
                 ' Big Value Callout
                 With .Paragraphs(2).Font
                     .Name = FONT_FAMILY
-                    .Size = 22
+                    .Size = 20
                     .Bold = msoTrue
                     .Fill.ForeColor.RGB = PWC_TEXT_TITLE
                 End With
                 ' Subtext / Target Status
                 With .Paragraphs(3).Font
                     .Name = FONT_FAMILY
-                    .Size = 8.5
+                    .Size = 8
                     .Bold = msoFalse
                     .Fill.ForeColor.RGB = statusColor
                 End With
@@ -214,7 +255,7 @@ Public Sub BuildKPICard(ws As Worksheet, _
 End Sub
 
 ' ==============================================================================
-' 4. VISUAL CONTAINER CARD (CHART HOLDER)
+' 4. VISUAL CONTAINER CARD (CHART / SLICER HOLDER)
 ' Creates container boxes where charts float cleanly with unified card styling
 ' ==============================================================================
 Public Sub BuildChartContainer(ws As Worksheet, _
@@ -248,7 +289,7 @@ Public Sub BuildChartContainer(ws As Worksheet, _
     End With
     
     ' 2. Container Header Title
-    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 16, topPos + 10, cardWidth - 32, 35)
+    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 16, topPos + 10, cardWidth - 32, 34)
     With shpHeader
         .Name = "Header_" & containerName
         .Fill.Visible = msoFalse
@@ -263,20 +304,20 @@ Public Sub BuildChartContainer(ws As Worksheet, _
                     .Text = chartTitle & vbCrLf & chartSubtitle
                     With .Paragraphs(1).Font
                         .Name = FONT_FAMILY
-                        .Size = 11.5
+                        .Size = 11
                         .Bold = msoTrue
                         .Fill.ForeColor.RGB = PWC_TEXT_TITLE
                     End With
                     With .Paragraphs(2).Font
                         .Name = FONT_FAMILY
-                        .Size = 8.5
+                        .Size = 8
                         .Fill.ForeColor.RGB = PWC_TEXT_MUTED
                     End With
                 Else
                     .Text = chartTitle
                     With .Paragraphs(1).Font
                         .Name = FONT_FAMILY
-                        .Size = 11.5
+                        .Size = 11
                         .Bold = msoTrue
                         .Fill.ForeColor.RGB = PWC_TEXT_TITLE
                     End With
@@ -334,21 +375,24 @@ Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
 End Sub
 
 ' ==============================================================================
-' 6. ONE-CLICK DEMO: BUILD COMPLETE PWC CALL CENTRE INTELLIGENCE COCKPIT
-' Builds the entire Task 1 Executive Canvas using these UI/UX principles
+' 6. DASHBOARD 1: CALL CENTER OPERATIONS COCKPIT
 ' ==============================================================================
-Public Sub BuildFullCallCentreCockpit()
+Public Sub BuildCallCenterCanvas()
+    Dim wb As Workbook
     Dim ws As Worksheet
     Dim sheetName As String
-    sheetName = "CallCentre_Cockpit"
+    sheetName = "03_CallCenter_Cockpit"
     
+    Set wb = ActiveWorkbook
     On Error Resume Next
-    Set ws = ThisWorkbook.Sheets(sheetName)
+    Set ws = wb.Worksheets(sheetName)
     If ws Is Nothing Then
-        Set ws = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
+        Set ws = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
         ws.Name = sheetName
     End If
     On Error GoTo 0
+    
+    ws.Tab.Color = PWC_ORANGE
     
     ' Clear previous shapes
     Dim shp As Shape
@@ -363,56 +407,247 @@ Public Sub BuildFullCallCentreCockpit()
     BuildHeaderBanner ws, _
                       "PwC Switzerland | Call Centre Operations Cockpit", _
                       "Operational SLA Monitoring, Abandonment Bottleneck Triage & Agent Performance (Q1 2021)", _
-                      15, 20, 1160, 60
+                      15, 20, 1180, 60
+    
+    ' 3. Row of 5 Floating KPI Cards (Width 224, Gap 15)
+    Dim cardW As Single, cardH As Single, cardTop As Single
+    cardW = 224
+    cardH = 86
+    cardTop = 88
+    
+    BuildKPICard ws, "CC_TotalDemand", 20, cardTop, cardW, cardH, _
+                 "Total Inbound Calls", "5,000", "Gross Volume | 100% Captured", PWC_TEXT_TITLE
+                 
+    BuildKPICard ws, "CC_Answered", 259, cardTop, cardW, cardH, _
+                 "Calls Answered", "81.08%", "4,054 Connected | Target > 80% [OK]", PWC_SUCCESS_GREEN
+                 
+    BuildKPICard ws, "CC_Abandoned", 498, cardTop, cardW, cardH, _
+                 "Abandonment Rate", "18.92%", "946 Queue Drops | Target < 15% [ALERT]", PWC_ALERT_RED
+                 
+    BuildKPICard ws, "CC_ASA", 737, cardTop, cardW, cardH, _
+                 "Avg Speed of Answer", "67.52 s", "Queue Wait Time | Target < 60s [WARN]", PWC_WARNING_AMBER
+                 
+    BuildKPICard ws, "CC_CSAT", 976, cardTop, cardW, cardH, _
+                 "Average CSAT", "3.40 / 5.0", "4,054 Ratings | Target > 3.50 [WARN]", PWC_ORANGE
+                 
+    ' 4. Left Slicer Control Panel Container
+    BuildChartContainer ws, "CC_Slicers", 20, 186, 224, 530, _
+                        "Interactive Filter Panel", _
+                        "Global Slicers: Date, Topic & Agent"
+                        
+    ' 5. Chart / Visual Containers (Middle & Right Columns)
+    ' Middle Column (Width 465)
+    BuildChartContainer ws, "CC_HourlyVolume", 259, 186, 465, 255, _
+                        "Intraday Demand Surge & Queue Triage", _
+                        "Hourly Inbound Calls (09:00 - 18:00) vs Daily Connection Status"
+                        
+    BuildChartContainer ws, "CC_TopicBreakdown", 259, 453, 465, 263, _
+                        "Inquiry Topic SLA Compliance & Speed", _
+                        "Streaming, Tech Support, Payment, Billing & Contract Tiers"
+                        
+    ' Right Column (Width 476)
+    BuildChartContainer ws, "CC_AgentQuadrant", 736, 186, 464, 255, _
+                        "Agent Performance Matrix", _
+                        "Handle Time Efficiency vs Calls Handled per Representative"
+                        
+    BuildChartContainer ws, "CC_AgentScorecard", 736, 453, 464, 263, _
+                        "Representative Quality & CSAT Audit", _
+                        "FCR %, Speed of Answer, CSAT & Assigned Performance Tier"
+                        
+    ws.Range("A1").Select
+End Sub
+
+' ==============================================================================
+' 7. DASHBOARD 2: CUSTOMER CHURN & RETENTION COCKPIT
+' ==============================================================================
+Public Sub BuildCustomerRetentionCanvas()
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim sheetName As String
+    sheetName = "04_CustomerRetention_Cockpit"
+    
+    Set wb = ActiveWorkbook
+    On Error Resume Next
+    Set ws = wb.Worksheets(sheetName)
+    If ws Is Nothing Then
+        Set ws = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
+        ws.Name = sheetName
+    End If
+    On Error GoTo 0
+    
+    ws.Tab.Color = PWC_CHARCOAL
+    
+    ' Clear previous shapes
+    Dim shp As Shape
+    For Each shp In ws.Shapes
+        shp.Delete
+    Next shp
+    
+    ' 1. Canvas Setup
+    InitializeDashboardCanvas ws, PWC_CANVAS_BG
+    
+    ' 2. Header Banner
+    BuildHeaderBanner ws, _
+                      "PwC Switzerland | Customer Churn & Revenue Risk Cockpit", _
+                      "Subscriber Attrition Forensics, ARR Exposure ($2.86M) & Contract Longevity (7,043 Accounts)", _
+                      15, 20, 1180, 60
     
     ' 3. Row of 5 Floating KPI Cards
     Dim cardW As Single, cardH As Single, cardTop As Single
-    cardW = 216
-    cardH = 88
-    cardTop = 90
+    cardW = 224
+    cardH = 86
+    cardTop = 88
     
-    ' KPI 1: Inbound Volume
-    BuildKPICard ws, "KPI1", 20, cardTop, cardW, cardH, _
-                 "Total Inbound Calls", "5,000", "Target: 5,000 Inquiries", PWC_TEXT_TITLE
-    
-    ' KPI 2: Answer Rate
-    BuildKPICard ws, "KPI2", 256, cardTop, cardW, cardH, _
-                 "Calls Answered", "81.08%", "4,054 Connected | Target > 80%", PWC_SUCCESS_GREEN
+    BuildKPICard ws, "CH_Subscribers", 20, cardTop, cardW, cardH, _
+                 "Total Subscriber Base", "7,043", "Active Subscription Portfolio", PWC_TEXT_TITLE
                  
-    ' KPI 3: Abandonment Rate
-    BuildKPICard ws, "KPI3", 492, cardTop, cardW, cardH, _
-                 "Abandonment Rate", "18.92%", "946 Lost In-Queue | Target < 15% 🚨", PWC_ALERT_RED
+    BuildKPICard ws, "CH_ChurnRate", 259, cardTop, cardW, cardH, _
+                 "Customer Churn Rate", "26.54%", "1,869 Terminations | Target < 20% [ALERT]", PWC_ALERT_RED
                  
-    ' KPI 4: Speed of Answer
-    BuildKPICard ws, "KPI4", 728, cardTop, cardW, cardH, _
-                 "Avg Speed of Answer", "67.52 s", "Target: < 60.0 s ⚠️", PWC_WARNING_AMBER
+    BuildKPICard ws, "CH_ARRRisk", 498, cardTop, cardW, cardH, _
+                 "Annual Revenue at Risk", "$2.86M", "Annualized MRR Lost | $238.4K/Mo [ALERT]", PWC_ORANGE
                  
-    ' KPI 5: Customer CSAT
-    BuildKPICard ws, "KPI5", 964, cardTop, cardW, cardH, _
-                 "Customer Satisfaction", "3.40 / 5.0", "4,054 Survey Responses | Target > 3.50", PWC_ORANGE
-    
-    ' 4. Chart / Visual Containers
-    ' Top Left: Intraday Volume Heatmap
-    BuildChartContainer ws, "HourlyVolume", 20, 195, 560, 280, _
-                        "Intraday Inbound Call Volume & Peak Queue Surge", _
-                        "Hour of Day (09:00 - 18:00) vs Daily Connection Status"
+    BuildKPICard ws, "CH_M2MChurn", 737, cardTop, cardW, cardH, _
+                 "Month-to-Month Churn", "42.71%", "1,655 Lost Accounts | Target < 25% [CRITICAL]", PWC_ALERT_RED
+                 
+    BuildKPICard ws, "CH_Tickets", 976, cardTop, cardW, cardH, _
+                 "Tech Tickets per Churn", "1.42", "Friction Window: 3+ Tickets Spikes Churn", PWC_WARNING_AMBER
+                 
+    ' 4. Left Slicer Control Panel Container
+    BuildChartContainer ws, "CH_Slicers", 20, 186, 224, 530, _
+                        "Interactive Filter Panel", _
+                        "Global Slicers: Contract, Payment & Internet"
                         
-    ' Top Right: Agent Performance Quadrant
-    BuildChartContainer ws, "AgentQuadrant", 600, 195, 580, 280, _
-                        "2D Agent Performance Quadrant Matrix", _
-                        "Average Talk Duration vs Total Calls Handled"
+    ' 5. Chart / Visual Containers (Middle & Right Columns)
+    BuildChartContainer ws, "CH_ContractRisk", 259, 186, 465, 255, _
+                        "Churn Rate % by Commitment Contract", _
+                        "Month-to-Month (42.7%) vs 1-Year (11.3%) vs 2-Year (2.8%)"
                         
-    ' Bottom Left: Topic SLA Breakdown
-    BuildChartContainer ws, "TopicBreakdown", 20, 490, 560, 240, _
-                        "Inquiry Topic SLA Compliance & Speed of Answer", _
-                        "Streaming, Tech Support, Payment, Billing & Contract"
+    BuildChartContainer ws, "CH_TenureCohort", 259, 453, 465, 263, _
+                        "Tenure Attrition Curve & Vulnerability", _
+                        "Early Risk Cohort (Months 1-12) vs Established Subscribers"
                         
-    ' Bottom Right: Agent Scorecard Audit Table
-    BuildChartContainer ws, "AgentTable", 600, 490, 580, 240, _
-                        "Representative Performance & CSAT Scorecard", _
-                        "Resolution Rate %, Avg Speed, CSAT and Performance Tier"
+    BuildChartContainer ws, "CH_PaymentFriction", 736, 186, 464, 255, _
+                        "Payment Method Risk Diagnostics", _
+                        "Electronic Check Latency vs Automated Credit Card & Bank Wire"
                         
-    ' Select A1
+    BuildChartContainer ws, "CH_ServiceMatrix", 736, 453, 464, 263, _
+                        "Internet Service & Add-On Protection", _
+                        "Fiber Optic Churn vs DSL & Online Tech Support Bundles"
+                        
     ws.Range("A1").Select
-    MsgBox "PwC Executive Dashboard Canvas successfully generated!", vbInformation, "PwC Design System"
+End Sub
+
+' ==============================================================================
+' 8. DASHBOARD 3: DIVERSITY, EQUITY & INCLUSION COCKPIT
+' ==============================================================================
+Public Sub BuildDiversityInclusionCanvas()
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim sheetName As String
+    sheetName = "05_DiversityInclusion_Cockpit"
+    
+    Set wb = ActiveWorkbook
+    On Error Resume Next
+    Set ws = wb.Worksheets(sheetName)
+    If ws Is Nothing Then
+        Set ws = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
+        ws.Name = sheetName
+    End If
+    On Error GoTo 0
+    
+    ws.Tab.Color = PWC_TEXT_MUTED
+    
+    ' Clear previous shapes
+    Dim shp As Shape
+    For Each shp In ws.Shapes
+        shp.Delete
+    Next shp
+    
+    ' 1. Canvas Setup
+    InitializeDashboardCanvas ws, PWC_CANVAS_BG
+    
+    ' 2. Header Banner
+    BuildHeaderBanner ws, _
+                      "PwC Switzerland | Diversity, Equity & Executive Parity Cockpit", _
+                      "Workforce Pipeline Governance, Broken Rung Diagnostics & Promotion Velocity (500 Employees)", _
+                      15, 20, 1180, 60
+    
+    ' 3. Row of 5 Floating KPI Cards
+    Dim cardW As Single, cardH As Single, cardTop As Single
+    cardW = 224
+    cardH = 86
+    cardTop = 88
+    
+    BuildKPICard ws, "DI_Workforce", 20, cardTop, cardW, cardH, _
+                 "Total Corporate Census", "500", "Workforce Personnel Base", PWC_TEXT_TITLE
+                 
+    BuildKPICard ws, "DI_FemaleShare", 259, cardTop, cardW, cardH, _
+                 "Female Headcount Share", "41.00%", "205 Female | Corporate Parity Target: 50% [WARN]", PWC_WARNING_AMBER
+                 
+    BuildKPICard ws, "DI_BrokenRung", 498, cardTop, cardW, cardH, _
+                 "Broken Rung Cliff", "-19.67%", "Manager 34.3% -> Sr Mgr 14.6% [CRITICAL]", PWC_ALERT_RED
+                 
+    BuildKPICard ws, "DI_PromoShare", 737, cardTop, cardW, cardH, _
+                 "FY21 Promotions Awarded", "35.29%", "18 Female of 51 Total Promotions [WARN]", PWC_ORANGE
+                 
+    BuildKPICard ws, "DI_TimeInGrade", 976, cardTop, cardW, cardH, _
+                 "Promotion Velocity Lag", "+5.6 Mos", "Female Time-in-Grade Promotion Gap [ALERT]", PWC_ALERT_RED
+                 
+    ' 4. Left Slicer Control Panel Container
+    BuildChartContainer ws, "DI_Slicers", 20, 186, 224, 530, _
+                        "Interactive Filter Panel", _
+                        "Global Slicers: Department, Job Level & Age"
+                        
+    ' 5. Chart / Visual Containers (Middle & Right Columns)
+    BuildChartContainer ws, "DI_PipelineFunnel", 259, 186, 465, 255, _
+                        "Workforce Hierarchy & Broken Rung Funnel", _
+                        "Female vs Male Representation across Corporate Grades 1 to 6"
+                        
+    BuildChartContainer ws, "DI_DeptParity", 259, 453, 465, 263, _
+                        "Departmental Representation & Target Gaps", _
+                        "HR, Finance, Operations, Sales, Marketing & Strategy"
+                        
+    BuildChartContainer ws, "DI_PromoVelocity", 736, 186, 464, 255, _
+                        "Average Time in Grade Prior to Promotion", _
+                        "Longitudinal Promotion Velocity Comparison by Gender"
+                        
+    BuildChartContainer ws, "DI_PerformanceAudit", 736, 453, 464, 263, _
+                        "Performance Appraisal & Promotion Equity", _
+                        "FY20 Appraisal Ratings (1-4) vs Actual FY21 Promotion Rate"
+                        
+    ws.Range("A1").Select
+End Sub
+
+' ==============================================================================
+' 9. MASTER ONE-CLICK BUILDER: INITIALIZE ALL 3 DASHBOARD CANVASES
+' Builds all 3 presentation canvases with zero manual clicking
+' ==============================================================================
+Public Sub BuildAllDashboardCanvases()
+    Dim prevScreenUpdating As Boolean
+    Dim prevAlerts As Boolean
+    
+    prevScreenUpdating = Application.ScreenUpdating
+    prevAlerts = Application.DisplayAlerts
+    
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    
+    Call BuildCallCenterCanvas
+    Call BuildCustomerRetentionCanvas
+    Call BuildDiversityInclusionCanvas
+    
+    ' Return focus to Call Center Cockpit
+    ActiveWorkbook.Worksheets("03_CallCenter_Cockpit").Activate
+    
+    Application.ScreenUpdating = prevScreenUpdating
+    Application.DisplayAlerts = prevAlerts
+    
+    MsgBox "PwC Executive Dashboard Canvases successfully generated!" & vbCrLf & vbCrLf & _
+           "Created 3 Presentation Canvases:" & vbCrLf & _
+           "  • '03_CallCenter_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
+           "  • '04_CustomerRetention_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
+           "  • '05_DiversityInclusion_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & vbCrLf & _
+           "All canvases styled with PwC brand colors (#1E293B, #D04A02, #F8FAFC) and ready for visual insertion.", _
+           vbInformation, "PwC Design System Automation"
 End Sub
