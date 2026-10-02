@@ -60,5 +60,5 @@ To guarantee sub-second query response times across multi-million row datasets, 
 | **Female Promotion Rate %** | `DIVIDE([Female Promoted FY21], [Female Employees], 0)` | SE + FE | Parity | Career advancement velocity specific to female personnel base. |
 | **Male Promotion Rate %** | `DIVIDE([Male Promoted FY21], [Male Employees], 0)` | SE + FE | Parity | Career advancement velocity specific to male personnel base. |
 | **Promotion Equity Index** | `DIVIDE([Female Promotion Rate %], [Male Promotion Rate %], BLANK())` | FE | 1.00 | Parity ratio. Values < 1.00 signify male career advancement bias. |
-| **Executive Female Share %**| `CALCULATE(DIVIDE([Female Employees], [Total Employees], 0), 'Fact_Employees'[Job_Level_Baseline] IN {1, 2})` | SE + FE | > 35.0% | Proportion of leadership (Executive Board + Directors) that is female. |
+| **Executive Female Share %**| `CALCULATE(DIVIDE([Female Employees], [Total Employees], 0), 'Fact_Employees'[Job_Level_Baseline_Rank] IN {1, 2})` | SE + FE | > 35.0% | Proportion of leadership (Executive Board + Directors) that is female. |
 | **Turnover Rate %** | `DIVIDE([FY20 Leavers], [Total Employees], 0)` | SE + FE | < 10.0% | Annual attrition rate of employees leaving the organization. |

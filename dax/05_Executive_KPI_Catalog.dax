@@ -201,5 +201,5 @@ DIVIDE([FY20 Leavers], [Total Employees], 0)
 [Executive Female Share %] := 
 CALCULATE(
     DIVIDE([Female Employees], [Total Employees], 0),
-    'Fact_Employees'[Job_Level_Baseline] IN {1, 2}
+    'Fact_Employees'[Job_Level_Baseline_Rank] IN {1, 2}
 )

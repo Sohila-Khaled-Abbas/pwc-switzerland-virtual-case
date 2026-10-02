@@ -87,15 +87,29 @@ shared Fact_Employees = let
         {"Nationality 1", "Nationality"}
     }),
     
-    // Add Promotion Advancement Numeric Delta (Executive Grade Velocity)
-    AddedLevelChange = Table.AddColumn(Renamed, "Grade_Change_Delta", each
-        [Job_Level_Baseline] - [Job_Level_After_Promotions], Int64.Type),
+    // Add Numeric Ranks (1-6) by safely parsing the leading level number
+    AddedBaseRank = Table.AddColumn(Renamed, "Job_Level_Baseline_Rank", each
+        if [Job_Level_Baseline] = null then null
+        else try Number.FromText(Text.Start([Job_Level_Baseline], 1)) otherwise null, Int64.Type),
         
-    // Classify Executive Tier Group
+    AddedAfterRank = Table.AddColumn(AddedBaseRank, "Job_Level_After_Rank", each
+        if [Job_Level_After_Promotions] = null then null
+        else try Number.FromText(Text.Start([Job_Level_After_Promotions], 1)) otherwise null, Int64.Type),
+        
+    // Add Promotion Advancement Numeric Delta (Executive Grade Velocity: Baseline - After)
+    // Positive delta (+1) denotes an upward promotion; 0 denotes no change or new hire.
+    AddedLevelChange = Table.AddColumn(AddedAfterRank, "Grade_Change_Delta", each
+        if [Job_Level_Baseline_Rank] = null or [Job_Level_After_Rank] = null then 0
+        else [Job_Level_Baseline_Rank] - [Job_Level_After_Rank], Int64.Type),
+        
+    // Classify Executive Tier Group based on baseline rank (with fallback to after rank for new hires)
     AddedTierGroup = Table.AddColumn(AddedLevelChange, "Executive_Tier", each
-        if [Job_Level_Baseline] = 1 then "C-Suite / Executive Board"
-        else if [Job_Level_Baseline] = 2 then "Director"
-        else if [Job_Level_Baseline] <= 4 then "Middle Management"
-        else "Staff / Individual Contributor", type text)
+        let
+            Rank = if [Job_Level_Baseline_Rank] <> null then [Job_Level_Baseline_Rank] else [Job_Level_After_Rank]
+        in
+            if Rank = 1 then "C-Suite / Executive Board"
+            else if Rank = 2 then "Director"
+            else if Rank <= 4 then "Middle Management"
+            else "Staff / Individual Contributor", type text)
 in
     AddedTierGroup;
