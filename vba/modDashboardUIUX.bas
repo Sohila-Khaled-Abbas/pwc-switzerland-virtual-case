@@ -531,8 +531,6 @@ Public Sub BuildKPICard(ws As Worksheet, _
             End With
         End With
     End With
-        End With
-    End With
     
     ' 3C. Benchmark / SLA Target Subtext (Fixed Footer)
     Set shpSubtext = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 60, cardWidth - 28, 16)
