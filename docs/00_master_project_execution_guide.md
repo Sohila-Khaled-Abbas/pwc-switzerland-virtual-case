@@ -263,55 +263,386 @@ If you ever wish to re-link a shape manually:
 
 ---
 
-#### Step 6.4: Docking PivotCharts into the 4 Container Frames
-Insert PivotCharts from your VertiPaq Data Model and snap them into the dashed docking zones:
+#### Step 6.4: Step-by-Step Manual Excel GUI Guide: Building & Docking All 12 PivotCharts
 
-* **Call Center Cockpit (`03_CallCenter_Cockpit`)**:
-  1. *Middle-Top*: Intraday Demand Surge $\to$ Snap into `CC_HourlyVolume` (`270, 226, 476, 270`).
-  2. *Middle-Bottom*: Topic SLA Breakdown $\to$ Snap into `CC_TopicBreakdown` (`270, 510, 476, 270`).
-  3. *Right-Top*: Representative Efficiency Matrix $\to$ Snap into `CC_AgentQuadrant` (`762, 226, 476, 270`).
-  4. *Right-Bottom*: Agent Quality & CSAT Audit Table $\to$ Snap into `CC_AgentScorecard` (`762, 510, 476, 270`).
+> [!IMPORTANT]
+> **The Off-Canvas Pivot Architecture (Best Practice)**:
+> Never build PivotTables directly on the dashboard canvas sheets! Doing so alters cell column widths, expands grids, and distorts shape alignments.
+> **The Solution**: 
+> 1. Create a dedicated staging worksheet named `Staging_Pivots` (or park PivotTables below row 75 on the respective sheet).
+> 2. Insert your PivotTable and PivotChart on `Staging_Pivots`.
+> 3. **Cut the PivotChart (`Ctrl + X`)** from `Staging_Pivots` and **paste it (`Ctrl + V`)** directly onto the target dashboard sheet. The chart retains 100% live interactivity with the Data Model while keeping the dashboard canvas pristine!
 
-* **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**:
-  1. *Middle-Top*: Churn Rate by Contract $\to$ Snap into `CH_ContractRisk` (`270, 226, 476, 270`).
-  2. *Middle-Bottom*: Tenure Attrition Curve $\to$ Snap into `CH_TenureCohort` (`270, 510, 476, 270`).
-  3. *Right-Top*: Payment Method Friction $\to$ Snap into `CH_PaymentFriction` (`762, 226, 476, 270`).
-  4. *Right-Bottom*: Internet Service & Tech Add-on Matrix $\to$ Snap into `CH_ServiceMatrix` (`762, 510, 476, 270`).
+---
 
-* **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**:
-  1. *Middle-Top*: Workforce Broken Rung Funnel $\to$ Snap into `DI_PipelineFunnel` (`270, 226, 476, 270`).
-  2. *Middle-Bottom*: Departmental Representation Bar $\to$ Snap into `DI_DeptParity` (`270, 510, 476, 270`).
-  3. *Right-Top*: Promotion Velocity by Gender $\to$ Snap into `DI_PromoVelocity` (`762, 226, 476, 270`).
-  4. *Right-Bottom*: Appraisal vs Promotion Audit Matrix $\to$ Snap into `DI_PerformanceAudit` (`762, 510, 476, 270`).
+##### General 7-Step Manual Workflow for Every PivotChart
+
+For each of the 12 charts below, execute these 7 universal Excel GUI steps:
+
+1. **Insert PivotChart from Data Model**:
+   - Go to the `Staging_Pivots` worksheet.
+   - Click ribbon tab: **Insert** $\to$ **PivotChart** (or **PivotChart & PivotTable**).
+   - In the dialog box, select the radio button: **"Use this workbook's Data Model"**.
+   - Choose placement: **Existing Worksheet** (e.g. `Staging_Pivots!$A$1`, `$A$30`, etc.) $\to$ click **OK**.
+2. **Configure Fields in the PivotChart Fields Task Pane**:
+   - Drag the specified dimension into **Axis (Categories)**.
+   - Drag the specified DAX measure(s) into **Values**.
+   - If segmented, drag the specified attribute into **Legend (Series)**.
+3. **Select the Required Chart Type**:
+   - Click the chart $\to$ ribbon tab **Design** (or right-click chart) $\to$ **Change Chart Type**.
+   - Choose the recommended chart type (e.g. *2-D Clustered Column*, *Horizontal Bar*, *100% Stacked Bar*, or *Combo*).
+4. **Move Chart onto Dashboard Canvas**:
+   - Select the outer chart border $\to$ press `Ctrl + X` (Cut).
+   - Switch to the target dashboard tab (`03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, or `05_DiversityInclusion_Cockpit`).
+   - Press `Ctrl + V` (Paste).
+5. **Snap into the Container Frame & Dashed Docking Zone**:
+   - Drag the chart over the designated visual container card.
+   - Align the chart with the dashed inner drop zone:
+     - **Exact Dimensions**: Set Width = `6.22 in` (`448 pt`), Height = `2.92 in` (`210 pt`) in the **Format** ribbon tab.
+     - **Coordinates**: Left = `284 pt` (Middle Column) or `776 pt` (Right Column); Top = `274 pt` (Top Row) or `558 pt` (Bottom Row).
+     - *Tip*: Hold the `Alt` key while dragging or resizing to snap smoothly to cell and shape boundaries.
+6. **Apply 100% Transparent Decluttering (Excel GUI)**:
+   - **Chart Area Fill & Line**: Right-click the chart background $\to$ **Format Chart Area...** $\to$ set **Fill = No fill** and **Border = No line**.
+   - **Plot Area Fill & Line**: Click inside the chart plot area $\to$ **Format Plot Area...** $\to$ set **Fill = No fill** and **Border = No line**.
+   - **Hide Field Buttons**: Right-click any gray field button (e.g. `Sum of...` or `Call_Hour`) $\to$ click **"Hide All Field Buttons on Chart"**.
+   - **Remove Redundant Title**: Click the default Chart Title $\to$ press `Delete` (the container header card already displays the executive title and subtitle).
+   - **Format Legend**: If the chart has only 1 series, delete the legend. If multi-series, place Legend at the **Top** with **No Border** and **No Fill**.
+   - **Soften Gridlines**: Click the horizontal value gridlines $\to$ Format $\to$ Line: **Solid line**, Color: `#E2E8F0` (Light Gray), Width: `0.75 pt`.
+   - **Typography**: Select chart $\to$ Home tab $\to$ Font: **Segoe UI**, Size: **8.5 pt**, Font Color: `#64748B` (Muted Slate).
+7. *(Optional Fast-Track)*: Instead of formatting manually, open the VBA Immediate Window (`Ctrl + G`) and run:
+   ```vba
+   Call modDashboardUIUX.DeclutterAndFormatChart(ActiveSheet.ChartObjects("Chart 1"))
+   ```
+
+---
+
+##### Dashboard 1: Call Center Operations Cockpit (`03_CallCenter_Cockpit`)
+
+```
++---------------------------------------------------------------------------------------------------+
+| Middle-Top: CC_HourlyVolume (270, 226)         | Right-Top: CC_AgentQuadrant (762, 226)           |
+| Intraday Demand Surge & Queue Triage           | Representative Efficiency Matrix                 |
++------------------------------------------------+--------------------------------------------------+
+| Middle-Bottom: CC_TopicBreakdown (270, 510)    | Right-Bottom: CC_AgentScorecard (762, 510)       |
+| Inquiry Topic SLA Compliance & Speed           | Representative Quality & CSAT Audit              |
++---------------------------------------------------------------------------------------------------+
+```
+
+###### Visual 1.1: Intraday Demand Surge & Queue Triage (Middle-Top)
+* **Container Name**: `CC_HourlyVolume` | **Badge**: `Column Chart`
+* **Docking Zone Coordinates**: Left: `284 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Fact_Calls`
+  - **Axis (Categories)**: `Fact_Calls[Call_Hour]` (or `[Hour_Bucket]`)
+  - **Values**: 
+    1. `_Measures[Total Calls]` (or `[Total Demand]`)
+    2. `_Measures[Answered Calls]`
+* **Chart Type**: **2-D Clustered Column**
+* **Series Formatting**:
+  - Series `Total Calls`: Fill = Solid `#2D3748` (PwC Charcoal / Slate).
+  - Series `Answered Calls`: Fill = Solid `#059669` (Emerald Green).
+  - Right-click column $\to$ **Format Data Series...** $\to$ **Series Overlap = 0%**, **Gap Width = 75%**.
+* **Executive Purpose**: Immediately exposes the two critical triage peak hours: **10:00–11:30** (lunch queue bottleneck) and **14:00–15:30** (afternoon demand surge).
+
+###### Visual 1.2: Inquiry Topic SLA Compliance & Speed (Middle-Bottom)
+* **Container Name**: `CC_TopicBreakdown` | **Badge**: `Clustered Bar`
+* **Docking Zone Coordinates**: Left: `284 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `DimTopic` & `Fact_Calls`
+  - **Axis (Categories)**: `DimTopic[Topic]` (Streaming, Technical Support, Payment, Billing, Admin)
+  - **Values**:
+    1. `_Measures[Total Calls]` (Volume)
+    2. `_Measures[Average Speed of Answer (s)]` (Speed benchmark)
+* **Chart Type**: **2-D Clustered Bar** (Horizontal)
+* **Series Formatting**:
+  - Bar Fill: Solid `#D04A02` (PwC Tangerine).
+  - Right-click vertical category axis $\to$ **Format Axis...** $\to$ check **"Categories in reverse order"** so the largest volume topic appears at the top.
+  - Right-click bars $\to$ **Add Data Labels** $\to$ Font: Segoe UI 8pt Bold `#1E293B`.
+* **Executive Purpose**: Demonstrates that Technical Support and Streaming inquiries generate the largest queue backlogs (over 68s average pickup speed).
+
+###### Visual 1.3: Representative Efficiency Matrix (Right-Top)
+* **Container Name**: `CC_AgentQuadrant` | **Badge**: `Scatter Plot`
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `DimAgent` & `Fact_Calls`
+  - **Axis (Categories)**: `DimAgent[Agent]`
+  - **Values**:
+    1. `_Measures[Resolution Rate %]` (or `[First Contact Resolution %]`)
+    2. `_Measures[Average CSAT]`
+* **Chart Type**: **Combo Chart** (Resolution Rate % as Clustered Column on Primary Axis; Average CSAT as Line with Markers on Secondary Axis) or **2-D Clustered Column**.
+* **Series Formatting**:
+  - Resolution Rate %: Fill = `#3B82F6` (Executive Blue), Axis scaled from `0.70` (70%) to `1.00` (100%).
+  - Average CSAT: Marker Fill = `#D04A02` (Tangerine), Line = `#D04A02` 1.75pt, Secondary Axis scaled from `2.50` to `4.00`.
+  - Add Data Labels to markers displaying CSAT score (e.g. Martha: 3.47, Dan: 3.48).
+* **Executive Purpose**: Ranks frontline performance across two orthogonal dimensions to identify Tier-1 Stars (Dan, Martha) versus agents needing coaching (Stewart, Jim).
+
+###### Visual 1.4: Representative Quality & CSAT Audit (Right-Bottom)
+* **Container Name**: `CC_AgentScorecard` | **Badge**: `Matrix Table`
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+* **Visual Option A (Compact Native PivotTable Grid)**:
+  - Drag the PivotTable itself onto `03_CallCenter_Cockpit` into this card zone.
+  - **Rows**: `DimAgent[Agent]`
+  - **Values**: `[Total Calls]`, `[Answer Rate %]`, `[Resolution Rate %]`, `[Average Speed of Answer (s)]`, `[Average CSAT]`.
+  - **PivotTable Style**: Choose **Pivot Style Light 1** or **None** (transparent table).
+  - Add Conditional Formatting Data Bars: Home $\to$ Conditional Formatting $\to$ Data Bars $\to$ Soft Tangerine for `Total Calls`, Soft Emerald for `Answer Rate %`.
+* **Visual Option B (Horizontal Ranked Bar Chart)**:
+  - **Chart Type**: 2-D Clustered Bar.
+  - **Axis**: `DimAgent[Agent]` | **Values**: `[Average CSAT]` sorted descending.
+  - Bar Fill: `#0F172A` (Navy Slate) with Dan & Martha highlighted in `#D04A02`.
+
+---
+
+##### Dashboard 2: Customer Retention & Revenue Risk Cockpit (`04_CustomerRetention_Cockpit`)
+
+```
++---------------------------------------------------------------------------------------------------+
+| Middle-Top: CH_ContractRisk (270, 226)         | Right-Top: CH_PaymentFriction (762, 226)         |
+| Churn Rate % by Commitment Contract            | Payment Method Risk Diagnostics                  |
++------------------------------------------------+--------------------------------------------------+
+| Middle-Bottom: CH_TenureCohort (270, 510)      | Right-Bottom: CH_ServiceMatrix (762, 510)        |
+| Tenure Attrition Curve & Vulnerability         | Internet Service & Add-On Protection             |
++---------------------------------------------------------------------------------------------------+
+```
+
+###### Visual 2.1: Churn Rate % by Commitment Contract (Middle-Top)
+* **Container Name**: `CH_ContractRisk` | **Badge**: `Column Chart`
+* **Docking Zone Coordinates**: Left: `284 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `DimContract` & `Fact_Churn`
+  - **Axis (Categories)**: `DimContract[Contract]` (Month-to-month, One year, Two year)
+  - **Values**:
+    1. `_Measures[Total Customers]` (Volume)
+    2. `_Measures[Churn Rate %]` (Attrition %)
+* **Chart Type**: **Combo Chart**:
+  - `Total Customers`: **Clustered Column** (Primary Axis) $\to$ Fill: Solid `#94A3B8` (Soft Slate).
+  - `Churn Rate %`: **Line with Markers** (Secondary Axis) $\to$ Line: Solid `#DC2626` (Red Alert), 2.25pt; Marker: Circle, 6pt `#DC2626`.
+* **Axis Scaling**: Right-click Secondary Axis $\to$ Format Axis $\to$ Maximum = `0.50` (50%), Number Format = `0.0%`.
+* **Data Labels**: Right-click Red Line $\to$ Add Data Labels $\to$ Above markers: **Month-to-Month: 42.7%**, One Year: 11.3%, Two Year: 2.8%.
+* **Executive Purpose**: Proves to the CMO/CFO that 88.55% of all subscriber churn stems from Month-to-Month contracts.
+
+###### Visual 2.2: Tenure Attrition Curve & Early Risk Window (Middle-Bottom)
+* **Container Name**: `CH_TenureCohort` | **Badge**: `Area / Line Chart`
+* **Docking Zone Coordinates**: Left: `284 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Fact_Churn`
+  - **Axis (Categories)**: `Fact_Churn[Tenure_Cohort]` (0 - 12 Months, 13 - 24 Months, 25 - 48 Months, 49 - 72 Months)
+  - **Values**: 
+    1. `_Measures[Churn Rate %]`
+    2. `_Measures[Total Revenue at Risk]` (or `[At-Risk MRR]`)
+* **Chart Type**: **2-D Clustered Column** or **Line with Markers**
+* **Series Formatting**:
+  - Cohort `0 - 12 Months`: Fill = Solid `#DC2626` (Crimson Alert: 47.4% churn rate).
+  - Cohorts `13+ Months`: Fill = Solid `#64748B` (Muted Slate).
+  - Gap Width = `65%`.
+  - Add Data Labels showing Churn Rate % over each cohort bar.
+* **Executive Purpose**: Visualizes the steep drop in churn probability as customers cross the critical 12-month tenure threshold.
+
+###### Visual 2.3: Payment Method Risk Diagnostics (Right-Top)
+* **Container Name**: `CH_PaymentFriction` | **Badge**: `Clustered Bar`
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Fact_Churn`
+  - **Axis (Categories)**: `Fact_Churn[PaymentMethod]` (Electronic check, Mailed check, Bank transfer, Credit card)
+  - **Values**: `_Measures[Churn Rate %]` (or `[Total Revenue at Risk]`)
+* **Chart Type**: **Horizontal 2-D Clustered Bar**
+* **Series Formatting**:
+  - Right-click axis $\to$ sort descending so Electronic Check is on top.
+  - Bar Fill: Highlight Electronic Check in `#DC2626` (45.3% Churn / $76.5K Lost MRR); color automated payment methods (Bank Transfer, Credit Card) in `#059669` (Emerald ~15% Churn).
+  - Data Labels: Outside End formatted as `0.0%`.
+* **Executive Purpose**: Directly proves the thesis that non-automated payment friction drives disproportionate revenue loss.
+
+###### Visual 2.4: Internet Service & Add-On Protection Matrix (Right-Bottom)
+* **Container Name**: `CH_ServiceMatrix` | **Badge**: `Matrix Table`
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Fact_Churn`
+  - **Axis (Categories)**: `Fact_Churn[InternetService]` (Fiber optic, DSL, No)
+  - **Legend (Series)**: `Fact_Churn[Churn]` (No, Yes)
+  - **Values**: `_Measures[Total Customers]`
+* **Chart Type**: **100% Stacked Column**
+* **Series Formatting**:
+  - Series `Yes` (Churned): Fill = Solid `#DC2626` (Crimson Alert).
+  - Series `No` (Retained): Fill = Solid `#059669` (Emerald Green).
+  - Gap Width = `60%`.
+  - Add Data Labels showing % share inside the bar segments.
+* **Executive Purpose**: Exposes Fiber Optic's alarming **41.89% churn rate** compared to DSL's **18.96%**, steering the strategic recommendation toward bundling Tech Support and Online Security.
+
+---
+
+##### Dashboard 3: Diversity, Equity & Executive Parity Cockpit (`05_DiversityInclusion_Cockpit`)
+
+```
++---------------------------------------------------------------------------------------------------+
+| Middle-Top: DI_PipelineFunnel (270, 226)       | Right-Top: DI_PromoVelocity (762, 226)           |
+| Workforce Hierarchy & Broken Rung Funnel       | Promotion Velocity & Time in Grade               |
++------------------------------------------------+--------------------------------------------------+
+| Middle-Bottom: DI_DeptParity (270, 510)        | Right-Bottom: DI_PerformanceAudit (762, 510)     |
+| Departmental Representation & Target Gaps      | Performance Appraisal & Promotion Equity         |
++---------------------------------------------------------------------------------------------------+
+```
+
+###### Visual 3.1: Workforce Hierarchy & Broken Rung Funnel (Middle-Top)
+* **Container Name**: `DI_PipelineFunnel` | **Badge**: `Funnel / Bar`
+* **Docking Zone Coordinates**: Left: `284 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Dim_CareerLadder` & `Fact_Employees`
+  - **Axis (Categories)**: `Dim_CareerLadder[Base_Job_Level]` (Ordered: Executive, Director, Senior Manager, Manager, Senior Officer, Junior Officer)
+  - **Legend (Series)**: `Fact_Employees[Gender]` (Female, Male)
+  - **Values**: `_Measures[Total Employees]`
+* **Chart Type**: **100% Stacked Horizontal Bar**
+* **Series Formatting**:
+  - Series `Female`: Fill = Solid `#BE185D` (PwC Plum / Rose).
+  - Series `Male`: Fill = Solid `#334155` (Navy Slate).
+  - Reverse Category Order: Ensure Level 1 (Executive) is at the top and Level 6 (Junior Officer) is at the bottom.
+  - Data Labels: Center of each segment, formatted to show **% of Row Total** (Level 6: **51.8% F** $\to$ Level 4: **34.3% F** $\to$ Level 1: **20.0% F**).
+* **Executive Purpose**: Serves as the primary governance visual proving the "broken rung" cliff between Manager and Senior Manager.
+
+###### Visual 3.2: Departmental Representation & Target Gaps (Middle-Bottom)
+* **Container Name**: `DI_DeptParity` | **Badge**: `Clustered Column`
+* **Docking Zone Coordinates**: Left: `284 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `DimDepartment` & `Fact_Employees`
+  - **Axis (Categories)**: `DimDepartment[Department]` (Operations, Sales & Marketing, Internal Services, HR, Strategy)
+  - **Values**: `_Measures[Female Headcount Share %]` (or `[Female Representation %]`)
+* **Chart Type**: **2-D Horizontal Clustered Bar** (or Clustered Column)
+* **Series Formatting**:
+  - Bar Fill: Solid `#D04A02` (PwC Tangerine).
+  - Axis Scale: Minimum = `0.0`, Maximum = `1.0` (100%), Major Unit = `0.2` (20%).
+  - Target Reference Line: Insert a vertical dashed reference line shape at 50% (`0.50`) to highlight corporate parity.
+  - Data Labels: Outside End, formatted as `0.0%` (e.g. HR: 70.6%, Operations: 49.3%, Strategy: 18.2%).
+* **Executive Purpose**: Isolates organizational clusters with severe gender underrepresentation (Strategy at 18.2% vs HR at 70.6%).
+
+###### Visual 3.3: Promotion Velocity & Time in Grade (Right-Top)
+* **Container Name**: `DI_PromoVelocity` | **Badge**: `Bar Chart`
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Fact_Employees`
+  - **Axis (Categories)**: `Fact_Employees[Job_Level_Baseline]` (or `[Job_Level]`)
+  - **Values**:
+    1. `_Measures[Female Promotion Rate %]`
+    2. `_Measures[Male Promotion Rate %]`
+* **Chart Type**: **2-D Clustered Column**
+* **Series Formatting**:
+  - Series `Female Promotion Rate`: Fill = Solid `#BE185D` (Rose).
+  - Series `Male Promotion Rate`: Fill = Solid `#334155` (Navy Slate).
+  - Series Overlap: `0%`, Gap Width: `80%`.
+  - Add Data Labels showing promotion rates across hierarchical levels.
+* **Executive Purpose**: Demonstrates that while entry-level promotions are equitable (~11%), senior tier promotions favor male candidates by 2.1x.
+
+###### Visual 3.4: Performance Appraisal vs Promotion Equity Paradox (Right-Bottom)
+* **Container Name**: `DI_PerformanceAudit` | **Badge**: `Matrix Table`
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+* **PivotChart Configuration**:
+  - **Source Table**: `Fact_Employees`
+  - **Axis (Categories)**: `Fact_Employees[FY20_Rating]` (Ratings 1 to 4)
+  - **Legend (Series)**: `Fact_Employees[Gender]`
+  - **Values**: `_Measures[Promoted FY21 Count]` (or `_Measures[Overall Promotion Rate %]`)
+* **Chart Type**: **2-D Clustered Column**
+* **Series Formatting**:
+  - Rating 3 & 4 Columns: Highlight with bold saturation to emphasize that high-performing women receive promotions at significantly lower rates than men with identical ratings.
+  - Axis Labels: Format as "Rating 1 (Unsatisfactory)", "Rating 2 (Competent)", "Rating 3 (Superior)", "Rating 4 (Exceptional)".
+* **Executive Purpose**: Refutes the hypothesis that promotion disparities are caused by performance rating differentials (Mean Female Appraisal: 2.42 vs Male: 2.41).
 
 ---
 
 #### Step 6.5: Applying Transparent Chart Decluttering
-To eliminate spreadsheet clashing and give charts the native look of a custom SaaS web app, run the decluttering routine on each inserted PivotChart:
 
+To eliminate Excel's default "boxy spreadsheet" appearance and achieve the seamless look of a modern SaaS executive dashboard:
+
+##### Manual Decluttering Checklist (GUI)
+1. **Remove Exterior Borders**: Select Chart $\to$ **Format** tab $\to$ **Shape Outline = No Outline**.
+2. **Remove Outer Fill**: Select Chart $\to$ **Format** tab $\to$ **Shape Fill = No Fill**.
+3. **Remove Plot Area Fill & Border**: Click inside the chart grid $\to$ **Format Plot Area** $\to$ **Shape Fill = No Fill**, **Shape Outline = No Outline**.
+4. **Hide Field Buttons**: Right-click any gray field button $\to$ click **"Hide All Field Buttons on Chart"**.
+5. **Delete Chart Title**: Select the chart title textbox $\to$ press `Delete`.
+6. **Mute Gridlines**: Select the horizontal lines $\to$ **Format Gridlines** $\to$ Line: Solid, Color: `#E2E8F0`, Width: `0.75 pt`.
+7. **Refine Axis Typography**: Select the axis text $\to$ **Home** tab $\to$ Font: `Segoe UI`, Size: `8.5 pt`, Color: `#64748B`.
+
+##### Automated Decluttering Macro (One-Click)
+If you have multiple charts on the active sheet, open the VBA Immediate Window (`Ctrl + G`) and paste this one-liner to format all charts instantly:
 ```vba
-' Execute in the VBA Immediate Window (Ctrl + G) or via a helper macro:
-Call modDashboardUIUX.DeclutterAndFormatChart(ActiveSheet.ChartObjects("YourChartName"))
+For Each co In ActiveSheet.ChartObjects: Call modDashboardUIUX.DeclutterAndFormatChart(co): Next co
 ```
-
-* **Visual Transformation**:
-  - Sets `.ChartArea.Format.Fill.Visible = msoFalse` (100% transparent).
-  - Sets `.PlotArea.Format.Fill.Visible = msoFalse` (100% transparent).
-  - Strips all exterior chart borders (`.Line.Visible = msoFalse`).
-  - Softens gridlines to 0.75pt `#E2E8F0` and unifies typography to 8.5pt Segoe UI (`#64748B`).
-  - The chart seamlessly floats inside the card container!
 
 ---
 
 #### Step 6.6: Wiring Global Interactive Slicers into the Filter Drawer
-1. Insert Slicers from the VertiPaq Data Model fields into the 3 designated slots in the Left Slicer Drawer:
-   - **Call Center**: `DimDate[Month_Name]` (Slot 1), `DimTopic[Topic]` (Slot 2), `DimAgent[Agent]` (Slot 3).
-   - **Customer Churn**: `DimContract[Contract]` (Slot 1), `Fact_Churn[PaymentMethod]` (Slot 2), `Fact_Churn[InternetService]` (Slot 3).
-   - **Diversity & Inclusion**: `DimDepartment[Department]` (Slot 1), `Fact_Employees[Job_Level]` (Slot 2), `Fact_Employees[Age_Group]` (Slot 3).
-2. **Connect Slicers across all Dashboard Visuals**:
-   - Right-click each Slicer $\to$ **Report Connections...** $\to$ check all PivotTables on that cockpit.
-3. **Apply PwC Brand Styling**:
-   - Right-click Slicer $\to$ Slicer Styles $\to$ select custom style featuring PwC Tangerine (`#D04A02`) for selected items and clean off-white (`#F1F5F9`) for unselected items.
+
+Each cockpit features a dedicated **Left Global Filter Drawer** (`Panel_<name>`, `216 pt` wide) containing 3 pre-formed docking slots with dashed outlines.
+
+```
++-------------------------------------------------------+
+| [ Slicer Slot 1: Primary Dimension ]                  |
+| Left: 36 pt, Top: 280 pt, Width: 216 pt, Height: 145 pt|
++-------------------------------------------------------+
+| [ Slicer Slot 2: Secondary Dimension ]                |
+| Left: 36 pt, Top: 436 pt, Width: 216 pt, Height: 145 pt|
++-------------------------------------------------------+
+| [ Slicer Slot 3: Demographic / Channel ]              |
+| Left: 36 pt, Top: 592 pt, Width: 216 pt, Height: 135 pt|
++-------------------------------------------------------+
+```
+
+##### 1. Inserting Slicers from the VertiPaq Data Model
+1. Go to `Staging_Pivots` (or select any PivotTable on your sheet).
+2. Click ribbon tab: **PivotTable Analyze** $\to$ **Insert Slicer**.
+3. In the Insert Slicers window, switch to the **Data Model** tab.
+4. Check the 3 required fields for the specific cockpit:
+
+| Dashboard Cockpit | Slot 1 (Top: 280 pt) | Slot 2 (Top: 436 pt) | Slot 3 (Top: 592 pt) |
+| :--- | :--- | :--- | :--- |
+| **03_CallCenter_Cockpit** | `DimDate[Month_Name]` | `DimTopic[Topic]` | `DimAgent[Agent]` |
+| **04_CustomerRetention_Cockpit** | `DimContract[Contract]` | `Fact_Churn[PaymentMethod]` | `Fact_Churn[InternetService]` |
+| **05_DiversityInclusion_Cockpit** | `DimDepartment[Department]` | `Fact_Employees[Job_Level_Baseline]` | `Fact_Employees[Age_Group]` |
+
+5. Click **OK**. Cut the 3 slicers (`Ctrl + X`) and paste them (`Ctrl + V`) onto the respective cockpit sheet.
+
+##### 2. Sizing & Snapping Slicers into the Designated Slots
+Select each slicer and set its exact geometry in the **Slicer** ribbon tab:
+* **Slot 1 Slicer**:
+  - Dimensions: **Height = 2.01 in** (`145 pt`), **Width = 3.00 in** (`216 pt`).
+  - Position: Drag directly over `[ Slicer Slot 1 ]` (Left: `36 pt`, Top: `280 pt`).
+  - Columns: Set **Columns = 1** (or 2 for compact categories).
+* **Slot 2 Slicer**:
+  - Dimensions: **Height = 2.01 in** (`145 pt`), **Width = 3.00 in** (`216 pt`).
+  - Position: Drag directly over `[ Slicer Slot 2 ]` (Left: `36 pt`, Top: `436 pt`).
+* **Slot 3 Slicer**:
+  - Dimensions: **Height = 1.88 in** (`135 pt`), **Width = 3.00 in** (`216 pt`).
+  - Position: Drag directly over `[ Slicer Slot 3 ]` (Left: `36 pt`, Top: `592 pt`).
+
+##### 3. Connecting Slicers to ALL Dashboard PivotTables (Report Connections)
+To ensure that selecting a slicer item updates all 4 visual containers simultaneously:
+1. Right-click the Slicer $\to$ click **Report Connections...** (or select Slicer $\to$ ribbon tab **Slicer** $\to$ **Report Connections**).
+2. The dialog lists every PivotTable in the workbook.
+3. **Check the box for all PivotTables created for that specific dashboard**.
+4. Click **OK**.
+5. Repeat for all 3 slicers on the sheet.
+
+##### 4. Applying PwC Brand Enterprise Slicer Styling
+Transform standard blue Excel slicers into branded PwC executive controls:
+1. Select any Slicer $\to$ go to the **Slicer** ribbon tab.
+2. In the Slicer Styles gallery, right-click any built-in style $\to$ click **Duplicate...**
+3. Name the new style: `PwC_Executive_Tangerine`.
+4. In the dialog, format these key elements:
+   - **Whole Slicer**: Font = `Segoe UI`, Size = `8.5 pt`, Color = `#1E293B`. Border = None. Fill = None.
+   - **Header**: Font = `Segoe UI`, Size = `9 pt`, Bold = True, Color = `#0F172A`. Fill = None.
+   - **Selected Item with Data**: Fill = Solid `#D04A02` (PwC Tangerine), Font = White Bold.
+   - **Unselected Item with Data**: Fill = Solid `#F1F5F9` (Light Slate), Font = `#334155` Regular.
+   - **Hovered Selected Item**: Fill = Solid `#B93D00` (Deep Tangerine), Font = White Bold.
+   - **Hovered Unselected Item**: Fill = Solid `#E2E8F0` (Border Gray), Font = `#0F172A`.
+5. Click **OK**, then apply `PwC_Executive_Tangerine` to all 9 slicers across your 3 cockpits.
+
+##### 5. Enabling Slicer Interactivity on CUBE KPI Cards
+Because the 5 top BAN metric cards are powered by live `CUBEVALUE` formulas in staging row 65, they can also dynamically respond to slicer selections!
+To connect slicers to a CUBE card:
+1. Note the Name of your slicers (right-click Slicer $\to$ **Slicer Settings...** $\to$ view **"Name to use in formulas"**, e.g. `Slicer_Month_Name`, `Slicer_Topic`, `Slicer_Agent`).
+2. Select the staging cell in row 65 (e.g. `AA65` for Total Calls).
+3. Append the slicer parameters to the formula:
+   ```excel
+   =CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]", Slicer_Month_Name, Slicer_Topic, Slicer_Agent)
+   ```
+4. Now, both the 4 PivotCharts AND the 5 top BAN KPI cards update in synchrony with every filter click!
+
 
 ---
 
