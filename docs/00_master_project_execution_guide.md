@@ -123,26 +123,57 @@ flowchart TD
 
 ---
 
-### Phase 6: Interactive Dashboard Design & Canvas Assembly
-*Reference Specifications*: [`dashboards/01_call_center_dashboard.md`](../dashboards/01_call_center_dashboard.md), [`02_customer_retention_dashboard.md`](../dashboards/02_customer_retention_dashboard.md), [`03_diversity_inclusion_dashboard.md`](../dashboards/03_diversity_inclusion_dashboard.md)  
-*UI/UX Guidelines*: [`docs/05_dashboard_design_system.md`](05_dashboard_design_system.md), [`07_dashboard_background_and_uiux_guide.md`](07_dashboard_background_and_uiux_guide.md)
+### Phase 6: Automated Dashboard Canvas Generation & UI/UX Scaffolding (via VBA)
+*Reference Code*: [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas)  
+*Design Masterclass*: [`docs/07_dashboard_background_and_uiux_guide.md`](07_dashboard_background_and_uiux_guide.md), [`05_dashboard_design_system.md`](05_dashboard_design_system.md)  
+*Visual Specifications*: [`dashboards/01_call_center_dashboard.md`](../dashboards/01_call_center_dashboard.md), [`02_customer_retention_dashboard.md`](../dashboards/02_customer_retention_dashboard.md), [`03_diversity_inclusion_dashboard.md`](../dashboards/03_diversity_inclusion_dashboard.md)
 
-1. **Create the 3 Cockpit Worksheets**:
-   - `03_CallCenter_Cockpit`
-   - `04_CustomerRetention_Cockpit`
-   - `05_DiversityInclusion_Cockpit`
-2. **Apply 8pt Grid & Modern Canvas**:
-   - Deactivate standard Excel gridlines (`ActiveWindow.DisplayGridlines = False`).
-   - Set canvas background to `#F8FAFC` (Warm White) or Dark Slate `#0F172A`.
-   - Build executive top navigation bar with PwC logo and breadcrumbs.
-3. **Assemble Visual Components**:
-   - Top KPI Ribbon: 4 floating cards with primary metric, delta pill, and sparkline.
-   - Middle Visual Tier: 2 primary charts (e.g. Broken Rung Funnel, Churn by Contract).
-   - Bottom Detail Tier: Filterable matrix table with agent/department breakdown.
-4. **Connect Interactive Slicers**:
-   - Insert Slicers connected across multiple PivotTables via **Report Connections**:
-     - Call Center: `Agent`, `Topic`, `Month`.
-     - Customer Churn: `Contract`, `InternetService`, `PaymentMethod`.
+> [!IMPORTANT]
+> **The Golden UI/UX Rule: Build the Canvas BEFORE Inserting Visuals.**  
+> Conventional Excel users create messy dashboards by generating PivotCharts first and awkwardly arranging them over harsh green gridlines.  
+> **Tier-1 Management Consulting Best Practice**: Treat the Excel worksheet like a **Figma / PowerPoint presentation slide**. Use VBA to programmatically construct the entire layout canvas, floating rounded card containers, drop shadows, and brand banners **before** docking any PivotCharts or Slicers.
+
+#### Step 6.1: Automated 1-Click Canvas Generation via VBA (`modDashboardUIUX.bas`)
+1. In Excel, press `Alt + F11` to open the Visual Basic Editor.
+2. Ensure [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas) is imported into your VBA project.
+3. Execute the master orchestrator macro:
+   ```vba
+   Sub RunCanvasGenerator()
+       Call modDashboardUIUX.BuildAllDashboardCanvases
+   End Sub
+   ```
+4. **What the Automation Builds Instantly**:
+   - **3 Dedicated Cockpit Worksheets**:
+     - `03_CallCenter_Cockpit` (PwC Tangerine Tab `#D04A02`)
+     - `04_CustomerRetention_Cockpit` (PwC Charcoal Tab `#1E293B`)
+     - `05_DiversityInclusion_Cockpit` (PwC Muted Slate Tab `#64748B`)
+   - **Canvas Environmental Controls**: Floods each sheet with neutral off-white canvas `#F8FAFC`, hides default gridlines (`DisplayGridlines = False`), hides row/column headers (`DisplayHeadings = False`), and standardizes zoom to 100%.
+   - **Executive Header Banners**: Floating card with left PwC Tangerine accent line (6pt), 15pt bold title, 9pt subtitle, and `<-- Executive Hub` return breadcrumb hyperlinked to `01_Business_Domains`.
+   - **Top KPI Scorecard Ribbon**: 5 floating BAN cards per cockpit (`cardW = 224px`, `cardH = 86px`) featuring top colored accent lines, 8pt micro-labels, 20pt bold numeric metrics, and status pills.
+   - **Left Interactive Slicer Panel**: Dedicated vertical card container (`224px × 530px`) reserved for global multi-select filter controls.
+   - **4 Visual Container Cards**: Floating white rounded cards (`Adjustments = 0.05`, 1px `#E2E8F0` border, `msoShadow21` diffused drop shadow) pre-positioned with 11pt bold chart titles and subtitles ready for chart docking.
+
+#### Step 6.2: Docking PivotCharts & Visuals into Pre-Formed Outlines
+Once the background containers exist, insert your domain visuals directly into the card outlines:
+1. **Intraday Surge / Contract Churn / Funnel Chart** $\to$ Snap into Middle-Top Container (`259, 186, 465, 255`).
+2. **Topic SLA / Tenure Attrition / Dept Parity Chart** $\to$ Snap into Middle-Bottom Container (`259, 453, 465, 263`).
+3. **Agent Quadrant / Payment Risk / Promo Velocity Chart** $\to$ Snap into Right-Top Container (`736, 186, 464, 255`).
+4. **Agent Scorecard / Add-on Matrix / Appraisal Audit Table** $\to$ Snap into Right-Bottom Container (`736, 453, 464, 263`).
+
+#### Step 6.3: Applying Transparent Chart Decluttering
+To eliminate chart clashing, run the decluttering routine on each inserted PivotChart:
+```vba
+Call modDashboardUIUX.DeclutterAndFormatChart(ActiveSheet.ChartObjects("YourChartName"))
+```
+* **Effects**: Sets `.ChartArea.Format.Fill.Visible = msoFalse` (100% transparent), strips outer chart borders, softens gridlines to 0.75pt `#E2E8F0`, and sets axis typography to 8.5pt Segoe UI. The chart seamlessly dissolves into the white container card!
+
+#### Step 6.4: Wiring Global Interactive Slicers
+1. Insert Slicers from the Data Model fields into the Left Slicer Panel:
+   - **Call Center**: `DimDate[Month_Name]`, `DimTopic[Topic]`, `DimAgent[Agent]`.
+   - **Customer Churn**: `DimContract[Contract]`, `Fact_Churn[PaymentMethod]`, `Fact_Churn[InternetService]`.
+   - **Diversity & Inclusion**: `DimDepartment[Department]`, `Fact_Employees[Executive_Tier]`, `Fact_Employees[Age_Group]`.
+2. Connect Slicers across all dashboard PivotTables: Right-click Slicer $\to$ **Report Connections** $\to$ check all PivotTables on that cockpit.
+3. Style Slicers in **PwC Tangerine Theme** (`#D04A02` selected, `#F1F5F9` unselected).
      - Diversity & Inclusion: `Department`, `Age_Group`, `Job_Level`.
 
 ---

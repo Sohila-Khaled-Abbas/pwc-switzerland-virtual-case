@@ -643,11 +643,13 @@ Public Sub BuildAllDashboardCanvases()
     Application.ScreenUpdating = prevScreenUpdating
     Application.DisplayAlerts = prevAlerts
     
-    MsgBox "PwC Executive Dashboard Canvases successfully generated!" & vbCrLf & vbCrLf & _
-           "Created 3 Presentation Canvases:" & vbCrLf & _
-           "  • '03_CallCenter_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
-           "  • '04_CustomerRetention_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
-           "  • '05_DiversityInclusion_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & vbCrLf & _
-           "All canvases styled with PwC brand colors (#1E293B, #D04A02, #F8FAFC) and ready for visual insertion.", _
-           vbInformation, "PwC Design System Automation"
+    If Application.UserControl Then
+        MsgBox "PwC Executive Dashboard Canvases successfully generated!" & vbCrLf & vbCrLf & _
+               "Created 3 Presentation Canvases:" & vbCrLf & _
+               "  • '03_CallCenter_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
+               "  • '04_CustomerRetention_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & _
+               "  • '05_DiversityInclusion_Cockpit' (5 KPI Cards + 4 Visual Containers + Slicer Panel)" & vbCrLf & vbCrLf & _
+               "All canvases styled with PwC brand colors (#1E293B, #D04A02, #F8FAFC) and ready for visual insertion.", _
+               vbInformation, "PwC Design System Automation"
+    End If
 End Sub

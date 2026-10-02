@@ -4,6 +4,34 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.3.0] - 2026-10-02
+
+### 🚀 Added
+- **Automated Dashboard UI/UX Canvas Engine (`vba/modDashboardUIUX.bas`)**:
+  - Implemented `BuildAllDashboardCanvases()`, `BuildCallCenterCanvas()`, `BuildCustomerRetentionCanvas()`, and `BuildDiversityInclusionCanvas()`.
+  - Automatically provisions presentation-ready canvases (`03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, `05_DiversityInclusion_Cockpit`) before inserting visuals.
+  - Floods canvas with `#F8FAFC` background, suppresses gridlines and headings, standardizes 100% zoom.
+  - Constructs PwC executive header banners with `<-- Executive Hub` return breadcrumbs, top KPI scorecard ribbons (5 BAN cards per cockpit), vertical slicer panel container (`224px × 530px`), and 4 floating rounded visual container cards with diffused drop shadows (`msoShadow21`).
+  - Added chart transparency decluttering procedure (`DeclutterAndFormatChart`) to strip borders and make chart backgrounds 100% transparent.
+- **VBA Scaffolding Workflow in Master Guide (`docs/00_master_project_execution_guide.md`)**:
+  - Restructured Phase 6 into a canvas-first UI/UX methodology detailing automated 1-click VBA canvas generation, visual docking, transparent decluttering, and slicer wiring.
+
+### 🔧 Fixed & Optimized
+- **Master Workbook Consolidation (`PWC_Switzerland_Virtual_Case.xlsm`)**:
+  - Standardized on macro-enabled `.xlsm` to host both the in-memory VertiPaq tabular data model (13 tables, 9 relationships) and the complete VBA suite (`modCreateGovernanceSheets`, `modDashboardUIUX`).
+  - Safely purged conflicting `.xlsx` copy and updated all documentation, scripts (`sync_pwc_docs.py`), and file watchers (`watch_autopublish.ps1`).
+- **Pre-Dashboard Governance Auto-Fit & Styling Overhaul (`vba/modCreateGovernanceSheets.bas`)**:
+  - Eliminated card text and title truncation: Expanded card columns B, D, F to width 54, enforced `.WrapText = True`, and increased card header height to 32pt and bullet rows to 22pt.
+  - Eliminated ANSI `??` emoji corruption; adopted clean executive ASCII notation (`[01]`, `[02]`, `[03]`, `[SECTION 1]`, `[SECTION 2]`, `-->`, `<--`).
+  - Prevented AutoFit blowout on column B: Merged section headers across table widths (`B7:J7` and `B24:J24`).
+  - Implemented intelligent AutoFit with +4.5 padding for filter dropdown arrows and dynamic floor minimums.
+  - Applied bespoke PwC corporate table styling (Charcoal `#1E293B` header, Tangerine `#D04A02` bottom border, Fact/Dimension/Auxiliary badges, soft emerald/amber polarity pills).
+- **DAX Schema Reconciliations**:
+  - Corrected `01_Call_Center_Measures.dax`: Replaced legacy column names with exact VertiPaq schema (`Fact_Calls[Answered]`, `Fact_Calls[Resolved]`, `Fact_Calls[Speed_Of_Answer_Sec]`, `Fact_Calls[Talk_Duration_Sec]`).
+  - Corrected `03_Diversity_Inclusion_Measures.dax`: Aligned column names to `Fact_Employees[Employee_ID]`, `Fact_Employees[Promoted_FY21]`, and `Fact_Employees[FY20_Leaver]`.
+
+---
+
 ## [2.2.1] - 2026-10-02
 
 ### 🔧 Fixed
