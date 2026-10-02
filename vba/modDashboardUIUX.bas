@@ -605,7 +605,10 @@ Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
         .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
         .Adjustments.Item(1) = 0.06
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
         With .TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
             .MarginLeft = 8: .MarginTop = 8: .MarginRight = 8: .MarginBottom = 8
             With .TextRange
                 .Text = "[ Slicer Slot 1: " & slot1Label & " ]" & vbCrLf & vbCrLf & "Insert Slicer from Data Model & position here."
@@ -622,7 +625,10 @@ Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
         .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
         .Adjustments.Item(1) = 0.06
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
         With .TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
             .MarginLeft = 8: .MarginTop = 8: .MarginRight = 8: .MarginBottom = 8
             With .TextRange
                 .Text = "[ Slicer Slot 2: " & slot2Label & " ]" & vbCrLf & vbCrLf & "Insert Slicer from Data Model & position here."
@@ -639,7 +645,10 @@ Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
         .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
         .Adjustments.Item(1) = 0.06
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
         With .TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
             .MarginLeft = 8: .MarginTop = 8: .MarginRight = 8: .MarginBottom = 8
             With .TextRange
                 .Text = "[ Slicer Slot 3: " & slot3Label & " ]" & vbCrLf & vbCrLf & "Insert Slicer from Data Model & position here."
@@ -726,7 +735,11 @@ Public Sub BuildChartContainer(ws As Worksheet, _
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_PILL_BG
         .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 0.75
         .Adjustments.Item(1) = 0.25
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
+        .TextFrame.MarginLeft = 0: .TextFrame.MarginRight = 0: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
         With .TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
             .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
@@ -751,7 +764,10 @@ Public Sub BuildChartContainer(ws As Worksheet, _
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
         .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
         .Adjustments.Item(1) = 0.04
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
         With .TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
             .MarginLeft = 12: .MarginTop = 12: .MarginRight = 12: .MarginBottom = 12
             With .TextRange
                 .Text = "[ PIVOTCHART DOCKING ZONE ]" & vbCrLf & _
