@@ -32,23 +32,9 @@ This repository houses the enterprise-grade deliverables for the **PwC Switzerla
 
 Rather than treating each consulting task as an isolated exercise, this platform unifies **3 distinct business domains** (Telephony Operations, Customer Retention, and Human Capital Leadership) into a single, high-performance **Ralph Kimball Galaxy Schema (Fact Constellation)** powered by the **VertiPaq In-Memory Columnar Engine**.
 
-```mermaid
-flowchart TD
-    PWC["🏆 PwC Switzerland Digital Accelerator Suite"]
-    
-    T1["📞 Task 1: Call Centre Intelligence\n• Client: Claire (Operations Director)\n• Volume: 5,000 Inbound Inquiries (Q1 2021)\n• Focus: 18.92% Abandonment Triage & 2D Agent Quadrant"]
-    T2["🔄 Task 2: Customer Retention & Churn Risk\n• Client: Retention Strategy Board\n• Volume: 7,043 Subscriber Accounts\n• Focus: $139K At-Risk MRR & Fiber Optic Support Friction"]
-    T3["👥 Task 3: Diversity & Inclusion Leadership\n• Client: Pharma Group AG Executive Board\n• Volume: 500 Corporate Personnel\n• Focus: Executive Broken Rung & Promotion Velocity"]
-    
-    PWC --> T1
-    PWC --> T2
-    PWC --> T3
-    
-    style PWC fill:#0f172a,color:#fff,stroke:#d04a02,stroke-width:3px
-    style T1 fill:#eff6ff,stroke:#2563eb,stroke-width:2px
-    style T2 fill:#fff7ed,stroke:#ea580c,stroke-width:2px
-    style T3 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
-```
+<p align="center">
+  <img src="assets/diagrams/executive_kpi_tree.svg" alt="PwC Switzerland Executive KPI Decomposition Hierarchy" width="100%" />
+</p>
 
 ---
 
@@ -56,87 +42,19 @@ flowchart TD
 
 The core semantic model resides inside [`PWC_Switzerland_Virtual_Case.xlsx`](PWC_Switzerland_Virtual_Case.xlsx) and is modeled in **Power Pivot Diagram View** with **zero Many-to-Many (`* : *`) relationships**:
 
-```mermaid
-classDiagram
-    class DimDate {
-        +Date PK
-        +Year
-        +Quarter
-        +Month
-        +Month_Name
-        +Day
-        +Day_Of_Week
-        +Is_Weekend
-    }
+<p align="center">
+  <img src="assets/diagrams/galaxy_schema_architecture.svg" alt="Ralph Kimball Galaxy Schema Constellation Architecture" width="100%" />
+</p>
 
-    class DimAgent {
-        +Agent PK
-        +Tier
-        +Target_CSAT
-        +Target_Resolution_Rate
-    }
+---
 
-    class DimTopic {
-        +Topic PK
-        +Complexity_Weight
-        +SLA_Threshold_Sec
-    }
+## 🔄 Automated ETL & Data Engineering Pipeline
 
-    class DimContract {
-        +Contract PK
-        +Commitment_Months
-        +Risk_Category
-    }
+The Power Query M pipeline ingests, validates, enriches, and compacts transaction logs into the in-memory columnar engine:
 
-    class DimDepartment {
-        +Department PK
-        +Executive_Sponsor
-        +Target_Female_Ratio
-    }
-
-    class Fact_Calls {
-        +Call_Id PK
-        +Date FK
-        +Time
-        +Agent FK
-        +Topic FK
-        +Answered
-        +Resolved
-        +Speed_Of_Answer_Sec
-        +Talk_Duration_Sec
-        +Satisfaction_Rating
-    }
-
-    class Fact_Churn {
-        +customerID PK
-        +gender
-        +tenure
-        +Contract FK
-        +MonthlyCharges
-        +TotalCharges
-        +numTechTickets
-        +Churn
-    }
-
-    class Fact_Employees {
-        +Employee_ID PK
-        +Gender
-        +Department FK
-        +Job_Level_Baseline
-        +Job_Level_After_Promotions
-        +Promoted_FY21
-        +FY20_Rating
-        +FY20_Leaver
-    }
-
-    DimDate "1" --> "*" Fact_Calls : Filters
-    DimAgent "1" --> "*" Fact_Calls : Filters
-    DimTopic "1" --> "*" Fact_Calls : Filters
-
-    DimContract "1" --> "*" Fact_Churn : Filters
-
-    DimDepartment "1" --> "*" Fact_Employees : Filters
-```
+<p align="center">
+  <img src="assets/diagrams/etl_pipeline_flow.svg" alt="Power Query M & VertiPaq ETL Data Transformation Pipeline" width="100%" />
+</p>
 
 ### Table Inventory & Architectural Role
 
@@ -185,6 +103,10 @@ Evaluating agents purely on call count rewards rushed conversations and penalize
 * Overall female workforce representation is **41.0%** (205 / 500).
 * While female representation is robust at Junior levels (**46.2%**), it collapses to **21.4% at Director level** and **12.5% at Executive Board level**.
 * In FY21, men received **64.7% of all promotions** despite equal or superior performance appraisals among female peers.
+
+<p align="center">
+  <img src="assets/diagrams/broken_rung_funnel.svg" alt="Pharma Group AG Executive Broken Rung Progression Funnel" width="100%" />
+</p>
 
 ---
 
