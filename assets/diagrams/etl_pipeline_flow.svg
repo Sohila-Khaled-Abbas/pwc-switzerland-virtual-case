@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#04060B"/>
+    </linearGradient>
+    <linearGradient id="pwcBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D04A02"/>
+      <stop offset="100%" stop-color="#E05600"/>
+      <stop offset="100%" stop-color="#FF7A00"/>
+    </linearGradient>
+    <marker id="flowArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38BDF8"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="650" fill="url(#bg2)"/>
+  <rect x="20" y="20" width="1060" height="610" rx="14" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <rect x="40" y="35" width="1020" height="60" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <rect x="40" y="35" width="6" height="60" rx="3" fill="url(#pwcBar)"/>
+  <text x="65" y="62" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="18" font-weight="bold">Power Query M &amp; VertiPaq ETL Data Transformation Pipeline</text>
+  <text x="65" y="82" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">Multi-Tier Data Ingestion • Semantic Enrichment • Referential Integrity Checks • In-Memory Columnar Compaction</text>
+
+  <!-- 4 PIPELINE LANES -->
+
+  <!-- Lane 1: Ingestion / Raw Source Layer -->
+  <g transform="translate(50, 120)">
+    <rect width="210" height="470" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <rect width="210" height="32" rx="10" fill="#1E293B"/>
+    <text x="15" y="21" fill="#F8FAFC" font-family="sans-serif" font-size="13" font-weight="bold">1. Raw Excel Sources</text>
+    
+    <!-- Source 1 -->
+    <rect x="15" y="55" width="180" height="85" rx="6" fill="#182234" stroke="#475569" stroke-width="1"/>
+    <text x="25" y="78" fill="#38BDF8" font-family="sans-serif" font-size="11" font-weight="bold">📄 01 Call-Center</text>
+    <text x="25" y="98" fill="#94A3B8" font-family="sans-serif" font-size="10">Sheet1: 5,000 Rows</text>
+    <text x="25" y="115" fill="#64748B" font-family="sans-serif" font-size="9">Telephony CDR Logs</text>
+
+    <!-- Source 2 -->
+    <rect x="15" y="165" width="180" height="85" rx="6" fill="#182234" stroke="#475569" stroke-width="1"/>
+    <text x="25" y="188" fill="#FB923C" font-family="sans-serif" font-size="11" font-weight="bold">📄 02 Churn-Dataset</text>
+    <text x="25" y="208" fill="#94A3B8" font-family="sans-serif" font-size="10">7,043 Customer Records</text>
+    <text x="25" y="225" fill="#64748B" font-family="sans-serif" font-size="9">Subscriber Demographics</text>
+
+    <!-- Source 3 -->
+    <rect x="15" y="275" width="180" height="110" rx="6" fill="#182234" stroke="#475569" stroke-width="1"/>
+    <text x="25" y="298" fill="#34D399" font-family="sans-serif" font-size="11" font-weight="bold">📄 03 Diversity-Dataset</text>
+    <text x="25" y="318" fill="#94A3B8" font-family="sans-serif" font-size="10">Pharma Group: 500 Staff</text>
+    <text x="25" y="335" fill="#94A3B8" font-family="sans-serif" font-size="10">+ Backing 1..4 (Census,</text>
+    <text x="25" y="352" fill="#94A3B8" font-family="sans-serif" font-size="10">Career Ladder, PRA)</text>
+
+    <text x="15" y="445" fill="#64748B" font-family="sans-serif" font-size="10">Storage: Local XLSX Files</text>
+  </g>
+
+  <!-- Lane 2: Staging & Cleansing Layer -->
+  <g transform="translate(310, 120)">
+    <rect width="220" height="470" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <rect width="220" height="32" rx="10" fill="#1E293B"/>
+    <text x="15" y="21" fill="#F8FAFC" font-family="sans-serif" font-size="13" font-weight="bold">2. Power Query Staging</text>
+
+    <!-- Staging 1 -->
+    <rect x="15" y="55" width="190" height="85" rx="6" fill="#132337" stroke="#0284c7" stroke-width="1"/>
+    <text x="25" y="78" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="bold">stg_RawCalls</text>
+    <text x="25" y="98" fill="#94A3B8" font-family="sans-serif" font-size="10">• Standardize Column Names</text>
+    <text x="25" y="115" fill="#94A3B8" font-family="sans-serif" font-size="10">• Cast Call_Id, Date, Time</text>
+
+    <!-- Staging 2 -->
+    <rect x="15" y="165" width="190" height="85" rx="6" fill="#2d1c16" stroke="#ea580c" stroke-width="1"/>
+    <text x="25" y="188" fill="#FB923C" font-family="monospace" font-size="11" font-weight="bold">stg_RawChurn</text>
+    <text x="25" y="208" fill="#94A3B8" font-family="sans-serif" font-size="10">• Type TotalCharges as Float</text>
+    <text x="25" y="225" fill="#94A3B8" font-family="sans-serif" font-size="10">• Zero-Tenure Imputation</text>
+
+    <!-- Staging 3 -->
+    <rect x="15" y="275" width="190" height="110" rx="6" fill="#132b21" stroke="#059669" stroke-width="1"/>
+    <text x="25" y="298" fill="#34D399" font-family="monospace" font-size="11" font-weight="bold">stg_RawEmployees</text>
+    <text x="25" y="318" fill="#94A3B8" font-family="sans-serif" font-size="10">• Clean Whitespace &amp; Headers</text>
+    <text x="25" y="335" fill="#94A3B8" font-family="sans-serif" font-size="10">• Enforce Employee ID Int64</text>
+    <text x="25" y="352" fill="#94A3B8" font-family="sans-serif" font-size="10">• Null Check Performance</text>
+
+    <text x="15" y="445" fill="#38BDF8" font-family="sans-serif" font-size="10">⚙️ Enable Load: FALSE (M Staging)</text>
+  </g>
+
+  <!-- Lane 3: Dimensional Modeling Layer -->
+  <g transform="translate(580, 120)">
+    <rect width="220" height="470" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <rect width="220" height="32" rx="10" fill="#1E293B"/>
+    <text x="15" y="21" fill="#F8FAFC" font-family="sans-serif" font-size="13" font-weight="bold">3. Semantic Enrichment</text>
+
+    <rect x="15" y="55" width="190" height="100" rx="6" fill="#1E293B" stroke="#6366F1" stroke-width="1"/>
+    <text x="25" y="78" fill="#A5B4FC" font-family="sans-serif" font-size="11" font-weight="bold">Conformed Dimensions</text>
+    <text x="25" y="98" fill="#E2E8F0" font-family="sans-serif" font-size="10">• DimDate (Calendar Gen)</text>
+    <text x="25" y="115" fill="#E2E8F0" font-family="sans-serif" font-size="10">• DimAgent (Tiers, CSAT Target)</text>
+    <text x="25" y="132" fill="#E2E8F0" font-family="sans-serif" font-size="10">• DimTopic (SLA &amp; Complexity)</text>
+
+    <rect x="15" y="170" width="190" height="100" rx="6" fill="#1E293B" stroke="#6366F1" stroke-width="1"/>
+    <text x="25" y="193" fill="#A5B4FC" font-family="sans-serif" font-size="11" font-weight="bold">Domain Dimensions</text>
+    <text x="25" y="213" fill="#E2E8F0" font-family="sans-serif" font-size="10">• DimContract (Commitment)</text>
+    <text x="25" y="230" fill="#E2E8F0" font-family="sans-serif" font-size="10">• DimDepartment (Sponsor)</text>
+    <text x="25" y="247" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Dim_CareerLadder (Tracks)</text>
+
+    <rect x="15" y="285" width="190" height="100" rx="6" fill="#1E293B" stroke="#6366F1" stroke-width="1"/>
+    <text x="25" y="308" fill="#A5B4FC" font-family="sans-serif" font-size="11" font-weight="bold">Fact Table Enrichment</text>
+    <text x="25" y="328" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Fact_Calls: Talk_Duration_Sec</text>
+    <text x="25" y="345" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Fact_Churn: Tenure_Cohort</text>
+    <text x="25" y="362" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Fact_Emp: Broken-Rung Flags</text>
+
+    <text x="15" y="445" fill="#818CF8" font-family="sans-serif" font-size="10">⚡ Surrogate &amp; Natural Keys</text>
+  </g>
+
+  <!-- Lane 4: VertiPaq Analytical Layer -->
+  <g transform="translate(850, 120)">
+    <rect width="200" height="470" rx="10" fill="#0F172A" stroke="#EAB308" stroke-width="1.5"/>
+    <rect width="200" height="32" rx="10" fill="#713F12"/>
+    <text x="15" y="21" fill="#FEF08A" font-family="sans-serif" font-size="13" font-weight="bold">4. VertiPaq Tabular</text>
+
+    <rect x="15" y="55" width="170" height="100" rx="6" fill="#1C1917" stroke="#CA8A04" stroke-width="1"/>
+    <text x="25" y="78" fill="#FDE047" font-family="sans-serif" font-size="11" font-weight="bold">Columnar Compression</text>
+    <text x="25" y="98" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Run-Length Encoding</text>
+    <text x="25" y="115" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Bit-Packed Integers</text>
+    <text x="25" y="132" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Cardinality Sorted</text>
+
+    <rect x="15" y="170" width="170" height="100" rx="6" fill="#1C1917" stroke="#CA8A04" stroke-width="1"/>
+    <text x="25" y="193" fill="#FDE047" font-family="sans-serif" font-size="11" font-weight="bold">DAX Calculation Engine</text>
+    <text x="25" y="213" fill="#E2E8F0" font-family="sans-serif" font-size="10">• 30+ Explicit Measures</text>
+    <text x="25" y="230" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Dynamic Filter Context</text>
+    <text x="25" y="247" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Time-Intelligence</text>
+
+    <rect x="15" y="285" width="170" height="100" rx="6" fill="#1C1917" stroke="#CA8A04" stroke-width="1"/>
+    <text x="25" y="308" fill="#FDE047" font-family="sans-serif" font-size="11" font-weight="bold">Presentation Consumers</text>
+    <text x="25" y="328" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Power BI Desktop / PBIX</text>
+    <text x="25" y="345" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Excel 365 Pivot Tables</text>
+    <text x="25" y="362" fill="#E2E8F0" font-family="sans-serif" font-size="10">• Executive C-Suite Dashboards</text>
+
+    <text x="15" y="445" fill="#FACC15" font-family="sans-serif" font-size="10">🚀 Sub-Second Response Time</text>
+  </g>
+
+  <!-- Connectors -->
+  <path d="M 260 200 L 310 200" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#flowArrow)"/>
+  <path d="M 260 310 L 310 310" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#flowArrow)"/>
+  <path d="M 530 200 L 580 200" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#flowArrow)"/>
+  <path d="M 530 310 L 580 310" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#flowArrow)"/>
+  <path d="M 800 200 L 850 200" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#flowArrow)"/>
+  <path d="M 800 310 L 850 310" fill="none" stroke="#38BDF8" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+</svg>

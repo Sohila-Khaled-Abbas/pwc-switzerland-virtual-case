@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <linearGradient id="pwcAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D04A02"/>
+      <stop offset="100%" stop-color="#FF7A00"/>
+    </linearGradient>
+    <linearGradient id="factCallsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="factChurnGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a1b18"/>
+      <stop offset="100%" stop-color="#181110"/>
+    </linearGradient>
+    <linearGradient id="factEmpGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#152e24"/>
+      <stop offset="100%" stop-color="#0c1a14"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748B"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#D04A02"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bgGrad)"/>
+  <rect x="20" y="20" width="1160" height="760" rx="16" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Header Banner -->
+  <rect x="40" y="35" width="1120" height="70" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <rect x="40" y="35" width="8" height="70" rx="4" fill="url(#pwcAccent)"/>
+  <text x="65" y="65" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700" letter-spacing="0.5">PwC Switzerland | Ralph Kimball Galaxy Architecture</text>
+  <text x="65" y="90" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">VertiPaq Columnar Tabular Engine • 3 Fact Constellations • 9 Conformed &amp; Auxiliary Dimensions • 0 Many-to-Many Relationships</text>
+
+  <!-- DIMENSION NODES (TOP ROW) -->
+  
+  <!-- DimDate -->
+  <g transform="translate(180, 130)">
+    <rect width="200" height="110" rx="8" fill="#131c31" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect width="200" height="28" rx="8" fill="#1e3a8a"/>
+    <text x="15" y="19" fill="#93C5FD" font-family="sans-serif" font-size="12" font-weight="bold">📅 DimDate (Conformed)</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Date (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Year • Quarter • Month</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Day_Of_Week • Is_Weekend</text>
+    <text x="15" y="100" fill="#64748B" font-family="sans-serif" font-size="9">Granularity: Daily (Q1 2021)</text>
+  </g>
+
+  <!-- DimAgent -->
+  <g transform="translate(420, 130)">
+    <rect width="180" height="110" rx="8" fill="#131c31" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect width="180" height="28" rx="8" fill="#1e3a8a"/>
+    <text x="15" y="19" fill="#93C5FD" font-family="sans-serif" font-size="12" font-weight="bold">🎧 DimAgent</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Agent (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Tier (Frontline / Spec)</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Target_CSAT (3.50)</text>
+    <text x="15" y="100" fill="#64748B" font-family="sans-serif" font-size="9">Target_Resolution: 85%</text>
+  </g>
+
+  <!-- DimTopic -->
+  <g transform="translate(630, 130)">
+    <rect width="170" height="110" rx="8" fill="#131c31" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect width="170" height="28" rx="8" fill="#1e3a8a"/>
+    <text x="15" y="19" fill="#93C5FD" font-family="sans-serif" font-size="12" font-weight="bold">🏷️ DimTopic</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Topic (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Complexity_Weight</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">SLA_Threshold_Sec</text>
+    <text x="15" y="100" fill="#64748B" font-family="sans-serif" font-size="9">5 Service Domains</text>
+  </g>
+
+  <!-- DimContract -->
+  <g transform="translate(830, 130)">
+    <rect width="180" height="110" rx="8" fill="#131c31" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect width="180" height="28" rx="8" fill="#1e3a8a"/>
+    <text x="15" y="19" fill="#93C5FD" font-family="sans-serif" font-size="12" font-weight="bold">📝 DimContract</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Contract (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Commitment_Months</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Risk_Category</text>
+    <text x="15" y="100" fill="#64748B" font-family="sans-serif" font-size="9">Elastic vs Locked</text>
+  </g>
+
+  <!-- FACT TABLES (MIDDLE ROW) -->
+
+  <!-- Fact_Calls -->
+  <g transform="translate(60, 320)">
+    <rect width="320" height="230" rx="10" fill="url(#factCallsGrad)" stroke="#38BDF8" stroke-width="2"/>
+    <rect width="320" height="34" rx="10" fill="#0369a1"/>
+    <text x="15" y="23" fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold">📞 Fact_Calls (5,000 Inquiries)</text>
+    <text x="15" y="58" fill="#E2E8F0" font-family="monospace" font-size="11">🔑 Call_Id (PK)</text>
+    <text x="15" y="78" fill="#38BDF8" font-family="monospace" font-size="11">🔗 Date (FK ──&gt; DimDate)</text>
+    <text x="15" y="98" fill="#38BDF8" font-family="monospace" font-size="11">🔗 Agent (FK ──&gt; DimAgent)</text>
+    <text x="15" y="118" fill="#38BDF8" font-family="monospace" font-size="11">🔗 Topic (FK ──&gt; DimTopic)</text>
+    <text x="15" y="140" fill="#94A3B8" font-family="sans-serif" font-size="11">📊 Answered (Y/N) • Resolved (Y/N)</text>
+    <text x="15" y="160" fill="#94A3B8" font-family="sans-serif" font-size="11">⏱️ Speed_Of_Answer_Sec (Avg: 67.5s)</text>
+    <text x="15" y="180" fill="#94A3B8" font-family="sans-serif" font-size="11">⭐ Satisfaction_Rating (Avg: 3.40)</text>
+    <text x="15" y="200" fill="#94A3B8" font-family="sans-serif" font-size="11">⌛ Talk_Duration_Sec • Call_Hour</text>
+    <rect x="15" y="212" width="290" height="2" fill="#334155"/>
+  </g>
+
+  <!-- Fact_Churn -->
+  <g transform="translate(440, 320)">
+    <rect width="320" height="230" rx="10" fill="url(#factChurnGrad)" stroke="#F97316" stroke-width="2"/>
+    <rect width="320" height="34" rx="10" fill="#C2410C"/>
+    <text x="15" y="23" fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold">🔄 Fact_Churn (7,043 Accounts)</text>
+    <text x="15" y="58" fill="#E2E8F0" font-family="monospace" font-size="11">🔑 customerID (PK)</text>
+    <text x="15" y="78" fill="#FB923C" font-family="monospace" font-size="11">🔗 Contract (FK ──&gt; DimContract)</text>
+    <text x="15" y="98" fill="#94A3B8" font-family="sans-serif" font-size="11">👥 gender • SeniorCitizen • Partner</text>
+    <text x="15" y="118" fill="#94A3B8" font-family="sans-serif" font-size="11">📅 tenure (Months) • Tenure_Cohort</text>
+    <text x="15" y="138" fill="#94A3B8" font-family="sans-serif" font-size="11">🌐 InternetService (DSL/Fiber) • TechSupport</text>
+    <text x="15" y="158" fill="#94A3B8" font-family="sans-serif" font-size="11">💳 MonthlyCharges ($456K) • TotalCharges</text>
+    <text x="15" y="178" fill="#94A3B8" font-family="sans-serif" font-size="11">🎫 numAdminTickets • numTechTickets</text>
+    <text x="15" y="200" fill="#F87171" font-family="sans-serif" font-size="11" font-weight="bold">🚨 Churn (Yes: 26.54% | $139K At-Risk)</text>
+    <rect x="15" y="212" width="290" height="2" fill="#431407"/>
+  </g>
+
+  <!-- Fact_Employees -->
+  <g transform="translate(820, 320)">
+    <rect width="320" height="230" rx="10" fill="url(#factEmpGrad)" stroke="#10B981" stroke-width="2"/>
+    <rect width="320" height="34" rx="10" fill="#047857"/>
+    <text x="15" y="23" fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold">👥 Fact_Employees (500 Personnel)</text>
+    <text x="15" y="58" fill="#E2E8F0" font-family="monospace" font-size="11">🔑 Employee ID (PK)</text>
+    <text x="15" y="78" fill="#34D399" font-family="monospace" font-size="11">🔗 Department (FK ──&gt; DimDepartment)</text>
+    <text x="15" y="98" fill="#34D399" font-family="monospace" font-size="11">🔗 Job Level (FK ──&gt; Dim_CareerLadder)</text>
+    <text x="15" y="118" fill="#94A3B8" font-family="sans-serif" font-size="11">⚧ Gender (41% Female | 59% Male)</text>
+    <text x="15" y="138" fill="#94A3B8" font-family="sans-serif" font-size="11">📈 Promotion FY21? (51 total, 35.3% F)</text>
+    <text x="15" y="158" fill="#94A3B8" font-family="sans-serif" font-size="11">🚪 FY20 leaver? (47 total, 9.4% turnover)</text>
+    <text x="15" y="178" fill="#94A3B8" font-family="sans-serif" font-size="11">⭐ FY20 Performance Rating (1 to 4)</text>
+    <text x="15" y="200" fill="#94A3B8" font-family="sans-serif" font-size="11">🌍 Nationality • Age • Time in Job Level</text>
+    <rect x="15" y="212" width="290" height="2" fill="#064e3b"/>
+  </g>
+
+  <!-- AUXILIARY DIMENSIONS (BOTTOM ROW) -->
+
+  <!-- DimDepartment -->
+  <g transform="translate(250, 620)">
+    <rect width="200" height="120" rx="8" fill="#131c31" stroke="#10b981" stroke-width="1.5"/>
+    <rect width="200" height="28" rx="8" fill="#065f46"/>
+    <text x="15" y="19" fill="#A7F3D0" font-family="sans-serif" font-size="12" font-weight="bold">🏢 DimDepartment</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Department (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Executive_Sponsor (COO/CFO)</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Target_Female_Ratio (50%)</text>
+    <text x="15" y="104" fill="#64748B" font-family="sans-serif" font-size="9">6 Corporate Business Units</text>
+  </g>
+
+  <!-- Dim_CareerLadder -->
+  <g transform="translate(480, 620)">
+    <rect width="210" height="120" rx="8" fill="#131c31" stroke="#10b981" stroke-width="1.5"/>
+    <rect width="210" height="28" rx="8" fill="#065f46"/>
+    <text x="15" y="19" fill="#A7F3D0" font-family="sans-serif" font-size="12" font-weight="bold">🪜 Dim_CareerLadder</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Base_Job_Level (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Target_Promotion_Level</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Progression Track Map</text>
+    <text x="15" y="104" fill="#64748B" font-family="sans-serif" font-size="9">Grades: Junior Off -&gt; Exec</text>
+  </g>
+
+  <!-- Dim_PRA_Equity -->
+  <g transform="translate(720, 620)">
+    <rect width="210" height="120" rx="8" fill="#131c31" stroke="#10b981" stroke-width="1.5"/>
+    <rect width="210" height="28" rx="8" fill="#065f46"/>
+    <text x="15" y="19" fill="#A7F3D0" font-family="sans-serif" font-size="12" font-weight="bold">⚖️ Dim_PRA_Equity</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Department (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Grade 1..6 PRA Headcount</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Pay &amp; Role Parity Index</text>
+    <text x="15" y="104" fill="#64748B" font-family="sans-serif" font-size="9">Swiss Audit Benchmark</text>
+  </g>
+
+  <!-- Dim_NationalityCensus -->
+  <g transform="translate(960, 620)">
+    <rect width="180" height="120" rx="8" fill="#131c31" stroke="#10b981" stroke-width="1.5"/>
+    <rect width="180" height="28" rx="8" fill="#065f46"/>
+    <text x="15" y="19" fill="#A7F3D0" font-family="sans-serif" font-size="12" font-weight="bold">🌐 Dim_Nationality</text>
+    <text x="15" y="48" fill="#CBD5E1" font-family="monospace" font-size="11">🔑 Country_ID (PK)</text>
+    <text x="15" y="66" fill="#94A3B8" font-family="sans-serif" font-size="11">Nationality Name</text>
+    <text x="15" y="84" fill="#94A3B8" font-family="sans-serif" font-size="11">Census Employee Count</text>
+    <text x="15" y="104" fill="#64748B" font-family="sans-serif" font-size="9">23 Represented Nations</text>
+  </g>
+
+  <!-- RELATIONSHIP LINES WITH ARROWS -->
+  <!-- DimDate to Fact_Calls -->
+  <path d="M 230 240 L 230 320" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="235" y="280" fill="#60A5FA" font-size="10" font-family="sans-serif">1 : N</text>
+
+  <!-- DimAgent to Fact_Calls -->
+  <path d="M 450 240 L 300 320" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="365" y="275" fill="#60A5FA" font-size="10" font-family="sans-serif">1 : N</text>
+
+  <!-- DimTopic to Fact_Calls -->
+  <path d="M 680 240 L 370 320" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="520" y="275" fill="#60A5FA" font-size="10" font-family="sans-serif">1 : N</text>
+
+  <!-- DimContract to Fact_Churn -->
+  <path d="M 880 240 L 680 320" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrowOrange)"/>
+  <text x="770" y="275" fill="#FB923C" font-size="10" font-family="sans-serif">1 : N</text>
+
+  <!-- Fact_Employees to DimDepartment -->
+  <path d="M 900 550 L 400 620" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" marker-start="url(#arrow)"/>
+  
+  <!-- Fact_Employees to Dim_CareerLadder -->
+  <path d="M 950 550 L 620 620" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" marker-start="url(#arrow)"/>
+
+  <!-- Fact_Employees to Dim_PRA_Equity -->
+  <path d="M 980 550 L 820 620" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" marker-start="url(#arrow)"/>
+
+  <!-- Fact_Employees to Dim_Nationality -->
+  <path d="M 1020 550 L 1020 620" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" marker-start="url(#arrow)"/>
+
+</svg>

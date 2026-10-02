@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgTree" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#03050A"/>
+    </linearGradient>
+    <linearGradient id="pwcBar2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D04A02"/>
+      <stop offset="100%" stop-color="#FF7A00"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="600" fill="url(#bgTree)"/>
+  <rect x="20" y="20" width="960" height="560" rx="12" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <rect x="40" y="35" width="920" height="60" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <rect x="40" y="35" width="6" height="60" rx="3" fill="url(#pwcBar2)"/>
+  <text x="60" y="60" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="18" font-weight="bold">PwC Switzerland | Executive KPI Decomposition Hierarchy</text>
+  <text x="60" y="80" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">3 Domain Pillars • 30+ VertiPaq DAX Formulations • Strategic Business Outcomes</text>
+
+  <!-- Root Node -->
+  <g transform="translate(360, 115)">
+    <rect width="280" height="60" rx="8" fill="#0F172A" stroke="#D04A02" stroke-width="2"/>
+    <text x="25" y="28" fill="#FF7A00" font-family="sans-serif" font-size="13" font-weight="bold">🏆 Digital Accelerator Engine</text>
+    <text x="25" y="48" fill="#CBD5E1" font-family="sans-serif" font-size="11">Enterprise Decision Support Platform</text>
+  </g>
+
+  <!-- 3 Pillar Branches -->
+
+  <!-- Branch 1: Operations -->
+  <g transform="translate(40, 220)">
+    <rect width="280" height="330" rx="8" fill="#0D1B2A" stroke="#38BDF8" stroke-width="1.5"/>
+    <rect width="280" height="34" rx="8" fill="#0369A1"/>
+    <text x="15" y="22" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold">📞 Task 1: Telephony Operations</text>
+    
+    <rect x="15" y="48" width="250" height="60" rx="6" fill="#132337"/>
+    <text x="25" y="70" fill="#38BDF8" font-family="sans-serif" font-size="11" font-weight="bold">Call Resolution &amp; Service</text>
+    <text x="25" y="88" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Answer Rate %] (81.08%)</text>
+    <text x="25" y="102" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Resolution Rate %] (89.94%)</text>
+
+    <rect x="15" y="120" width="250" height="60" rx="6" fill="#132337"/>
+    <text x="25" y="142" fill="#38BDF8" font-family="sans-serif" font-size="11" font-weight="bold">Speed &amp; Capacity</text>
+    <text x="25" y="160" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Avg Speed of Answer] (67.5s)</text>
+    <text x="25" y="174" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Avg Talk Duration] (224.9s)</text>
+
+    <rect x="15" y="192" width="250" height="60" rx="6" fill="#132337"/>
+    <text x="25" y="214" fill="#38BDF8" font-family="sans-serif" font-size="11" font-weight="bold">Customer Experience (CSAT)</text>
+    <text x="25" y="232" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Average CSAT] (3.40 / 5.00)</text>
+    <text x="25" y="246" fill="#94A3B8" font-family="sans-serif" font-size="10">• [CSAT Satisfaction %] (54.6%)</text>
+
+    <rect x="15" y="264" width="250" height="50" rx="6" fill="#132337"/>
+    <text x="25" y="286" fill="#38BDF8" font-family="sans-serif" font-size="11" font-weight="bold">Agent Performance Index</text>
+    <text x="25" y="304" fill="#94A3B8" font-family="sans-serif" font-size="10">• 2D Agent Quadrant Ranking</text>
+  </g>
+
+  <!-- Branch 2: Customer Retention -->
+  <g transform="translate(360, 220)">
+    <rect width="280" height="330" rx="8" fill="#1F1511" stroke="#F97316" stroke-width="1.5"/>
+    <rect width="280" height="34" rx="8" fill="#C2410C"/>
+    <text x="15" y="22" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold">🔄 Task 2: Customer Retention</text>
+
+    <rect x="15" y="48" width="250" height="60" rx="6" fill="#2D1C16"/>
+    <text x="25" y="70" fill="#FB923C" font-family="sans-serif" font-size="11" font-weight="bold">Churn Rate &amp; Exposure</text>
+    <text x="25" y="88" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Churn Rate %] (26.54%)</text>
+    <text x="25" y="102" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Total Churned Cust] (1,869)</text>
+
+    <rect x="15" y="120" width="250" height="60" rx="6" fill="#2D1C16"/>
+    <text x="25" y="142" fill="#FB923C" font-family="sans-serif" font-size="11" font-weight="bold">Financial Exposure</text>
+    <text x="25" y="160" fill="#94A3B8" font-family="sans-serif" font-size="10">• [At-Risk MRR] ($139.1K / mo)</text>
+    <text x="25" y="174" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Annualized Revenue Loss] ($1.67M)</text>
+
+    <rect x="15" y="192" width="250" height="60" rx="6" fill="#2D1C16"/>
+    <text x="25" y="214" fill="#FB923C" font-family="sans-serif" font-size="11" font-weight="bold">Contract &amp; Tenure Elasticity</text>
+    <text x="25" y="232" fill="#94A3B8" font-family="sans-serif" font-size="10">• Month-to-Month Churn: 42.7%</text>
+    <text x="25" y="246" fill="#94A3B8" font-family="sans-serif" font-size="10">• 2-Year Contract Churn: 2.8%</text>
+
+    <rect x="15" y="264" width="250" height="50" rx="6" fill="#2D1C16"/>
+    <text x="25" y="286" fill="#FB923C" font-family="sans-serif" font-size="11" font-weight="bold">Product Friction Drivers</text>
+    <text x="25" y="304" fill="#94A3B8" font-family="sans-serif" font-size="10">• Fiber Optic Tech Tickets Spike</text>
+  </g>
+
+  <!-- Branch 3: Diversity & Inclusion -->
+  <g transform="translate(680, 220)">
+    <rect width="280" height="330" rx="8" fill="#0C1D16" stroke="#10B981" stroke-width="1.5"/>
+    <rect width="280" height="34" rx="8" fill="#047857"/>
+    <text x="15" y="22" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold">👥 Task 3: Diversity &amp; Inclusion</text>
+
+    <rect x="15" y="48" width="250" height="60" rx="6" fill="#132B21"/>
+    <text x="25" y="70" fill="#34D399" font-family="sans-serif" font-size="11" font-weight="bold">Workforce Representation</text>
+    <text x="25" y="88" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Female Headcount %] (41.0%)</text>
+    <text x="25" y="102" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Male Headcount %] (59.0%)</text>
+
+    <rect x="15" y="120" width="250" height="60" rx="6" fill="#132B21"/>
+    <text x="25" y="142" fill="#34D399" font-family="sans-serif" font-size="11" font-weight="bold">Promotion Parity Velocity</text>
+    <text x="25" y="160" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Total Promotions FY21] (51)</text>
+    <text x="25" y="174" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Female Promotion Share] (35.3%)</text>
+
+    <rect x="15" y="192" width="250" height="60" rx="6" fill="#132B21"/>
+    <text x="25" y="214" fill="#34D399" font-family="sans-serif" font-size="11" font-weight="bold">Turnover &amp; Attrition</text>
+    <text x="25" y="232" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Turnover Count FY20] (47)</text>
+    <text x="25" y="246" fill="#94A3B8" font-family="sans-serif" font-size="10">• [Turnover Rate %] (9.40%)</text>
+
+    <rect x="15" y="264" width="250" height="50" rx="6" fill="#132B21"/>
+    <text x="25" y="286" fill="#34D399" font-family="sans-serif" font-size="11" font-weight="bold">Executive Broken Rung</text>
+    <text x="25" y="304" fill="#94A3B8" font-family="sans-serif" font-size="10">• Sr Manager &amp; Exec Cliff</text>
+  </g>
+
+  <!-- Connecting Tree Lines -->
+  <path d="M 500 175 L 500 195 L 180 195 L 180 220" fill="none" stroke="#64748B" stroke-width="1.5"/>
+  <path d="M 500 175 L 500 220" fill="none" stroke="#64748B" stroke-width="1.5"/>
+  <path d="M 500 175 L 500 195 L 820 195 L 820 220" fill="none" stroke="#64748B" stroke-width="1.5"/>
+
+</svg>
