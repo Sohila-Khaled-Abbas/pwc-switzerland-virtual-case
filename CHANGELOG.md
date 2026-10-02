@@ -10,6 +10,7 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 - **Dynamic Calendar Dimension**: Full M-code sequential generator with fiscal quarters and weekend flags (`power_query/04_calendar_generator.m`).
 - **Time Intelligence Measures**: Added MTD, QTD, Prior Month, MoM Growth %, and 7-day rolling moving average DAX calculations.
 - **Enterprise Documentation Hub**: Complete suite of 6 executive architecture guides, data dictionary, and UI/UX design blueprints.
+- **Executive Dashboard Specifications**: Completed full UI/UX design blueprints and KPI specifications for all three engagement cockpits: Call Centre Operations (`dashboards/01_call_center_dashboard.md`), Customer Retention & Revenue Risk (`dashboards/02_customer_retention_dashboard.md`), and Diversity & Inclusion Leadership Scorecard (`dashboards/03_diversity_inclusion_dashboard.md`).
 - **Continuous Integration Workflow**: GitHub Actions workflow for validating repository workbook assets and code syntax.
 
 ### 🔧 Fixed
