@@ -510,21 +510,27 @@ Public Sub BuildKPICard(ws As Worksheet, _
     End With
     
     ' 3B. Metric Value Callout (Independent Shape -- Can be Formula-Linked via Formula Bar!)
-    Set shpValue = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 24, cardWidth - 28, 36)
+    Set shpValue = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 14, topPos + 22, cardWidth - 28, 40)
     With shpValue
         .Name = "Value_" & cardName
         .Fill.Visible = msoFalse: .Line.Visible = msoFalse
         .TextFrame.VerticalAlignment = xlVAlignCenter
         .TextFrame.MarginLeft = 0: .TextFrame.MarginRight = 0: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
+        With .TextFrame.Characters.Font
+            .Name = FONT_FAMILY: .Size = 26: .Bold = True
+            .Color = PWC_DARK_SLATE
+        End With
         With .TextFrame2
             .VerticalAnchor = msoAnchorMiddle
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = kpiValue
-                .Font.Name = FONT_FAMILY: .Font.Size = 22: .Font.Bold = msoTrue
-                .Font.Fill.ForeColor.RGB = PWC_TEXT_TITLE
+                .Font.Name = FONT_FAMILY: .Font.Size = 26: .Font.Bold = msoTrue
+                .Font.Fill.ForeColor.RGB = PWC_DARK_SLATE
             End With
+        End With
+    End With
         End With
     End With
     
@@ -555,6 +561,10 @@ Public Sub SetKPICardValue(ws As Worksheet, ByVal cardName As String, _
     Set shpValue = ws.Shapes("Value_" & cardName)
     If Not shpValue Is Nothing Then
         shpValue.TextFrame2.TextRange.Text = newValue
+        shpValue.TextFrame2.TextRange.Font.Size = 26
+        shpValue.TextFrame2.TextRange.Font.Bold = msoTrue
+        shpValue.TextFrame.Characters.Font.Size = 26
+        shpValue.TextFrame.Characters.Font.Bold = True
         If Len(Trim(newSubtext)) > 0 Then
             Set shpSub = ws.Shapes("Subtext_" & cardName)
             If Not shpSub Is Nothing Then shpSub.TextFrame2.TextRange.Text = newSubtext
@@ -591,25 +601,25 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
     
     Select Case UCase(moduleCode)
         Case "CC"
-            headers(1) = "KPI 1: Total Calls": measures(1) = "[Measures].[Total Calls]": numFormats(1) = "#,##0": cardNames(1) = "CC_TotalDemand"
-            headers(2) = "KPI 2: Answer Rate": measures(2) = "[Measures].[Answer Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CC_Answered"
-            headers(3) = "KPI 3: Abandonment Rate": measures(3) = "[Measures].[Abandonment Rate %]": numFormats(3) = "0.00%": cardNames(3) = "CC_Abandoned"
-            headers(4) = "KPI 4: Avg Speed of Answer": measures(4) = "[Measures].[Avg Speed of Answer]": numFormats(4) = "#,##0.0 ""s""": cardNames(4) = "CC_ASA"
-            headers(5) = "KPI 5: Avg CSAT Rating": measures(5) = "[Measures].[Avg CSAT Rating]": numFormats(5) = "0.00": cardNames(5) = "CC_CSAT"
+            headers(1) = "Total Call Intake": measures(1) = "[Measures].[Total Demand]": numFormats(1) = "#,##0": cardNames(1) = "CC_TotalDemand"
+            headers(2) = "Operational Answer Rate": measures(2) = "[Measures].[Answer Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CC_Answered"
+            headers(3) = "Queue Abandonment Rate": measures(3) = "[Measures].[Abandonment Rate %]": numFormats(3) = "0.00%": cardNames(3) = "CC_Abandoned"
+            headers(4) = "Avg Speed of Answer": measures(4) = "[Measures].[Average Speed of Answer (s)]": numFormats(4) = "#,##0.0 ""s""": cardNames(4) = "CC_ASA"
+            headers(5) = "Average CSAT Rating": measures(5) = "[Measures].[Average CSAT]": numFormats(5) = "0.00": cardNames(5) = "CC_CSAT"
             
         Case "CH"
-            headers(1) = "KPI 1: Total Customers": measures(1) = "[Measures].[Total Customers]": numFormats(1) = "#,##0": cardNames(1) = "CH_Subscribers"
-            headers(2) = "KPI 2: Churn Rate": measures(2) = "[Measures].[Churn Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CH_ChurnRate"
-            headers(3) = "KPI 3: Revenue at Risk": measures(3) = "[Measures].[Total Revenue at Risk]": numFormats(3) = "$#,##0.00": cardNames(3) = "CH_ARRRisk"
-            headers(4) = "KPI 4: M2M Churn Rate": measures(4) = "[Measures].[Contract M2M Churn Rate %]": numFormats(4) = "0.00%": cardNames(4) = "CH_M2MChurn"
-            headers(5) = "KPI 5: Tech Tickets / Cust": measures(5) = "[Measures].[Tech Tickets per Customer]": numFormats(5) = "0.00": cardNames(5) = "CH_Tickets"
+            headers(1) = "Total Active Accounts": measures(1) = "[Measures].[Total Customers]": numFormats(1) = "#,##0": cardNames(1) = "CH_Subscribers"
+            headers(2) = "Customer Churn Rate": measures(2) = "[Measures].[Churn Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CH_ChurnRate"
+            headers(3) = "Annual Revenue at Risk": measures(3) = "[Measures].[At-Risk MRR]": numFormats(3) = "$#,##0.00": cardNames(3) = "CH_ARRRisk"
+            headers(4) = "Month-to-Month Churn": measures(4) = "[Measures].[Contract M2M Churn Rate %]": numFormats(4) = "0.00%": cardNames(4) = "CH_M2MChurn"
+            headers(5) = "Tech Tickets per Customer": measures(5) = "[Measures].[Avg Tech Tickets per Customer]": numFormats(5) = "0.00": cardNames(5) = "CH_Tickets"
             
         Case "DI"
-            headers(1) = "KPI 1: Total Headcount": measures(1) = "[Measures].[Total Headcount]": numFormats(1) = "#,##0": cardNames(1) = "DI_Workforce"
-            headers(2) = "KPI 2: Female Headcount Share": measures(2) = "[Measures].[Female Headcount Share %]": numFormats(2) = "0.00%": cardNames(2) = "DI_FemaleShare"
-            headers(3) = "KPI 3: Broken Rung Gap": measures(3) = "[Measures].[Broken Rung Gap]": numFormats(3) = "+0.00%;-0.00%;0.00%": cardNames(3) = "DI_BrokenRung"
-            headers(4) = "KPI 4: Female Promotion Share": measures(4) = "[Measures].[Female Promotion Share %]": numFormats(4) = "0.00%": cardNames(4) = "DI_PromoShare"
-            headers(5) = "KPI 5: Time in Grade Gap": measures(5) = "[Measures].[Time in Grade Gap]": numFormats(5) = "+0.0 ""Mos"";-0.0 ""Mos"";0.0 ""Mos""": cardNames(5) = "DI_TimeInGrade"
+            headers(1) = "Total Corporate Census": measures(1) = "[Measures].[Total Employees]": numFormats(1) = "#,##0": cardNames(1) = "DI_Workforce"
+            headers(2) = "Female Headcount Share": measures(2) = "[Measures].[Female Representation %]": numFormats(2) = "0.00%": cardNames(2) = "DI_FemaleShare"
+            headers(3) = "Executive Female Share": measures(3) = "[Measures].[Executive Female Share %]": numFormats(3) = "0.00%": cardNames(3) = "DI_BrokenRung"
+            headers(4) = "FY21 Promotions Awarded": measures(4) = "[Measures].[Female Promotion %]": numFormats(4) = "0.00%": cardNames(4) = "DI_PromoShare"
+            headers(5) = "Annual Turnover Rate": measures(5) = "[Measures].[Turnover Rate %]": numFormats(5) = "0.00%": cardNames(5) = "DI_TimeInGrade"
     End Select
     
     Dim i As Integer
@@ -617,7 +627,7 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
     Dim shpValue As Shape
     
     For i = 1 To 5
-        ' 1. Set Staging Header
+        ' 1. Set Staging Header in Row 64
         With ws.Range(cols(i) & "64")
             .Value = headers(i)
             .Font.Name = FONT_FAMILY
@@ -626,21 +636,45 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
             .Font.Color = PWC_TEXT_MUTED
         End With
         
-        ' 2. Set CUBEVALUE Formula and Format
+        ' 2. Set CUBEVALUE Formula and Format in Row 65
         With ws.Range(cols(i) & "65")
             .Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", """ & measures(i) & """)"
             .NumberFormat = numFormats(i)
             .Font.Name = FONT_FAMILY
-            .Font.Size = 9
-            .Font.Bold = False
+            .Font.Size = 11
+            .Font.Bold = True
         End With
         
-        ' 3. Automatically Link Value Shape to Staging Cell
+        ' 3. Automatically Link Value Shape to Staging Cell with 26pt Bold Typography
         cellRef = "='" & ws.Name & "'!$" & cols(i) & "$65"
         Set shpValue = Nothing
         Set shpValue = ws.Shapes("Value_" & cardNames(i))
         If Not shpValue Is Nothing Then
             shpValue.DrawingObject.Formula = cellRef
+            
+            ' Re-apply prominent 26pt bold typography (Excel resets font on formula assignment)
+            With shpValue.TextFrame
+                .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
+                .VerticalAlignment = xlVAlignCenter
+                With .Characters.Font
+                    .Name = FONT_FAMILY
+                    .Size = 26
+                    .Bold = True
+                    .Color = PWC_DARK_SLATE
+                End With
+            End With
+            
+            With shpValue.TextFrame2
+                .VerticalAnchor = msoAnchorMiddle
+                .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
+                .WordWrap = msoFalse
+                With .TextRange
+                    .Font.Name = FONT_FAMILY
+                    .Font.Size = 26
+                    .Font.Bold = msoTrue
+                    .Font.Fill.ForeColor.RGB = PWC_DARK_SLATE
+                End With
+            End With
         End If
     Next i
     On Error GoTo 0
