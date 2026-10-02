@@ -4,6 +4,10 @@
 // Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
 // ==============================================================================
 
+// ------------------------------------------------------------------------------
+// 1. SUBSCRIBER VOLUME & ATTRITION METRICS
+// ------------------------------------------------------------------------------
+
 // Total Subscribed Accounts
 // Data Type: Whole Number (Integer) | Format: #,##0
 [Total Customers] := DISTINCTCOUNT(Fact_Churn[customerID])
@@ -16,16 +20,36 @@ CALCULATE(
     Fact_Churn[Churn] = "Yes"
 )
 
+// Retained Active Subscribers
+// Data Type: Whole Number (Integer) | Format: #,##0
+[Retained Customers] := 
+CALCULATE(
+    COUNT(Fact_Churn[customerID]),
+    Fact_Churn[Churn] = "No"
+)
+
 // Gross Subscriber Attrition Rate %
 // Data Type: Percentage (Decimal) | Format: 0.00%
 [Churn Rate %] := 
 DIVIDE([Churned Customers], [Total Customers], 0)
 
+// Month-to-Month Contract Churn Rate % (High Vulnerability Segment)
+// Data Type: Percentage (Decimal) | Format: 0.00%
+[Contract M2M Churn Rate %] := 
+CALCULATE(
+    [Churn Rate %],
+    Fact_Churn[Contract] = "Month-to-month"
+)
+
+// ------------------------------------------------------------------------------
+// 2. FINANCIAL REVENUE & MRR LEAKAGE METRICS
+// ------------------------------------------------------------------------------
+
 // Total Monthly Recurring Revenue (MRR)
 // Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Total Monthly Charges] := SUM(Fact_Churn[MonthlyCharges])
 
-// Monthly Revenue Lost to Customer Churn
+// Realized Financial Churn (At-Risk MRR Lost to Churn)
 // Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [At-Risk MRR] := 
 CALCULATE(
@@ -33,14 +57,42 @@ CALCULATE(
     Fact_Churn[Churn] = "Yes"
 )
 
+// Financial Churn Elasticity (% of Total MRR Destroyed)
+// Data Type: Percentage (Decimal) | Format: 0.00%
+[Financial Churn Rate %] := 
+DIVIDE([At-Risk MRR], [Total Monthly Charges], 0)
+
 // Average Monthly Spend per Subscriber
 // Data Type: Currency (Decimal Number) | Format: $#,##0.00
 [Avg Monthly Ticket] := AVERAGE(Fact_Churn[MonthlyCharges])
 
-// Technical Support Ticket Ratio
+// Cumulative Lifetime Billed Revenue
+// Data Type: Currency (Decimal Number) | Format: $#,##0.00
+[Total Lifetime Charges] := SUM(Fact_Churn[TotalCharges])
+
+// Mean Customer Loyalty Tenure (in Months)
+// Data Type: Decimal Number | Format: 0.0
+[Avg Tenure Months] := AVERAGE(Fact_Churn[tenure])
+
+// ------------------------------------------------------------------------------
+// 3. SUPPORT FRICTION & SERVICE TICKET RATIOS
+// ------------------------------------------------------------------------------
+
+// Technical Support Ticket Ratio per Customer
 // Data Type: Decimal Number | Format: 0.00
 [Avg Tech Tickets per Customer] := AVERAGE(Fact_Churn[numTechTickets])
 
-// Admin Ticket Ratio
+// Admin Support Ticket Ratio per Customer
 // Data Type: Decimal Number | Format: 0.00
 [Avg Admin Tickets per Customer] := AVERAGE(Fact_Churn[numAdminTickets])
+
+// Combined Service Ticket Friction Index
+// Data Type: Decimal Number | Format: 0.00
+[Avg Service Tickets] := AVERAGE(Fact_Churn[Total_Service_Tickets])
+
+// ------------------------------------------------------------------------------
+// 4. MODEL ALIASES (Guarantees Zero Formula Conflicts)
+// ------------------------------------------------------------------------------
+[Total Revenue at Risk] := [At-Risk MRR]
+[Churned Monthly Charges] := [At-Risk MRR]
+[Tech Tickets per Customer] := [Avg Tech Tickets per Customer]

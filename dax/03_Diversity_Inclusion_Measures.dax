@@ -4,6 +4,10 @@
 // Target In-Memory Engine: VertiPaq (Power Pivot for Excel & Power BI)
 // ==============================================================================
 
+// ------------------------------------------------------------------------------
+// 1. WORKFORCE HEADCOUNT & GENDER REPRESENTATION
+// ------------------------------------------------------------------------------
+
 // Total Active Workforce Personnel
 // Data Type: Whole Number (Integer) | Format: #,##0
 [Total Employees] := DISTINCTCOUNT(Fact_Employees[Employee_ID])
@@ -29,6 +33,18 @@ CALCULATE(
 [Female Representation %] := 
 DIVIDE([Female Count], [Total Employees], 0)
 
+// Executive Female Representation (Job Levels 1-2: Board & Directors)
+// Data Type: Percentage (Decimal) | Format: 0.00%
+[Executive Female Share %] := 
+CALCULATE(
+    DIVIDE([Female Count], [Total Employees], 0),
+    Fact_Employees[Job_Level_Baseline_Rank] IN {1, 2}
+)
+
+// ------------------------------------------------------------------------------
+// 2. CAREER PROGRESSION & PROMOTION EQUITY
+// ------------------------------------------------------------------------------
+
 // Total Career Progressions Awarded in FY21
 // Data Type: Whole Number (Integer) | Format: #,##0
 [Total Promotions FY21] := 
@@ -37,18 +53,52 @@ CALCULATE(
     Fact_Employees[Promoted_FY21] = "Yes"
 )
 
-// Share of FY21 Promotions Awarded to Female Staff
+// General Career Progression Velocity across Total Headcount
+// Data Type: Percentage (Decimal) | Format: 0.00%
+[Overall Promotion Rate %] := 
+DIVIDE([Total Promotions FY21], [Total Employees], 0)
+
+// Female Staff Promoted in FY21
+// Data Type: Whole Number (Integer) | Format: #,##0
+[Female Promoted FY21] := 
+CALCULATE(
+    COUNT(Fact_Employees[Employee_ID]),
+    Fact_Employees[Promoted_FY21] = "Yes",
+    Fact_Employees[Gender] = "Female"
+)
+
+// Male Staff Promoted in FY21
+// Data Type: Whole Number (Integer) | Format: #,##0
+[Male Promoted FY21] := 
+CALCULATE(
+    COUNT(Fact_Employees[Employee_ID]),
+    Fact_Employees[Promoted_FY21] = "Yes",
+    Fact_Employees[Gender] = "Male"
+)
+
+// Share of Total FY21 Promotions Awarded to Female Staff
 // Data Type: Percentage (Decimal) | Format: 0.00%
 [Female Promotion %] := 
-DIVIDE(
-    CALCULATE(
-        COUNT(Fact_Employees[Employee_ID]),
-        Fact_Employees[Promoted_FY21] = "Yes",
-        Fact_Employees[Gender] = "Female"
-    ),
-    [Total Promotions FY21],
-    0
-)
+DIVIDE([Female Promoted FY21], [Total Promotions FY21], 0)
+
+// Female Promotion Velocity (% of Female Base)
+// Data Type: Percentage (Decimal) | Format: 0.00%
+[Female Promotion Rate %] := 
+DIVIDE([Female Promoted FY21], [Female Count], 0)
+
+// Male Promotion Velocity (% of Male Base)
+// Data Type: Percentage (Decimal) | Format: 0.00%
+[Male Promotion Rate %] := 
+DIVIDE([Male Promoted FY21], [Male Count], 0)
+
+// Promotion Equity Index (Female vs Male Velocity Ratio, Parity = 1.00)
+// Data Type: Decimal Number | Format: 0.00
+[Promotion Equity Index] := 
+DIVIDE([Female Promotion Rate %], [Male Promotion Rate %], BLANK())
+
+// ------------------------------------------------------------------------------
+// 3. ATTRITION & WORKFORCE TURNOVER
+// ------------------------------------------------------------------------------
 
 // Total Workforce Leavers in FY20
 // Data Type: Whole Number (Integer) | Format: #,##0
@@ -62,3 +112,17 @@ CALCULATE(
 // Data Type: Percentage (Decimal) | Format: 0.00%
 [Turnover Rate %] := 
 DIVIDE([Turnover Count FY20], [Total Employees], 0)
+
+// ------------------------------------------------------------------------------
+// 4. MODEL ALIASES (Guarantees Zero Formula Conflicts)
+// ------------------------------------------------------------------------------
+[Total Headcount] := [Total Employees]
+[Female Employees] := [Female Count]
+[Male Employees] := [Male Count]
+[Female Headcount Share %] := [Female Representation %]
+[[% Female Representation]] := [Female Representation %]
+[Female Promotion Share %] := [Female Promotion %]
+[Total Promoted FY21] := [Total Promotions FY21]
+[FY20 Leavers] := [Turnover Count FY20]
+[Broken Rung Gap] := [Executive Female Share %]
+[Time in Grade Gap] := [Turnover Rate %]
