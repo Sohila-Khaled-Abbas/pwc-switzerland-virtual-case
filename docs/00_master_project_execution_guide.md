@@ -379,15 +379,63 @@ For each of the 12 charts below, execute these 7 universal Excel GUI steps:
 ###### Visual 1.4: Representative Quality & CSAT Audit (Right-Bottom)
 * **Container Name**: `CC_AgentScorecard` | **Badge**: `Matrix Table`
 * **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
+
+> [!IMPORTANT]
+> **Why Can't You Drag a PivotTable into this Box? (The Excel Layer Architecture)**
+> - In Excel, **Shapes** (like the container card `Container_CC_AgentScorecard` and the dashed drop zone `DockZone_CC_AgentScorecard`) live on the **Drawing Layer** (floating objects above the grid).
+> - In contrast, a **PivotTable** lives strictly inside **Worksheet Grid Cells** (specific row and column addresses, like `P28:T36`).
+> - Therefore, you cannot physically "drag and drop" or paste grid cells *inside* a floating shape! The solid white card will simply sit on top of and cover your grid cells.
+
+---
+
+###### How to Dock the PivotTable into this Card Container (3 Solutions)
+
+##### Method A: The "Linked Picture" SaaS Technique (Recommended Best Practice)
+This is the enterprise standard used by top financial modelers and dashboard architects:
+
+1. **Delete the Dashed Drop Zone**: On `03_CallCenter_Cockpit`, click the inner dashed box (`DockZone_CC_AgentScorecard`) and press `Delete`. You now have a clean, solid white card container.
+2. **Copy the PivotTable**: Go to `Staging_Pivots` (or wherever your PivotTable is located) and select the entire table range (e.g. `A1:F9` including the agent names and 5 metric columns). Press `Ctrl + C` (Copy).
+3. **Switch to Dashboard**: Click back to `03_CallCenter_Cockpit`.
+4. **Paste as Linked Picture**:
+   - On the Excel Ribbon, go to the **Home** tab.
+   - Click the little downward arrow under the **Paste** button (or press `Alt $\to$ H $\to$ V $\to$ I`).
+   - Under **Other Paste Options**, click the very last icon: **"Linked Picture"** (a clipboard with an image and a small link chain).
+5. **Snap & Fit into Card**:
+   - A floating, pixel-perfect image of your PivotTable appears!
+   - Because it is now a **Drawing Layer object**, you can freely drag it, position it inside `CC_AgentScorecard`, and resize it slightly so it centers beautifully inside the white card frame.
+6. **Live Slicer Interactivity**: The picture maintains a dynamic link (`=Staging_Pivots!$A$1:$F$9`). Whenever you click any Slicer, the underlying PivotTable updates and the picture refreshes **instantly in real time**!
+
+---
+
+##### Method B: 1-Click Automated Docker via VBA (Instant)
+If you prefer not to copy and paste manually, open the VBA Immediate Window (`Ctrl + G`) and run:
+
+```vba
+Call modPivotTableFormatting.DockScorecardAsLinkedPicture("SLA_EXCEPTIONS")
+```
+*This macro automatically styles the table with Theme 1, converts it into a live Linked Picture, deletes the placeholder watermark, and centers it perfectly inside the card container in 0.1 seconds!*
+
+---
+
+##### Method C: Visual Option B — The Native PivotChart Alternative
+If you prefer a chart instead of a table:
+- Click `Insert` $\to$ `PivotChart` from the Data Model.
+- Drag `DimAgent[Agent]` to **Axis** and `_Measures[Average CSAT]` to **Values**.
+- Change chart type to **2-D Horizontal Clustered Bar**.
+- Because a PivotChart is already a floating drawing object, it drops right into the box without needing the Linked Picture tool!
+
+---
+
 * **PivotTable Layout**:
   - **Rows**: `DimAgent[Agent]` (Dan, Martha, Becky, Diane, Greg, Jim, Joe, Stewart)
   - **Values**:
     1. `_Measures[Total Calls]` $\to$ Header: `Calls Taken` | Format: `#,##0`
-    2. `_Measures[Answer Rate %]` $\to$ Header: `Answer Rate %` | Format: `0.0%`
+    2. `_Measures[Answered Calls %]` (or `[Answer Rate %]`) $\to$ Header: `Answer Rate %` | Format: `0.0%`
     3. `_Measures[Resolution Rate %]` $\to$ Header: `FCR Rate %` | Format: `0.0%`
     4. `_Measures[Average Speed of Answer (s)]` $\to$ Header: `Avg Speed (s)` | Format: `0.0 "s"`
     5. `_Measures[Average CSAT]` $\to$ Header: `Avg CSAT` | Format: `0.00`
   - **Grand Totals**: Set **Off for Rows and Columns** (averaging percentages/CSAT in a grand total row is statistically invalid).
+
 
 ---
 

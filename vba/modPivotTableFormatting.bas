@@ -412,3 +412,104 @@ Private Sub ApplyTopBottomMilestones(rng As Range, ByVal isInverted As Boolean)
     End With
     On Error GoTo 0
 End Sub
+
+' ==============================================================================
+' 5. LIVE LINKED PICTURE DOCKER: CONVERTS PIVOTTABLE TO FLOATING SAAS CARD
+' ==============================================================================
+Public Sub DockScorecardAsLinkedPicture(Optional ByVal themeChoice As String = "SLA_EXCEPTIONS")
+    Dim wsDash As Worksheet
+    Dim wsStaging As Worksheet
+    Dim pt As PivotTable
+    Dim rngTable As Range
+    Dim shpOldPic As Shape
+    Dim shpDockZone As Shape
+    Dim picObj As Picture
+    Dim dockLeft As Single, dockTop As Single, dockW As Single, dockH As Single
+    
+    On Error Resume Next
+    Set wsDash = ActiveWorkbook.Worksheets("03_CallCenter_Cockpit")
+    Set wsStaging = ActiveWorkbook.Worksheets("Staging_Pivots")
+    If wsDash Is Nothing Then Set wsDash = ActiveSheet
+    
+    ' 1. Find PivotTable (Check Staging_Pivots first, then Dashboard)
+    If Not wsStaging Is Nothing Then
+        If wsStaging.PivotTables.Count > 0 Then
+            Set pt = wsStaging.PivotTables(wsStaging.PivotTables.Count)
+        End If
+    End If
+    If pt Is Nothing Then
+        If wsDash.PivotTables.Count > 0 Then
+            Set pt = wsDash.PivotTables(wsDash.PivotTables.Count)
+        End If
+    End If
+    
+    If pt Is Nothing Then
+        MsgBox "Could not find the Agent Scorecard PivotTable." & vbCrLf & _
+               "Please ensure it is created on 'Staging_Pivots' or '03_CallCenter_Cockpit'.", _
+               vbExclamation, "PwC Scorecard Docker"
+        Exit Sub
+    End If
+    
+    ' 2. Style and Format the PivotTable first
+    FormatScorecardGrid pt
+    ApplyScorecardConditionalFormatting pt, UCase(Trim(themeChoice))
+    
+    ' 3. Get PivotTable Range
+    Set rngTable = pt.TableRange2
+    If rngTable Is Nothing Then Set rngTable = pt.TableRange1
+    
+    ' 4. Coordinates of Visual Container CC_AgentScorecard
+    dockLeft = 776
+    dockTop = 558
+    dockW = 448
+    dockH = 210
+    
+    Set shpDockZone = wsDash.Shapes("DockZone_CC_AgentScorecard")
+    If Not shpDockZone Is Nothing Then
+        dockLeft = shpDockZone.Left
+        dockTop = shpDockZone.Top
+        dockW = shpDockZone.Width
+        dockH = shpDockZone.Height
+        ' Hide the dashed placeholder watermark
+        shpDockZone.Visible = msoFalse
+    End If
+    
+    ' 5. Remove any previously created Linked Picture
+    Set shpOldPic = wsDash.Shapes("LinkedPic_AgentScorecard")
+    If Not shpOldPic Is Nothing Then shpOldPic.Delete
+    
+    ' 6. Copy PivotTable Range
+    rngTable.Copy
+    
+    ' 7. Paste as Linked Picture on Dashboard
+    wsDash.Activate
+    wsDash.Range("A1").Select
+    Set picObj = wsDash.Pictures.Paste(Link:=True)
+    
+    If Not picObj Is Nothing Then
+        With picObj
+            .Name = "LinkedPic_AgentScorecard"
+            .Left = dockLeft + (dockW - .Width) / 2
+            If .Left < dockLeft Then .Left = dockLeft + 6
+            .Top = dockTop + 4
+            .ShapeRange.LockAspectRatio = msoTrue
+            If .Height > (dockH - 12) Then
+                .Height = dockH - 12
+            End If
+            If .Width > (dockW - 12) Then
+                .Width = dockW - 12
+            End If
+            .Left = dockLeft + (dockW - .Width) / 2
+            .Top = dockTop + (dockH - .Height) / 2
+        End With
+    End If
+    
+    Application.CutCopyMode = False
+    
+    If Application.UserControl Then
+        MsgBox "Agent Scorecard successfully docked as a live Linked Picture inside the container!", _
+               vbInformation, "PwC Scorecard Docker"
+    End If
+    On Error GoTo 0
+End Sub
+
