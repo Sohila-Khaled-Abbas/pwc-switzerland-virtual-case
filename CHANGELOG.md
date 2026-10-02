@@ -4,6 +4,20 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.2.1] - 2026-10-02
+
+### 🔧 Fixed
+- **VBA Compile Error Resolution (`modCreateGovernanceSheets.bas`)**:
+  - Corrected `ws.DisplayGridlines = False` (which triggered `Compile error: Method or data member not found`) to `ActiveWindow.DisplayGridlines = False`.
+  - Added pre-emptive cleanup for `tbl_Metadata_Catalog` and `tbl_KPI_Dictionary` to prevent global Excel table name collisions.
+  - Added manual calculation suppression and robust error handling to guarantee clean UI updates.
+
+### 🚀 Added
+- **Master Project Execution Guide (`docs/00_master_project_execution_guide.md`)**: Comprehensive 8-phase step-by-step roadmap from data ingestion to VertiPaq modeling, governance sheet generation, DAX engineering, dashboard assembly, and publishing.
+- **Publishing & Distribution Masterclass (`docs/09_excel_dashboard_publishing_and_distribution_guide.md`)**: Reddit-inspired distribution guide covering Browser View Options, SharePoint/OneDrive, Power BI Service, Web Embed, and Sheet Protection.
+
+---
+
 ## [2.2.0] - 2026-10-02
 
 ### 🚀 Added

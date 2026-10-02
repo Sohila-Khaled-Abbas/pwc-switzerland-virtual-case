@@ -139,6 +139,7 @@ pwc-switzerland-virtual-case/
 │   └── 05_Executive_KPI_Catalog.dax       # Master catalog of all 28 explicit measures
 │
 ├── docs/
+│   ├── 00_master_project_execution_guide.md# End-to-end 8-phase implementation & build blueprint
 │   ├── 01_executive_summary.md            # Client engagement scope & executive briefs
 │   ├── 02_galaxy_data_model.md            # Kimball constellation design & VertiPaq mechanics
 │   ├── 03_power_query_etl_pipeline.md     # 3-tier M ETL lifecycle & forensic null triage
@@ -146,7 +147,8 @@ pwc-switzerland-virtual-case/
 │   ├── 05_dashboard_design_system.md      # UI/UX 8pt grid, color system & wireframes
 │   ├── 06_business_insights_and_playbook.md# Strategic recommendations & ROI models
 │   ├── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & Reddit best practices
-│   └── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer, metadata catalog & KPI governance
+│   ├── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer, metadata catalog & KPI governance
+│   └── 09_excel_dashboard_publishing_and_distribution_guide.md # Browser view options, SharePoint, Power BI & web embed
 │
 ├── power_query/
 │   ├── 01_staging_queries.m               # Parameterized staging connections

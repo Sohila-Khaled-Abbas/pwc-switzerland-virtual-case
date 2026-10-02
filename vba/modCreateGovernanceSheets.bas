@@ -4,9 +4,11 @@ Option Explicit
 ' ==============================================================================
 ' PwC Switzerland Virtual Case Experience - Pre-Dashboard Governance Builder
 ' Module: modCreateGovernanceSheets.bas
-' Purpose: Automatically generates and styles:
-'          1. "01_Business_Domains" (Business domain briefings & context)
+' Purpose: Automatically generates, populates, and styles:
+'          1. "01_Business_Domains" (Business domain briefings & strategic context)
 '          2. "02_Metadata_&_KPI_Catalog" (Metadata inventory & KPI dictionary)
+' Placement: Run immediately after Data Model Relationships & Power Pivot setup,
+'            BEFORE creating explicit DAX measures and dashboard views.
 ' Brand Palette: PwC Charcoal (RGB 30, 41, 59), Tangerine (RGB 208, 74, 2), Slate (RGB 100, 116, 139)
 ' ==============================================================================
 
@@ -14,46 +16,80 @@ Public Sub BuildGovernanceArchitecture()
     Dim wb As Workbook
     Dim wsDomains As Worksheet
     Dim wsCatalog As Worksheet
+    Dim s As Worksheet
+    Dim lo As ListObject
     
     Set wb = ActiveWorkbook
+    
+    On Error GoTo ErrorHandler
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
+    Application.Calculation = xlCalculationManual
     
-    ' 1. Reset / recreate target sheets cleanly
+    ' 1. Pre-emptively clean up existing ListObjects to prevent name collisions
+    For Each s In wb.Worksheets
+        For Each lo In s.ListObjects
+            If StrComp(lo.Name, "tbl_Metadata_Catalog", vbTextCompare) = 0 Or _
+               StrComp(lo.Name, "tbl_KPI_Dictionary", vbTextCompare) = 0 Then
+                lo.Unlist
+            End If
+        Next lo
+    Next s
+    
+    ' 2. Reset / recreate target sheets cleanly
     On Error Resume Next
     Set wsDomains = wb.Worksheets("01_Business_Domains")
     If Not wsDomains Is Nothing Then wsDomains.Delete
+    
     Set wsCatalog = wb.Worksheets("02_Metadata_&_KPI_Catalog")
     If Not wsCatalog Is Nothing Then wsCatalog.Delete
-    On Error GoTo 0
+    On Error GoTo ErrorHandler
     
+    ' 3. Insert sheets at the beginning of the workbook
     Set wsDomains = wb.Worksheets.Add(Before:=wb.Worksheets(1))
     wsDomains.Name = "01_Business_Domains"
     
     Set wsCatalog = wb.Worksheets.Add(After:=wsDomains)
     wsCatalog.Name = "02_Metadata_&_KPI_Catalog"
     
-    ' 2. Populate Domains Sheet
+    ' 4. Populate Domains Sheet
     Call PopulateDomainsSheet(wsDomains)
     
-    ' 3. Populate Metadata & KPI Sheet
+    ' 5. Populate Metadata & KPI Sheet
     Call PopulateCatalogSheet(wsCatalog)
     
+    ' 6. Return focus to Domains overview
     wsDomains.Activate
+    ActiveWindow.ScrollRow = 1
+    ActiveWindow.ScrollColumn = 1
+    
+CleanExit:
+    Application.Calculation = xlCalculationAutomatic
     Application.ScreenUpdating = True
     Application.DisplayAlerts = True
     
-    MsgBox "PwC Governance Architecture successfully generated!" & vbCrLf & _
-           "• 01_Business_Domains: Ready" & vbCrLf & _
-           "• 02_Metadata_&_KPI_Catalog: 12 Tables & 10 KPIs Loaded", _
+    MsgBox "PwC Governance Architecture successfully generated!" & vbCrLf & vbCrLf & _
+           "• '01_Business_Domains': Strategic briefing cards created" & vbCrLf & _
+           "• '02_Metadata_&_KPI_Catalog': 12 Tables & 10 KPIs registered" & vbCrLf & vbCrLf & _
+           "Next Step: Add explicit DAX measures to VertiPaq model.", _
            vbInformation, "PwC Switzerland BI Architecture"
+    Exit Sub
+
+ErrorHandler:
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+    Application.DisplayAlerts = True
+    MsgBox "Error building governance architecture: " & Err.Description, vbCritical, "Generation Error"
 End Sub
 
 Private Sub PopulateDomainsSheet(ws As Worksheet)
     ws.Tab.Color = RGB(208, 74, 2) ' PwC Tangerine
-    ws.DisplayGridlines = False
     
-    ' Title Ribbon
+    ' Activate sheet before setting Window properties (Fix: DisplayGridlines belongs to ActiveWindow)
+    ws.Activate
+    ActiveWindow.DisplayGridlines = False
+    
+    ' Title Ribbon Banner
     ws.Range("B2:J3").Merge
     With ws.Range("B2")
         .Value = "PwC Switzerland | Client Business Domains & Strategic Context"
@@ -62,9 +98,11 @@ Private Sub PopulateDomainsSheet(ws As Worksheet)
         .Font.Bold = True
         .Font.Color = RGB(255, 255, 255)
         .Interior.Color = RGB(30, 41, 59)
+        .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
     
+    ' Accent Line (PwC Tangerine)
     ws.Range("B4:J4").Interior.Color = RGB(208, 74, 2)
     ws.Rows(4).RowHeight = 4
     
@@ -76,11 +114,19 @@ Private Sub PopulateDomainsSheet(ws As Worksheet)
         .Font.Size = 10
         .Font.Italic = True
         .Font.Color = RGB(100, 116, 139)
+        .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
     
-    ' Card 1: Call Center
-    Call DrawDomainCard(ws, "B7", "D22", "🎧 DOMAIN 1: CALL CENTER OPERATIONS", _
+    ' Navigation Jump Link
+    ws.Range("B6").Value = "👉 Jump to Metadata & KPI Catalog >>"
+    ws.Hyperlinks.Add Anchor:=ws.Range("B6"), Address:="", SubAddress:="'02_Metadata_&_KPI_Catalog'!A1", TextToDisplay:="👉 Jump to Metadata & KPI Catalog >>"
+    ws.Range("B6").Font.Size = 10
+    ws.Range("B6").Font.Bold = True
+    ws.Range("B6").Font.Color = RGB(208, 74, 2)
+    
+    ' Domain Card 1: Call Center Operations
+    Call DrawDomainCard(ws, "B8", "D23", "🎧 DOMAIN 1: CALL CENTER OPERATIONS", _
         "Client: Telecommunications Customer Care Hub", _
         "• Source: 01 Call-Center-Dataset.xlsx (5,000 calls)" & vbCrLf & _
         "• Granularity: 1 Inbound Customer Call Attempt" & vbCrLf & _
@@ -90,8 +136,8 @@ Private Sub PopulateDomainsSheet(ws As Worksheet)
         "• Operational Solution: Shift 2 morning agents to midday triage.", _
         RGB(30, 41, 59))
         
-    ' Card 2: Churn & Retention
-    Call DrawDomainCard(ws, "E7", "G22", "🔄 DOMAIN 2: CUSTOMER CHURN & RETENTION", _
+    ' Domain Card 2: Churn & Retention
+    Call DrawDomainCard(ws, "E8", "G23", "🔄 DOMAIN 2: CUSTOMER CHURN & RETENTION", _
         "Client: Subscription Broadband & Telephony Operator", _
         "• Source: 02 Churn-Dataset.xlsx (7,043 subscriber accounts)" & vbCrLf & _
         "• Granularity: 1 Customer Subscription Profile" & vbCrLf & _
@@ -101,8 +147,8 @@ Private Sub PopulateDomainsSheet(ws As Worksheet)
         "• Operational Solution: 1-Year lock-in incentive + Autopay discount.", _
         RGB(30, 41, 59))
         
-    ' Card 3: Diversity & Inclusion
-    Call DrawDomainCard(ws, "H7", "J22", "⚖️ DOMAIN 3: DIVERSITY & INCLUSION", _
+    ' Domain Card 3: Diversity & Inclusion
+    Call DrawDomainCard(ws, "H8", "J23", "⚖️ DOMAIN 3: DIVERSITY & INCLUSION", _
         "Client: Pharma Group AG (Swiss Enterprise)", _
         "• Source: 03 Diversity-Inclusion-Dataset.xlsx (500 personnel)" & vbCrLf & _
         "• Granularity: 1 Employee Career Snapshot" & vbCrLf & _
@@ -158,9 +204,12 @@ End Sub
 
 Private Sub PopulateCatalogSheet(ws As Worksheet)
     ws.Tab.Color = RGB(30, 41, 59) ' PwC Charcoal
-    ws.DisplayGridlines = False
     
-    ' Title Ribbon
+    ' Activate sheet before setting Window properties (Fix: DisplayGridlines belongs to ActiveWindow)
+    ws.Activate
+    ActiveWindow.DisplayGridlines = False
+    
+    ' Title Ribbon Banner
     ws.Range("B2:J3").Merge
     With ws.Range("B2")
         .Value = "PwC Switzerland | Enterprise Metadata & KPI Governance Catalog"
@@ -169,16 +218,26 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
         .Font.Bold = True
         .Font.Color = RGB(255, 255, 255)
         .Interior.Color = RGB(30, 41, 59)
+        .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
+    
+    ' Accent Line (PwC Tangerine)
     ws.Range("B4:J4").Interior.Color = RGB(208, 74, 2)
     ws.Rows(4).RowHeight = 4
     
+    ' Navigation Back Link
+    ws.Range("B5").Value = "◀ Back to Business Domains"
+    ws.Hyperlinks.Add Anchor:=ws.Range("B5"), Address:="", SubAddress:="'01_Business_Domains'!A1", TextToDisplay:="◀ Back to Business Domains"
+    ws.Range("B5").Font.Size = 10
+    ws.Range("B5").Font.Bold = True
+    ws.Range("B5").Font.Color = RGB(208, 74, 2)
+    
     ' Section 1: Data Model Entities
-    ws.Range("B6").Value = "📦 SECTION 1: DATA MODEL ASSETS & METADATA INVENTORY"
-    ws.Range("B6").Font.Bold = True
-    ws.Range("B6").Font.Size = 12
-    ws.Range("B6").Font.Color = RGB(30, 41, 59)
+    ws.Range("B7").Value = "📦 SECTION 1: DATA MODEL ASSETS & METADATA INVENTORY"
+    ws.Range("B7").Font.Bold = True
+    ws.Range("B7").Font.Size = 12
+    ws.Range("B7").Font.Color = RGB(30, 41, 59)
     
     Dim tblMetaHeaders As Variant
     tblMetaHeaders = Array("Entity_ID", "Business_Domain", "Table_Name", "Table_Type", "Source_File_Sheet", "Row_Count", "Granularity_Definition", "Primary_Key", "Business_Owner")
@@ -198,17 +257,17 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
     
     Dim r As Long, c As Long
     For c = 0 To UBound(tblMetaHeaders)
-        ws.Cells(7, c + 2).Value = tblMetaHeaders(c)
+        ws.Cells(8, c + 2).Value = tblMetaHeaders(c)
     Next c
     
     For r = 0 To UBound(metaData)
         For c = 0 To UBound(metaData(r))
-            ws.Cells(8 + r, c + 2).Value = metaData(r)(c)
+            ws.Cells(9 + r, c + 2).Value = metaData(r)(c)
         Next c
     Next r
     
     Dim rngMeta As Range
-    Set rngMeta = ws.Range(ws.Cells(7, 2), ws.Cells(7 + UBound(metaData) + 1, 2 + UBound(tblMetaHeaders)))
+    Set rngMeta = ws.Range(ws.Cells(8, 2), ws.Cells(8 + UBound(metaData) + 1, 2 + UBound(tblMetaHeaders)))
     Dim loMeta As ListObject
     Set loMeta = ws.ListObjects.Add(xlSrcRange, rngMeta, , xlYes)
     loMeta.Name = "tbl_Metadata_Catalog"
@@ -216,7 +275,7 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
     
     ' Section 2: Executive KPI Dictionary
     Dim kpiStartRow As Long
-    kpiStartRow = 8 + UBound(metaData) + 4
+    kpiStartRow = 9 + UBound(metaData) + 4
     
     ws.Cells(kpiStartRow, 2).Value = "🎯 SECTION 2: EXECUTIVE KPI GOVERNANCE & METRIC DICTIONARY"
     ws.Cells(kpiStartRow, 2).Font.Bold = True
@@ -260,8 +319,8 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
     ws.Columns("A:K").AutoFit
     ws.Columns("A").ColumnWidth = 3
     
-    ' Freeze Top Panes
+    ' Freeze panes at the first row beneath the metadata table header
     ws.Activate
-    ws.Range("B5").Select
+    ws.Range("B9").Select
     ActiveWindow.FreezePanes = True
 End Sub
