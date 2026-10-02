@@ -4,6 +4,17 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.2.0] - 2026-10-02
+
+### 🚀 Added
+- **Pre-Dashboard Orientation Architecture**: Complete design blueprint and guide for establishing the Three-Tier Entryway in Excel workbooks (`docs/08_metadata_and_kpi_governance_guide.md`).
+- **Domain-by-Domain Context Briefing**: Deep forensic business narrative covering the 3 client datasets (Call Centre Telephony, Customer Retention Economics, and Pharma Group AG Executive Parity).
+- **Enterprise Metadata Catalog Table**: Structured 12-table data asset inventory detailing entity IDs, tables, grains, primary keys, source mapping, and data stewards.
+- **Executive KPI Governance Dictionary**: Structured metric registry featuring 10+ core strategic KPIs, business definitions, DAX formulations, targets, polarities, alert thresholds, and executive consumers.
+- **Automated Sheet Builder Macro**: VBA module `vba/modCreateGovernanceSheets.bas` to automatically construct, format in PwC corporate styling, and link `01_Business_Domains` and `02_Metadata_&_KPI_Catalog`.
+
+---
+
 ## [2.1.1] - 2026-10-02
 
 ### 🔧 Fixed

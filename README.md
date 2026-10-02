@@ -145,7 +145,8 @@ pwc-switzerland-virtual-case/
 │   ├── 04_dax_and_kpi_glossary.md         # DAX formulas, storage engine rules & SLAs
 │   ├── 05_dashboard_design_system.md      # UI/UX 8pt grid, color system & wireframes
 │   ├── 06_business_insights_and_playbook.md# Strategic recommendations & ROI models
-│   └── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & Reddit best practices
+│   ├── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & Reddit best practices
+│   └── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer, metadata catalog & KPI governance
 │
 ├── power_query/
 │   ├── 01_staging_queries.m               # Parameterized staging connections
@@ -155,6 +156,7 @@ pwc-switzerland-virtual-case/
 │
 ├── vba/
 │   ├── modAppState.bas                    # Application screen updating & calculation state
+│   ├── modCreateGovernanceSheets.bas      # Pre-dashboard business domains & metadata catalog builder
 │   ├── modDashboardUIUX.bas               # Modern canvas, floating KPI cards & PwC palette engine
 │   ├── modDataRefresh.bas                 # Clean VertiPaq model refresh handler
 │   ├── modExportPDF.bas                   # Automated executive report PDF generator
