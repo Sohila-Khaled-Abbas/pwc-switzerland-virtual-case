@@ -4,6 +4,26 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.4.0] - 2026-10-02
+
+### 🚀 Added & Redesigned
+- **Web-Application UI/UX Dashboard Architecture (`vba/modDashboardUIUX.bas`)**:
+  - Redesigned executive presentation canvases into a modern Web-Application (SaaS) layout.
+  - **Embedded Official PwC Logo**: Automatically detects and permanently embeds `assets/PwC_logo_rgb_colour_pos.png` (`SaveWithDocument = msoTrue`) on the top-left of the master navigation ribbon.
+  - **Top SaaS Navigation Bar**: Built unified header ribbon (`1214pt × 52pt`) featuring corporate branding, interactive navigation pill tabs (`01 Domains`, `02 Catalog`, `03 CC`, `04 CH`, `05 DI`) with active tab highlighting, and live VertiPaq status pill (`[●] LIVE MODEL`).
+  - **Executive Hero Header**: Added domain title, operational subtitle, and web-app action buttons (`Reset Filters`, `Export PDF`).
+  - **BAN KPI Metric Cards (Zero Hardcoded Data)**: Standardized 5 floating KPI cards (`230pt × 84pt`) with top accent lines, uppercase micro-labels, clean `"—"` placeholders ready for DAX/CUBE linkage, and SLA benchmark targets (no hardcoded static counts).
+  - **Left Global Filter Drawer**: Added dedicated vertical sidebar (`230pt × 554pt`) with 3 pre-styled dashed docking slots for date, categorical, and segment slicers.
+  - **2x2 Visual Container Grid**: Built 4 floating cards (`476pt × 270pt`) with chart type badges and dashed drop zones watermarked `[ PIVOTCHART DOCKING ZONE ]`.
+  - **Pixel-Perfect 1214pt Modular Grid**: Perfect alignment across KPI cards, slicer drawer, and chart containers.
+- **Manual Execution Workflow in Master Execution Guide (`docs/00_master_project_execution_guide.md`)**:
+  - Updated Phase 6 with complete manual execution guide (`Alt + F11` $\to$ `F5` or `Developer` $\to$ `Macros` $\to$ `Run`).
+  - Detailed web-app layout geometry, DAX measure linking techniques (formula-linked text boxes and auxiliary CUBE cells), and chart docking instructions.
+- **UI/UX Design Masterclass Updated (`docs/07_dashboard_background_and_uiux_guide.md`)**:
+  - Documented web-app SaaS navigation bar, embedded logo logic, placeholder-driven KPI cards, and visual docking drop zones.
+
+---
+
 ## [2.3.0] - 2026-10-02
 
 ### 🚀 Added
