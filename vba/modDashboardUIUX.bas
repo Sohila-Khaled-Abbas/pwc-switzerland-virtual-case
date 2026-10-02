@@ -243,7 +243,8 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.5
         With .TextFrame2
-            .MarginLeft = 24: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginLeft = 14: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "LIVE VERTIPAQ"
@@ -255,7 +256,7 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
     End With
     
     ' Embed SVG live indicator icon inside the pill
-    Call InsertVectorIcon(ws, "icon_live_indicator.svg", livePillLeft + 8, navTop + 18, 16, 16, "Nav_IconLive")
+    Call InsertVectorIcon(ws, "icon_live_indicator.svg", livePillLeft + 10, navTop + 19, 14, 14, "Nav_IconLive")
 End Sub
 
 Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
@@ -273,6 +274,7 @@ Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
             .Fill.ForeColor.RGB = PWC_ORANGE
             .Line.Visible = msoFalse
             With .TextFrame2
+                .VerticalAnchor = msoAnchorMiddle
                 .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
                 .WordWrap = msoFalse
                 With .TextRange
@@ -288,6 +290,7 @@ Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
             .Line.ForeColor.RGB = PWC_CARD_BORDER
             .Line.Weight = 1
             With .TextFrame2
+                .VerticalAnchor = msoAnchorMiddle
                 .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
                 .WordWrap = msoFalse
                 With .TextRange
@@ -318,7 +321,7 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
     heroW = CANVAS_WIDTH
     
     ' 1. Title & Context Description
-    Set shpTitle = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, heroLeft, topPos, heroW - 360, 46)
+    Set shpTitle = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, heroLeft, topPos, heroW - 380, 46)
     With shpTitle
         .Name = "Hero_TitleText"
         .Fill.Visible = msoFalse
@@ -345,11 +348,12 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
     btnTop = topPos + 8
     btnH = 28
     
-    ' 2. Web App Action Button: Refresh Data (Connected to modDataRefresh)
+    ' Total width: 122 + 8 + 118 + 8 + 110 = 366 pt
     Dim refBtnLeft As Single, refBtnW As Single
-    refBtnW = 114
-    refBtnLeft = heroLeft + heroW - 340
+    refBtnW = 122
+    refBtnLeft = heroLeft + heroW - 366
     
+    ' 2. Web App Action Button: Refresh Data (Connected to modDataRefresh)
     Set shpRefreshBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, refBtnLeft, btnTop, refBtnW, btnH)
     With shpRefreshBtn
         .Name = "Hero_BtnRefresh"
@@ -359,7 +363,8 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.25
         With .TextFrame2
-            .MarginLeft = 24: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Refresh Data"
@@ -370,11 +375,11 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         End With
         .OnAction = "modDataRefresh.RefreshPipelineSynchronously"
     End With
-    Call InsertVectorIcon(ws, "icon_refresh_pipeline.svg", refBtnLeft + 8, btnTop + 6, 16, 16, "Hero_IconRefresh")
+    Call InsertVectorIcon(ws, "icon_refresh_pipeline.svg", refBtnLeft + 10, btnTop + 7, 14, 14, "Hero_IconRefresh")
     
     ' 3. Web App Action Button: Reset Filters (Connected to modFilterController)
     Dim clearBtnLeft As Single, clearBtnW As Single
-    clearBtnW = 110
+    clearBtnW = 118
     clearBtnLeft = refBtnLeft + refBtnW + 8
     
     Set shpClearBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, clearBtnLeft, btnTop, clearBtnW, btnH)
@@ -386,7 +391,8 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.25
         With .TextFrame2
-            .MarginLeft = 22: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Reset Filters"
@@ -397,11 +403,11 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         End With
         .OnAction = "modFilterController.ClearAllFilters"
     End With
-    Call InsertVectorIcon(ws, "icon_reset_filter.svg", clearBtnLeft + 8, btnTop + 6, 16, 16, "Hero_IconReset")
+    Call InsertVectorIcon(ws, "icon_reset_filter.svg", clearBtnLeft + 10, btnTop + 7, 14, 14, "Hero_IconReset")
     
     ' 4. Web App Action Button: Export PDF (Connected to modExportPDF)
     Dim exportBtnLeft As Single, exportBtnW As Single
-    exportBtnW = 100
+    exportBtnW = 110
     exportBtnLeft = clearBtnLeft + clearBtnW + 8
     
     Set shpExportBtn = ws.Shapes.AddShape(msoShapeRoundedRectangle, exportBtnLeft, btnTop, exportBtnW, btnH)
@@ -412,7 +418,8 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.Visible = msoFalse
         .Adjustments.Item(1) = 0.25
         With .TextFrame2
-            .MarginLeft = 20: .MarginTop = 0: .MarginRight = 6: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Export PDF"
@@ -423,7 +430,7 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         End With
         .OnAction = "modExportPDF.ExportExecutiveReport"
     End With
-    Call InsertVectorIcon(ws, "icon_export_pdf.svg", exportBtnLeft + 8, btnTop + 6, 16, 16, "Hero_IconPDF")
+    Call InsertVectorIcon(ws, "icon_export_pdf.svg", exportBtnLeft + 10, btnTop + 7, 14, 14, "Hero_IconPDF")
 End Sub
 
 ' ==============================================================================
