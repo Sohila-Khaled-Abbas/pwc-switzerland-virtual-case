@@ -242,9 +242,12 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
         .Line.ForeColor.RGB = RGB(167, 243, 208)  ' Emerald border
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.5
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
+        .TextFrame.MarginLeft = 16: .TextFrame.MarginRight = 2: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
         With .TextFrame2
             .VerticalAnchor = msoAnchorMiddle
-            .MarginLeft = 14: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 16: .MarginTop = 0: .MarginRight = 2: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "LIVE VERTIPAQ"
@@ -269,6 +272,9 @@ Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
     With shp
         .Name = shapeName
         .Adjustments.Item(1) = 0.25
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
+        .TextFrame.MarginLeft = 0: .TextFrame.MarginRight = 0: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
         If isActive Then
             .Fill.Solid
             .Fill.ForeColor.RGB = PWC_ORANGE
@@ -362,9 +368,12 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.ForeColor.RGB = PWC_CARD_BORDER
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.25
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
+        .TextFrame.MarginLeft = 16: .TextFrame.MarginRight = 2: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
         With .TextFrame2
             .VerticalAnchor = msoAnchorMiddle
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 16: .MarginTop = 0: .MarginRight = 2: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Refresh Data"
@@ -390,9 +399,12 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Line.ForeColor.RGB = PWC_CARD_BORDER
         .Line.Weight = 1
         .Adjustments.Item(1) = 0.25
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
+        .TextFrame.MarginLeft = 16: .TextFrame.MarginRight = 2: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
         With .TextFrame2
             .VerticalAnchor = msoAnchorMiddle
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 16: .MarginTop = 0: .MarginRight = 2: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Reset Filters"
@@ -417,9 +429,12 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
         .Fill.ForeColor.RGB = PWC_CHARCOAL
         .Line.Visible = msoFalse
         .Adjustments.Item(1) = 0.25
+        .TextFrame.VerticalAlignment = xlVAlignCenter
+        .TextFrame.HorizontalAlignment = xlHAlignCenter
+        .TextFrame.MarginLeft = 16: .TextFrame.MarginRight = 2: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
         With .TextFrame2
             .VerticalAnchor = msoAnchorMiddle
-            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .MarginLeft = 16: .MarginTop = 0: .MarginRight = 2: .MarginBottom = 0
             .WordWrap = msoFalse
             With .TextRange
                 .Text = "Export PDF"
