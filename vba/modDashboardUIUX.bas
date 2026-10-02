@@ -1156,6 +1156,9 @@ Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Bo
                         "Fiber Optic Churn Exposure vs Online Security & Tech Support", _
                         "Matrix Table"
                         
+    ' 7. Automated Data Model CUBE Staging & Formula Linking
+    Call AutomateAndLinkKPICards(ws, "CH")
+    
     ws.Range("A1").Select
 End Sub
 
@@ -1265,6 +1268,9 @@ Public Sub BuildDiversityInclusionCanvas(Optional ByVal populateInitialData As B
                         "FY20 Appraisal Rating vs Actual FY21 Promotion Award Rate", _
                         "Matrix Table"
                         
+    ' 7. Automated Data Model CUBE Staging & Formula Linking
+    Call AutomateAndLinkKPICards(ws, "DI")
+    
     ws.Range("A1").Select
 End Sub
 
