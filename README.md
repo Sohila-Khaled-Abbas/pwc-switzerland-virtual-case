@@ -71,7 +71,7 @@ The Power Query M pipeline ingests, validates, enriches, and compacts transactio
 | **`Dim_EmployeeCensus`** | Auxiliary Lookup | Census | `GRADE` | None | Macro benchmark headcounts |
 | **`Dim_CareerLadder`** | Auxiliary Lookup | Hierarchy | `JOB_LEVEL` | None | Executive grade definitions |
 | **`Dim_NationalityCensus`** | Auxiliary Lookup | Compliance | `CITIZENSHIP_CODE` | None | Swiss labor residency quotas |
-| **`Dim_PRA_Equity`** | Auxiliary Lookup | Governance | `RATING_SCORE` | None | Appraisal Gaussian quota distribution |
+| **`Dim_PRA_Equity`** | Auxiliary Lookup | Matrix | `Department` | None | Enterprise grade allocation matrix & appraisal quota equity (500 headcount baseline) |
 
 ---
 

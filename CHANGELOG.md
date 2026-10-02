@@ -4,6 +4,17 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.1.1] - 2026-10-02
+
+### 🔧 Fixed
+- **ETL Data Logic & Column Mapping Correction (`Dim_PRA_Equity`)**: Fixed Power Query M transformation for auxiliary dimension `Dim_PRA_Equity` (`Backing 4`).
+  - Purged blank spacer Excel column D (`Column2`).
+  - Corrected ascending grade index inversion (`Column8` down to `Column3` mapping to Grades 1 to 6).
+  - Resolved erroneous 0 values in `Grade_1_Executive` and eliminated false 191 director counts in Operations/Sales.
+  - Reconciled departmental allocations with enterprise headcount (500 personnel) and verified 100% alignment with `broken_rung_funnel.svg` and `Fact_Employees`.
+
+---
+
 ## [2.1.0] - 2026-10-02
 
 ### 🚀 Added

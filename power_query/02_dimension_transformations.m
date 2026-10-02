@@ -171,7 +171,23 @@ in
 // ------------------------------------------------------------------------------
 // Auxiliary Dimension 8: Dim_PRA_Equity
 // Source: "03 Diversity-Inclusion-Dataset.xlsx" -> Backing 4
-// Note: Col C=Column1 (Department), Col E=Column2 (Grade 1) ... Col J=Column7 (Grade 6)
+// Reconciliation Note:
+// Excel Col C = Column1 (Department)
+// Excel Col D = Column2 (Blank spacer column - dropped)
+// Excel Col E = Column3 (Grade 1 in Backing 1 notation = Level 6 Junior Officer: 191 total)
+// Excel Col F = Column4 (Grade 2 in Backing 1 notation = Level 5 Senior Officer: 103 total)
+// Excel Col G = Column5 (Grade 3 in Backing 1 notation = Level 4 Manager: 87 total)
+// Excel Col H = Column6 (Grade 4 in Backing 1 notation = Level 3 Senior Manager: 62 total)
+// Excel Col I = Column7 (Grade 5 in Backing 1 notation = Level 2 Director: 38 total)
+// Excel Col J = Column8 (Grade 6 in Backing 1 notation = Level 1 Executive: 19 total)
+// Corporate Hierarchy Mapping:
+// Level 1 = Grade_1_Executive (Column8)
+// Level 2 = Grade_2_Director (Column7)
+// Level 3 = Grade_3_Senior_Manager (Column6)
+// Level 4 = Grade_4_Manager (Column5)
+// Level 5 = Grade_5_Senior_Specialist (Column4)
+// Level 6 = Grade_6_Junior_Officer (Column3)
+// Total enterprise baseline: 500 personnel
 // ------------------------------------------------------------------------------
 shared Dim_PRA_Equity = let
     Source = Excel.Workbook(File.Contents("data/03 Diversity-Inclusion-Dataset.xlsx"), null, true),
@@ -185,16 +201,16 @@ shared Dim_PRA_Equity = let
         [Column1] = "Strategy"
     ),
     SelectedCols = Table.SelectColumns(FilteredDepts, {
-        "Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7"
+        "Column1", "Column8", "Column7", "Column6", "Column5", "Column4", "Column3"
     }),
     Renamed = Table.RenameColumns(SelectedCols, {
         {"Column1", "Department"},
-        {"Column2", "Grade_1_Executive"},
-        {"Column3", "Grade_2_Director"},
-        {"Column4", "Grade_3_Senior_Manager"},
+        {"Column8", "Grade_1_Executive"},
+        {"Column7", "Grade_2_Director"},
+        {"Column6", "Grade_3_Senior_Manager"},
         {"Column5", "Grade_4_Manager"},
-        {"Column6", "Grade_5_Senior_Specialist"},
-        {"Column7", "Grade_6_Junior_Officer"}
+        {"Column4", "Grade_5_Senior_Specialist"},
+        {"Column3", "Grade_6_Junior_Officer"}
     }),
     Typed = Table.TransformColumnTypes(Renamed, {
         {"Department", type text},
@@ -204,6 +220,15 @@ shared Dim_PRA_Equity = let
         {"Grade_4_Manager", Int64.Type},
         {"Grade_5_Senior_Specialist", Int64.Type},
         {"Grade_6_Junior_Officer", Int64.Type}
+    }),
+    Reordered = Table.ReorderColumns(Typed, {
+        "Department",
+        "Grade_1_Executive",
+        "Grade_2_Director",
+        "Grade_3_Senior_Manager",
+        "Grade_4_Manager",
+        "Grade_5_Senior_Specialist",
+        "Grade_6_Junior_Officer"
     })
 in
-    Typed;
+    Reordered;
