@@ -4,12 +4,17 @@ Option Explicit
 ' ==============================================================================
 ' PwC Switzerland Virtual Case Experience - Pre-Dashboard Governance Builder
 ' Module: modCreateGovernanceSheets.bas
-' Purpose: Automatically generates, populates, and styles:
+' Purpose: Automatically generates, populates, and professionally styles:
 '          1. "01_Business_Domains" (Business domain briefings & strategic context)
 '          2. "02_Metadata_&_KPI_Catalog" (Metadata inventory & KPI dictionary)
+' Brand Palette:
+'   - Primary Dark Slate: RGB(30, 41, 59)   [#1E293B]
+'   - PwC Tangerine:     RGB(208, 74, 2)   [#D04A02]
+'   - Muted Slate:       RGB(100, 116, 139) [#64748B]
+'   - Zebra Tint:        RGB(248, 250, 252) [#F8FAFC]
+'   - Card Border:       RGB(203, 213, 225) [#CBD5E1]
 ' Placement: Run immediately after Data Model Relationships & Power Pivot setup,
 '            BEFORE creating explicit DAX measures and dashboard views.
-' Brand Palette: PwC Charcoal (RGB 30, 41, 59), Tangerine (RGB 208, 74, 2), Slate (RGB 100, 116, 139)
 ' ==============================================================================
 
 Public Sub BuildGovernanceArchitecture()
@@ -26,7 +31,7 @@ Public Sub BuildGovernanceArchitecture()
     Application.DisplayAlerts = False
     Application.Calculation = xlCalculationManual
     
-    ' 1. Pre-emptively clean up existing ListObjects to prevent name collisions
+    ' 1. Pre-emptively unlist existing tables to prevent global namespace collisions
     For Each s In wb.Worksheets
         For Each lo In s.ListObjects
             If StrComp(lo.Name, "tbl_Metadata_Catalog", vbTextCompare) = 0 Or _
@@ -52,10 +57,10 @@ Public Sub BuildGovernanceArchitecture()
     Set wsCatalog = wb.Worksheets.Add(After:=wsDomains)
     wsCatalog.Name = "02_Metadata_&_KPI_Catalog"
     
-    ' 4. Populate Domains Sheet
+    ' 4. Populate and style Domains Sheet
     Call PopulateDomainsSheet(wsDomains)
     
-    ' 5. Populate Metadata & KPI Sheet
+    ' 5. Populate and style Metadata & KPI Sheet
     Call PopulateCatalogSheet(wsCatalog)
     
     ' 6. Return focus to Domains overview
@@ -69,8 +74,9 @@ CleanExit:
     Application.DisplayAlerts = True
     
     MsgBox "PwC Governance Architecture successfully generated!" & vbCrLf & vbCrLf & _
-           "• '01_Business_Domains': Strategic briefing cards created" & vbCrLf & _
-           "• '02_Metadata_&_KPI_Catalog': 12 Tables & 10 KPIs registered" & vbCrLf & vbCrLf & _
+           "• '01_Business_Domains': 3 Structured Executive Briefing Cards created" & vbCrLf & _
+           "• '02_Metadata_&_KPI_Catalog': 12 Model Tables & 10 Core KPIs registered" & vbCrLf & vbCrLf & _
+           "All formatting, column widths, and brand colors auto-fitted successfully." & vbCrLf & _
            "Next Step: Add explicit DAX measures to VertiPaq model.", _
            vbInformation, "PwC Switzerland BI Architecture"
     Exit Sub
@@ -85,12 +91,21 @@ End Sub
 Private Sub PopulateDomainsSheet(ws As Worksheet)
     ws.Tab.Color = RGB(208, 74, 2) ' PwC Tangerine
     
-    ' Activate sheet before setting Window properties (Fix: DisplayGridlines belongs to ActiveWindow)
+    ' Activate sheet before setting Window properties (DisplayGridlines belongs to ActiveWindow)
     ws.Activate
     ActiveWindow.DisplayGridlines = False
     
-    ' Title Ribbon Banner
-    ws.Range("B2:J3").Merge
+    ' Explicit column widths to prevent merged-cell auto-fit collapse
+    ws.Columns("A").ColumnWidth = 3
+    ws.Columns("B").ColumnWidth = 46  ' Domain Card 1
+    ws.Columns("C").ColumnWidth = 3   ' Spacer Gap
+    ws.Columns("D").ColumnWidth = 46  ' Domain Card 2
+    ws.Columns("E").ColumnWidth = 3   ' Spacer Gap
+    ws.Columns("F").ColumnWidth = 46  ' Domain Card 3
+    ws.Columns("G").ColumnWidth = 3   ' Margin
+    
+    ' Title Ribbon Banner across B2:F3
+    ws.Range("B2:F3").Merge
     With ws.Range("B2")
         .Value = "PwC Switzerland | Client Business Domains & Strategic Context"
         .Font.Name = "Segoe UI"
@@ -101,13 +116,15 @@ Private Sub PopulateDomainsSheet(ws As Worksheet)
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
+    ws.Rows(2).RowHeight = 22
+    ws.Rows(3).RowHeight = 22
     
-    ' Accent Line (PwC Tangerine)
-    ws.Range("B4:J4").Interior.Color = RGB(208, 74, 2)
+    ' Accent Line (PwC Tangerine) across B4:F4
+    ws.Range("B4:F4").Interior.Color = RGB(208, 74, 2)
     ws.Rows(4).RowHeight = 4
     
-    ' Subtitle
-    ws.Range("B5:J5").Merge
+    ' Subtitle across B5:F5
+    ws.Range("B5:F5").Merge
     With ws.Range("B5")
         .Value = "Strategic context, business models, operational grains, and critical risk taxonomies for the 3 client modules."
         .Font.Name = "Segoe UI"
@@ -117,99 +134,175 @@ Private Sub PopulateDomainsSheet(ws As Worksheet)
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
+    ws.Rows(5).RowHeight = 22
     
-    ' Navigation Jump Link
-    ws.Range("B6").Value = "👉 Jump to Metadata & KPI Catalog >>"
-    ws.Hyperlinks.Add Anchor:=ws.Range("B6"), Address:="", SubAddress:="'02_Metadata_&_KPI_Catalog'!A1", TextToDisplay:="👉 Jump to Metadata & KPI Catalog >>"
-    ws.Range("B6").Font.Size = 10
-    ws.Range("B6").Font.Bold = True
-    ws.Range("B6").Font.Color = RGB(208, 74, 2)
+    ' Navigation Jump Link at B6
+    ws.Range("B6").Value = "--> Open Metadata & Executive KPI Catalog >>"
+    ws.Hyperlinks.Add Anchor:=ws.Range("B6"), Address:="", SubAddress:="'02_Metadata_&_KPI_Catalog'!A1", TextToDisplay:="--> Open Metadata & Executive KPI Catalog >>"
+    With ws.Range("B6")
+        .Font.Name = "Segoe UI"
+        .Font.Size = 10
+        .Font.Bold = True
+        .Font.Color = RGB(208, 74, 2)
+        .VerticalAlignment = xlCenter
+    End With
+    ws.Rows(6).RowHeight = 22
+    ws.Rows(7).RowHeight = 10 ' Spacer row
     
-    ' Domain Card 1: Call Center Operations
-    Call DrawDomainCard(ws, "B8", "D23", "🎧 DOMAIN 1: CALL CENTER OPERATIONS", _
-        "Client: Telecommunications Customer Care Hub", _
-        "• Source: 01 Call-Center-Dataset.xlsx (5,000 calls)" & vbCrLf & _
-        "• Granularity: 1 Inbound Customer Call Attempt" & vbCrLf & _
-        "• Core Mission: Balancing operational throughput with CSAT" & vbCrLf & _
-        "• Strategic Risk: 946 Abandoned Callers (Queue drop-offs)" & vbCrLf & _
-        "• Peak Critical Window: 11:00 AM - 2:00 PM (62% Abandonment)" & vbCrLf & _
-        "• Operational Solution: Shift 2 morning agents to midday triage.", _
-        RGB(30, 41, 59))
+    ' Array of bullet points for Card 1 (Call Center)
+    Dim b1 As Variant
+    b1 = Array( _
+        "- Source: 01 Call-Center-Dataset.xlsx (5,000 calls)", _
+        "- Granularity: 1 Inbound Customer Call Attempt", _
+        "- Core Mission: Balancing throughput with CSAT & FCR", _
+        "- Strategic Risk: 946 Abandoned Callers (Queue drop-offs)", _
+        "- Peak Window: 11:00 AM - 2:00 PM (62% Abandonment)", _
+        "- Key Operational Lever: Shift 2 agents to midday peak" _
+    )
+    Call DrawStructuredCard(ws, "B", 1, "CALL CENTER OPERATIONS", _
+        "Telecommunications Customer Care Hub", b1, _
+        "Abandonment < 15.0% | CSAT > 3.50", "03_CallCenter_Cockpit")
         
-    ' Domain Card 2: Churn & Retention
-    Call DrawDomainCard(ws, "E8", "G23", "🔄 DOMAIN 2: CUSTOMER CHURN & RETENTION", _
-        "Client: Subscription Broadband & Telephony Operator", _
-        "• Source: 02 Churn-Dataset.xlsx (7,043 subscriber accounts)" & vbCrLf & _
-        "• Granularity: 1 Customer Subscription Profile" & vbCrLf & _
-        "• Core Mission: Protecting Annual Recurring Revenue ($2.86M at Risk)" & vbCrLf & _
-        "• High-Risk Cohort: Month-to-Month Contracts (42.7% Churn Rate)" & vbCrLf & _
-        "• Friction Triggers: Electronic Check payment failure + Fiber latency" & vbCrLf & _
-        "• Operational Solution: 1-Year lock-in incentive + Autopay discount.", _
-        RGB(30, 41, 59))
+    ' Array of bullet points for Card 2 (Customer Retention)
+    Dim b2 As Variant
+    b2 = Array( _
+        "- Source: 02 Churn-Dataset.xlsx (7,043 accounts)", _
+        "- Granularity: 1 Customer Subscription Profile", _
+        "- Core Mission: Protecting Annual Recurring Revenue ($2.86M Risk)", _
+        "- High-Risk Cohort: Month-to-Month Contracts (42.7% Churn)", _
+        "- Friction Triggers: Electronic Check payment + Fiber latency", _
+        "- Key Operational Lever: 1-Year lock-in + Autopay discount" _
+    )
+    Call DrawStructuredCard(ws, "D", 2, "CUSTOMER CHURN & RETENTION", _
+        "Subscription Broadband & Telephony Operator", b2, _
+        "Churn Rate < 20.0% | ARR Risk < $2.0M", "04_CustomerRetention_Cockpit")
         
-    ' Domain Card 3: Diversity & Inclusion
-    Call DrawDomainCard(ws, "H8", "J23", "⚖️ DOMAIN 3: DIVERSITY & INCLUSION", _
-        "Client: Pharma Group AG (Swiss Enterprise)", _
-        "• Source: 03 Diversity-Inclusion-Dataset.xlsx (500 personnel)" & vbCrLf & _
-        "• Granularity: 1 Employee Career Snapshot" & vbCrLf & _
-        "• Core Mission: Establishing gender parity across executive ranks" & vbCrLf & _
-        "• The Broken Rung: Manager (34.3% F) -> Senior Manager (14.6% F)" & vbCrLf & _
-        "• Promotion Lag: Women average +5.6 months longer before promotion" & vbCrLf & _
-        "• Operational Solution: Targeted executive sponsorship & PRA audits.", _
-        RGB(30, 41, 59))
+    ' Array of bullet points for Card 3 (Diversity & Inclusion)
+    Dim b3 As Variant
+    b3 = Array( _
+        "- Source: 03 Diversity-Inclusion-Dataset.xlsx (500 staff)", _
+        "- Granularity: 1 Employee Career Profile Snapshot", _
+        "- Core Mission: Establishing gender parity across executive ranks", _
+        "- The Broken Rung: Manager (34.3% F) -> Sr Mgr (14.6% F)", _
+        "- Promotion Lag: Women average +5.6 months longer in grade", _
+        "- Key Operational Lever: Executive sponsorship & PRA audits" _
+    )
+    Call DrawStructuredCard(ws, "F", 3, "DIVERSITY & INCLUSION", _
+        "Pharma Group AG (Swiss Enterprise)", b3, _
+        "Broken Rung Gap < 5.0% | Board Parity > 35%", "05_DiversityInclusion_Cockpit")
         
-    ws.Columns("A:K").AutoFit
-    ws.Columns("A").ColumnWidth = 3
+    ' Set fixed comfortable row heights for cards
+    ws.Rows(8).RowHeight = 30  ' Card Header
+    ws.Rows(9).RowHeight = 24  ' Client Subtitle
+    Dim i As Long
+    For i = 10 To 15
+        ws.Rows(i).RowHeight = 21 ' Bullet Rows
+    Next i
+    ws.Rows(16).RowHeight = 24 ' Target KPI
+    ws.Rows(17).RowHeight = 28 ' Action Button
 End Sub
 
-Private Sub DrawDomainCard(ws As Worksheet, topL As String, botR As String, _
-                           title As String, subtitle As String, bullets As String, headerColor As Long)
-    Dim rng As Range
-    Set rng = ws.Range(topL & ":" & botR)
+Private Sub DrawStructuredCard(ws As Worksheet, colL As String, cardNum As Long, _
+                               title As String, clientName As String, bullets As Variant, _
+                               kpiSummary As String, targetSheet As String)
+    Dim r As Long
     
-    ' Outer Border & Background
-    rng.Borders.LineStyle = xlContinuous
-    rng.Borders.Color = RGB(226, 232, 240)
-    rng.Interior.Color = RGB(248, 250, 252)
-    
-    ' Header Box
-    Dim hdrRng As Range
-    Set hdrRng = ws.Range(ws.Range(topL), ws.Cells(ws.Range(topL).Row + 1, ws.Range(botR).Column))
-    hdrRng.Merge
-    With hdrRng
-        .Value = title
+    ' 1. Card Header Row 8
+    With ws.Range(colL & "8")
+        .Value = "[" & Format(cardNum, "00") & "] " & title
         .Font.Name = "Segoe UI"
         .Font.Size = 10.5
         .Font.Bold = True
         .Font.Color = RGB(255, 255, 255)
-        .Interior.Color = headerColor
+        .Interior.Color = RGB(30, 41, 59)
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .Borders(xlEdgeTop).Color = RGB(208, 74, 2)
+        .Borders(xlEdgeTop).Weight = xlMedium
+    End With
+    
+    ' 2. Client Division Subtitle Row 9
+    With ws.Range(colL & "9")
+        .Value = "Client: " & clientName
+        .Font.Name = "Segoe UI"
+        .Font.Size = 9.5
+        .Font.Bold = True
+        .Font.Color = RGB(30, 41, 59)
+        .Interior.Color = RGB(241, 245, 249)
+        .HorizontalAlignment = xlLeft
+        .VerticalAlignment = xlCenter
+        .IndentLevel = 1
+        .Borders(xlEdgeBottom).Color = RGB(226, 232, 240)
+        .Borders(xlEdgeBottom).Weight = xlThin
+    End With
+    
+    ' 3. Bullet Point Rows (Rows 10 to 15) - Each bullet in its own distinct row!
+    For r = 0 To UBound(bullets)
+        With ws.Range(colL & (10 + r))
+            .Value = bullets(r)
+            .Font.Name = "Segoe UI"
+            .Font.Size = 9.5
+            .Font.Color = RGB(51, 65, 85)
+            If r Mod 2 = 0 Then
+                .Interior.Color = RGB(255, 255, 255)
+            Else
+                .Interior.Color = RGB(248, 250, 252)
+            End If
+            .HorizontalAlignment = xlLeft
+            .VerticalAlignment = xlCenter
+            .IndentLevel = 1
+            .Borders(xlEdgeBottom).Color = RGB(241, 245, 249)
+            .Borders(xlEdgeBottom).Weight = xlHairline
+        End With
+    Next r
+    
+    ' 4. Summary Target KPI Row 16
+    With ws.Range(colL & "16")
+        .Value = "Benchmark: " & kpiSummary
+        .Font.Name = "Segoe UI"
+        .Font.Size = 9
+        .Font.Bold = True
+        .Font.Color = RGB(208, 74, 2)
+        .Interior.Color = RGB(255, 247, 237)
+        .HorizontalAlignment = xlLeft
+        .VerticalAlignment = xlCenter
+        .IndentLevel = 1
+        .Borders(xlEdgeTop).Color = RGB(254, 215, 170)
+        .Borders(xlEdgeTop).Weight = xlThin
+    End With
+    
+    ' 5. Action Button Row 17
+    With ws.Range(colL & "17")
+        .Value = "[ View Dashboard ]"
+        ws.Hyperlinks.Add Anchor:=ws.Range(colL & "17"), Address:="", SubAddress:="'" & targetSheet & "'!A1", TextToDisplay:="[ View Dashboard ]"
+        .Font.Name = "Segoe UI"
+        .Font.Size = 9.5
+        .Font.Bold = True
+        .Font.Color = RGB(255, 255, 255)
+        .Interior.Color = RGB(30, 41, 59)
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
     
-    ' Content Box
-    Dim bodyRng As Range
-    Set bodyRng = ws.Range(ws.Cells(ws.Range(topL).Row + 2, ws.Range(topL).Column), ws.Range(botR))
-    bodyRng.Merge
-    With bodyRng
-        .Value = subtitle & vbCrLf & vbCrLf & bullets
-        .Font.Name = "Segoe UI"
-        .Font.Size = 9.5
-        .Font.Color = RGB(30, 41, 59)
-        .HorizontalAlignment = xlLeft
-        .VerticalAlignment = xlTop
-        .WrapText = True
-    End With
+    ' 6. Card Outer Box Border
+    Dim cardRng As Range
+    Set cardRng = ws.Range(colL & "8:" & colL & "17")
+    cardRng.Borders(xlEdgeLeft).Color = RGB(203, 213, 225)
+    cardRng.Borders(xlEdgeLeft).Weight = xlThin
+    cardRng.Borders(xlEdgeRight).Color = RGB(203, 213, 225)
+    cardRng.Borders(xlEdgeRight).Weight = xlThin
+    cardRng.Borders(xlEdgeBottom).Color = RGB(203, 213, 225)
+    cardRng.Borders(xlEdgeBottom).Weight = xlThin
 End Sub
 
 Private Sub PopulateCatalogSheet(ws As Worksheet)
     ws.Tab.Color = RGB(30, 41, 59) ' PwC Charcoal
     
-    ' Activate sheet before setting Window properties (Fix: DisplayGridlines belongs to ActiveWindow)
+    ' Activate sheet before setting Window properties (DisplayGridlines belongs to ActiveWindow)
     ws.Activate
     ActiveWindow.DisplayGridlines = False
     
-    ' Title Ribbon Banner
+    ' Title Ribbon Banner across B2:J3
     ws.Range("B2:J3").Merge
     With ws.Range("B2")
         .Value = "PwC Switzerland | Enterprise Metadata & KPI Governance Catalog"
@@ -221,30 +314,45 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlCenter
     End With
+    ws.Rows(2).RowHeight = 22
+    ws.Rows(3).RowHeight = 22
     
-    ' Accent Line (PwC Tangerine)
+    ' Accent Line (PwC Tangerine) across B4:J4
     ws.Range("B4:J4").Interior.Color = RGB(208, 74, 2)
     ws.Rows(4).RowHeight = 4
     
-    ' Navigation Back Link
-    ws.Range("B5").Value = "◀ Back to Business Domains"
-    ws.Hyperlinks.Add Anchor:=ws.Range("B5"), Address:="", SubAddress:="'01_Business_Domains'!A1", TextToDisplay:="◀ Back to Business Domains"
-    ws.Range("B5").Font.Size = 10
-    ws.Range("B5").Font.Bold = True
-    ws.Range("B5").Font.Color = RGB(208, 74, 2)
+    ' Navigation Back Link at B5
+    ws.Range("B5").Value = "<-- Back to Business Domains"
+    ws.Hyperlinks.Add Anchor:=ws.Range("B5"), Address:="", SubAddress:="'01_Business_Domains'!A1", TextToDisplay:="<-- Back to Business Domains"
+    With ws.Range("B5")
+        .Font.Name = "Segoe UI"
+        .Font.Size = 10
+        .Font.Bold = True
+        .Font.Color = RGB(208, 74, 2)
+        .VerticalAlignment = xlCenter
+    End With
+    ws.Rows(5).RowHeight = 22
+    ws.Rows(6).RowHeight = 10 ' Spacer row
     
-    ' Section 1: Data Model Entities
-    ws.Range("B7").Value = "📦 SECTION 1: DATA MODEL ASSETS & METADATA INVENTORY"
-    ws.Range("B7").Font.Bold = True
-    ws.Range("B7").Font.Size = 12
-    ws.Range("B7").Font.Color = RGB(30, 41, 59)
+    ' ==========================================================================
+    ' SECTION 1: DATA MODEL ASSETS & METADATA INVENTORY (12 TABLES)
+    ' ==========================================================================
+    With ws.Range("B7")
+        .Value = "[SECTION 1] DATA MODEL ASSETS & METADATA INVENTORY (12 TABLES)"
+        .Font.Name = "Segoe UI"
+        .Font.Bold = True
+        .Font.Size = 12
+        .Font.Color = RGB(30, 41, 59)
+        .VerticalAlignment = xlCenter
+    End With
+    ws.Rows(7).RowHeight = 26
     
     Dim tblMetaHeaders As Variant
     tblMetaHeaders = Array("Entity_ID", "Business_Domain", "Table_Name", "Table_Type", "Source_File_Sheet", "Row_Count", "Granularity_Definition", "Primary_Key", "Business_Owner")
     
     Dim metaData As Variant
     metaData = Array( _
-        Array("ENT-01", "Contact Center", "Fact_Calls", "Fact", "01 Call-Center-Dataset.xlsx", 5000, "1 Inbound Call Attempt", "Call_Id", "Head of Customer Care"), _
+        Array("ENT-01", "Contact Center", "Fact_Calls", "Fact", "01 Call-Center-Dataset.xlsx", 5000, "1 Inbound Customer Call Attempt", "Call_Id", "Head of Customer Care"), _
         Array("ENT-02", "Customer Retention", "Fact_Churn", "Fact", "02 Churn-Dataset.xlsx", 7043, "1 Customer Subscription Account", "customerID", "VP Customer Success"), _
         Array("ENT-03", "Workforce Governance", "Fact_Employees", "Fact", "03 Diversity-Inclusion.xlsx", 500, "1 Corporate Employee Profile", "Employee_ID", "Chief People Officer"), _
         Array("ENT-04", "Enterprise Calendar", "DimDate", "Dimension", "M Calendar Generator", 90, "1 Calendar Day (Q1 2021)", "Date", "Enterprise BI Lead"), _
@@ -252,7 +360,10 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
         Array("ENT-06", "Contact Center", "DimTopic", "Dimension", "Derived from Fact_Calls", 5, "1 Inquiry Topic / SLA Tier", "Topic", "QA Director"), _
         Array("ENT-07", "Customer Retention", "DimContract", "Dimension", "Derived from Fact_Churn", 3, "1 Commitment Term Tier", "Contract", "Head of Pricing"), _
         Array("ENT-08", "Workforce Governance", "DimDepartment", "Dimension", "Derived from Fact_Employees", 6, "1 Organizational Unit", "Department", "CHRO"), _
-        Array("ENT-09", "Performance Quotas", "Dim_PRA_Equity", "Auxiliary", "Backing 4", 6, "Department Headcount Matrix", "Department", "Compensation Committee") _
+        Array("ENT-09", "Auxiliary Census", "Dim_EmployeeCensus", "Auxiliary", "Backing 1", 500, "1 Benchmark Employee Record", "Employee ID", "Macro Analytics Lead"), _
+        Array("ENT-10", "Career Pathways", "Dim_CareerLadder", "Auxiliary", "Backing 2", 5, "Grade Promotion Pair", "Base_Job_Level", "Talent Management"), _
+        Array("ENT-11", "Regulatory Parity", "Dim_NationalityCensus", "Auxiliary", "Backing 3", 21, "Country Representation Bucket", "Country_ID", "Corporate Compliance"), _
+        Array("ENT-12", "Performance Quotas", "Dim_PRA_Equity", "Auxiliary", "Backing 4", 6, "Department Headcount Matrix", "Department", "Compensation Committee") _
     )
     
     Dim r As Long, c As Long
@@ -271,32 +382,42 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
     Dim loMeta As ListObject
     Set loMeta = ws.ListObjects.Add(xlSrcRange, rngMeta, , xlYes)
     loMeta.Name = "tbl_Metadata_Catalog"
-    loMeta.TableStyle = "TableStyleMedium2"
+    loMeta.TableStyle = "" ' Remove default cyan style; apply bespoke PwC branding
     
-    ' Section 2: Executive KPI Dictionary
+    ' Style Table 1 with PwC Brand Colors
+    Call ApplyPwCBrandTableStyle(loMeta, ws)
+    
+    ' ==========================================================================
+    ' SECTION 2: EXECUTIVE KPI GOVERNANCE & METRIC DICTIONARY (10 CORE KPIS)
+    ' ==========================================================================
     Dim kpiStartRow As Long
     kpiStartRow = 9 + UBound(metaData) + 4
     
-    ws.Cells(kpiStartRow, 2).Value = "🎯 SECTION 2: EXECUTIVE KPI GOVERNANCE & METRIC DICTIONARY"
-    ws.Cells(kpiStartRow, 2).Font.Bold = True
-    ws.Cells(kpiStartRow, 2).Font.Size = 12
-    ws.Cells(kpiStartRow, 2).Font.Color = RGB(30, 41, 59)
+    With ws.Cells(kpiStartRow, 2)
+        .Value = "[SECTION 2] EXECUTIVE KPI GOVERNANCE & METRIC DICTIONARY (10 CORE KPIS)"
+        .Font.Name = "Segoe UI"
+        .Font.Bold = True
+        .Font.Size = 12
+        .Font.Color = RGB(30, 41, 59)
+        .VerticalAlignment = xlCenter
+    End With
+    ws.Rows(kpiStartRow).RowHeight = 26
     
     Dim tblKPIHeaders As Variant
     tblKPIHeaders = Array("Metric_ID", "Domain", "KPI_Name", "Strategic_Objective", "Plain_Language_Definition", "Target", "Polarity", "Alert_Threshold", "Executive_Consumer")
     
     Dim kpiData As Variant
     kpiData = Array( _
-        Array("KPI-CC-01", "Contact Center", "Abandonment Rate", "Queue Optimization", "% of callers who hung up before connecting", "< 15.0%", "Lower", "> 20.0%", "Head of Customer Care"), _
-        Array("KPI-CC-02", "Contact Center", "Speed of Answer", "Response Time", "Average wait time in seconds for answered calls", "< 60 sec", "Lower", "> 75 sec", "Operations Director"), _
-        Array("KPI-CC-03", "Contact Center", "First Contact Resolution", "Service Quality", "% of answered calls resolved on initial attempt", "> 85.0%", "Higher", "< 80.0%", "QA Director"), _
-        Array("KPI-CC-04", "Contact Center", "CSAT Rating", "Customer Delight", "Average satisfaction score (1 to 5 scale)", "> 3.50", "Higher", "< 3.20", "Chief Customer Officer"), _
-        Array("KPI-CH-01", "Customer Retention", "Customer Churn %", "Subscriber Protection", "Proportion of accounts terminating contract", "< 20.0%", "Lower", "> 25.0%", "VP Customer Success"), _
-        Array("KPI-CH-02", "Customer Retention", "Annual Revenue at Risk", "Revenue Protection", "Annualized recurring revenue lost to churn", "< $2.0M", "Lower", "> $2.5M", "Chief Financial Officer"), _
-        Array("KPI-CH-03", "Customer Retention", "Month-to-Month Churn", "Contract Health", "% of churn events on flexible month-to-month", "< 75.0%", "Lower", "> 85.0%", "Head of Pricing"), _
-        Array("KPI-DI-01", "Workforce Parity", "Broken Rung Gap", "Pipeline Equity", "Drop in female representation from Mgr to Sr Mgr", "< 5.0%", "Lower", "> 15.0%", "Chief People Officer"), _
-        Array("KPI-DI-02", "Workforce Parity", "Executive Parity %", "Leadership Diversity", "Female ratio at Level 1 Executive rank", "> 35.0%", "Higher", "< 25.0%", "Board of Directors"), _
-        Array("KPI-DI-03", "Workforce Parity", "Promotion Velocity Lag", "Tenure Equity", "Time-in-grade gap between female and male promo", "0.0 yrs", "Lower", "> 0.3 yrs", "Compensation Committee") _
+        Array("KPI-CC-01", "Contact Center", "Abandonment Rate", "Queue Optimization", "% of callers who hung up before connecting", "< 15.0%", "Lower (Down)", "> 20.0%", "Head of Customer Care"), _
+        Array("KPI-CC-02", "Contact Center", "Speed of Answer", "Response Time", "Average wait time in seconds for answered calls", "< 60 sec", "Lower (Down)", "> 75 sec", "Operations Director"), _
+        Array("KPI-CC-03", "Contact Center", "First Contact Resolution", "Service Quality", "% of answered calls resolved on initial attempt", "> 85.0%", "Higher (Up)", "< 80.0%", "QA Director"), _
+        Array("KPI-CC-04", "Contact Center", "CSAT Rating", "Customer Delight", "Average satisfaction score on 1.0 to 5.0 scale", "> 3.50", "Higher (Up)", "< 3.20", "Chief Customer Officer"), _
+        Array("KPI-CH-01", "Customer Retention", "Customer Churn %", "Subscriber Protection", "Proportion of accounts terminating contract", "< 20.0%", "Lower (Down)", "> 25.0%", "VP Customer Success"), _
+        Array("KPI-CH-02", "Customer Retention", "Annual Revenue at Risk", "Revenue Protection", "Annualized recurring revenue lost to churn", "< $2.0M", "Lower (Down)", "> $2.5M", "Chief Financial Officer"), _
+        Array("KPI-CH-03", "Customer Retention", "Month-to-Month Churn", "Contract Health", "% of churn events on flexible month-to-month", "< 75.0%", "Lower (Down)", "> 85.0%", "Head of Pricing"), _
+        Array("KPI-DI-01", "Workforce Parity", "Broken Rung Gap", "Pipeline Equity", "Drop in female representation from Mgr to Sr Mgr", "< 5.0%", "Lower (Down)", "> 15.0%", "Chief People Officer"), _
+        Array("KPI-DI-02", "Workforce Parity", "Executive Parity %", "Leadership Diversity", "Female ratio at Level 1 Executive rank", "> 35.0%", "Higher (Up)", "< 25.0%", "Board of Directors"), _
+        Array("KPI-DI-03", "Workforce Parity", "Promotion Velocity Lag", "Tenure Equity", "Time-in-grade gap between female and male promo", "0.0 yrs", "Lower (Down)", "> 0.3 yrs", "Compensation Committee") _
     )
     
     For c = 0 To UBound(tblKPIHeaders)
@@ -314,13 +435,104 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
     Dim loKPI As ListObject
     Set loKPI = ws.ListObjects.Add(xlSrcRange, rngKPI, , xlYes)
     loKPI.Name = "tbl_KPI_Dictionary"
-    loKPI.TableStyle = "TableStyleMedium2"
+    loKPI.TableStyle = "" ' Remove default cyan style; apply bespoke PwC branding
     
-    ws.Columns("A:K").AutoFit
-    ws.Columns("A").ColumnWidth = 3
+    ' Style Table 2 with PwC Brand Colors
+    Call ApplyPwCBrandTableStyle(loKPI, ws)
+    
+    ' Apply Polarity Badges to Table 2
+    Dim cellPolarity As Range
+    For Each cellPolarity In loKPI.ListColumns("Polarity").DataBodyRange
+        If InStr(1, cellPolarity.Value, "Higher", vbTextCompare) > 0 Then
+            cellPolarity.Interior.Color = RGB(236, 253, 245) ' Soft Emerald
+            cellPolarity.Font.Color = RGB(6, 95, 70)
+            cellPolarity.Font.Bold = True
+        ElseIf InStr(1, cellPolarity.Value, "Lower", vbTextCompare) > 0 Then
+            cellPolarity.Interior.Color = RGB(254, 243, 199) ' Soft Amber
+            cellPolarity.Font.Color = RGB(146, 64, 14)
+            cellPolarity.Font.Bold = True
+        End If
+    Next cellPolarity
+    
+    ' ==========================================================================
+    ' INTELLIGENT AUTO-FIT WITH PADDING & MINIMUM COLUMN WIDTHS
+    ' ==========================================================================
+    ws.UsedRange.Columns.AutoFit
+    
+    ' Add generous padding (+4 characters) to prevent filter-arrow clipping
+    Dim col As Range
+    For Each col In ws.Range("B:J").Columns
+        col.ColumnWidth = col.ColumnWidth + 4.5
+    Next col
+    
+    ' Enforce minimum column widths for narrative fields
+    ws.Columns("A").ColumnWidth = 3   ' Left margin
+    ws.Columns("B").ColumnWidth = 14  ' Entity_ID / Metric_ID
+    ws.Columns("C").ColumnWidth = 22  ' Business_Domain / Domain
+    ws.Columns("D").ColumnWidth = 24  ' Table_Name / KPI_Name
+    ws.Columns("E").ColumnWidth = 24  ' Table_Type / Strategic_Objective
+    ws.Columns("F").ColumnWidth = 28  ' Source_File_Sheet / Plain_Language_Definition (Table 1 vs 2)
+    ws.Columns("G").ColumnWidth = 36  ' Granularity_Definition
+    ws.Columns("H").ColumnWidth = 18  ' Primary_Key / Polarity
+    ws.Columns("I").ColumnWidth = 18  ' Alert_Threshold / Row_Count
+    ws.Columns("J").ColumnWidth = 26  ' Business_Owner / Executive_Consumer
     
     ' Freeze panes at the first row beneath the metadata table header
     ws.Activate
     ws.Range("B9").Select
     ActiveWindow.FreezePanes = True
+End Sub
+
+Private Sub ApplyPwCBrandTableStyle(lo As ListObject, ws As Worksheet)
+    Dim cell As Range
+    Dim r As Long
+    
+    ' 1. Header Row Formatting (PwC Charcoal + White Bold + Tangerine bottom border)
+    With lo.HeaderRowRange
+        .Interior.Color = RGB(30, 41, 59)
+        .Font.Name = "Segoe UI"
+        .Font.Size = 10
+        .Font.Bold = True
+        .Font.Color = RGB(255, 255, 255)
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = False
+        .RowHeight = 26
+        .Borders(xlEdgeBottom).Color = RGB(208, 74, 2)
+        .Borders(xlEdgeBottom).Weight = xlMedium
+    End With
+    
+    ' 2. Data Rows Formatting (Alternating Zebra Striping + Subtle Borders)
+    With lo.DataBodyRange
+        .Font.Name = "Segoe UI"
+        .Font.Size = 9.5
+        .Font.Color = RGB(51, 65, 85)
+        .VerticalAlignment = xlCenter
+        .RowHeight = 20
+        .Borders.LineStyle = xlContinuous
+        .Borders.Color = RGB(226, 232, 240)
+        .Borders.Weight = xlThin
+    End With
+    
+    For r = 1 To lo.ListRows.Count
+        If r Mod 2 = 0 Then
+            lo.ListRows(r).Range.Interior.Color = RGB(248, 250, 252) ' Zebra tint
+        Else
+            lo.ListRows(r).Range.Interior.Color = RGB(255, 255, 255) ' Clean white
+        End If
+    Next r
+    
+    ' Center key and numeric columns
+    If lo.Name = "tbl_Metadata_Catalog" Then
+        lo.ListColumns("Entity_ID").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Table_Type").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Primary_Key").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Row_Count").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Row_Count").DataBodyRange.NumberFormat = "#,##0"
+    ElseIf lo.Name = "tbl_KPI_Dictionary" Then
+        lo.ListColumns("Metric_ID").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Target").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Polarity").DataBodyRange.HorizontalAlignment = xlCenter
+        lo.ListColumns("Alert_Threshold").DataBodyRange.HorizontalAlignment = xlCenter
+    End If
 End Sub
