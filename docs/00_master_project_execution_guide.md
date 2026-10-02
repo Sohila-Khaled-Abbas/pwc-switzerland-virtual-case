@@ -388,41 +388,60 @@ For each of the 12 charts below, execute these 7 universal Excel GUI steps:
 
 ---
 
-###### How to Dock the PivotTable into this Card Container (3 Solutions)
+###### How to Dock the Table Inside the Dotted Box (Live & Interactive)
 
-##### Method A: The "Linked Picture" SaaS Technique (Recommended Best Practice)
-This is the enterprise standard used by top financial modelers and dashboard architects:
-
-1. **Delete the Dashed Drop Zone**: On `03_CallCenter_Cockpit`, click the inner dashed box (`DockZone_CC_AgentScorecard`) and press `Delete`. You now have a clean, solid white card container.
-2. **Copy the PivotTable**: Go to `Staging_Pivots` (or wherever your PivotTable is located) and select the entire table range (e.g. `A1:F9` including the agent names and 5 metric columns). Press `Ctrl + C` (Copy).
-3. **Switch to Dashboard**: Click back to `03_CallCenter_Cockpit`.
-4. **Paste as Linked Picture**:
-   - On the Excel Ribbon, go to the **Home** tab.
-   - Click the little downward arrow under the **Paste** button (or press `Alt $\to$ H $\to$ V $\to$ I`).
-   - Under **Other Paste Options**, click the very last icon: **"Linked Picture"** (a clipboard with an image and a small link chain).
-5. **Snap & Fit into Card**:
-   - A floating, pixel-perfect image of your PivotTable appears!
-   - Because it is now a **Drawing Layer object**, you can freely drag it, position it inside `CC_AgentScorecard`, and resize it slightly so it centers beautifully inside the white card frame.
-6. **Live Slicer Interactivity**: The picture maintains a dynamic link (`=Staging_Pivots!$A$1:$F$9`). Whenever you click any Slicer, the underlying PivotTable updates and the picture refreshes **instantly in real time**!
+> [!TIP]
+> **No Need to Remove the Dotted Box!**
+> You do **not** have to delete the dotted box (`DockZone_CC_AgentScorecard`). In fact, keeping the dotted box creates a sleek, recessed card border framing the table like a modern SaaS dashboard widget!
+> 
+> The new dedicated module [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas) automates this whole process in 1 click:
+> 1. Preserves the dotted box and clears its watermark placeholder text.
+> 2. Formats the underlying PivotTable (`pt_Agent` on `Staging_Pivots`) with **HTML/CSS table styling** (Dark `#0F172A` header, crisp white bold text, alternating `#F8FAFC` zebra rows, and pill-style status badges).
+> 3. Docks the live table **INSIDE** the dotted box with clean 8pt inner margins.
+> 4. Remains **100% Live Interactive** with all dashboard slicers!
 
 ---
 
-##### Method B: 1-Click Automated Docker via VBA (Instant)
-If you prefer not to copy and paste manually, open the VBA Immediate Window (`Ctrl + G`) and run:
+##### ⚡ 1-Click Automated Docker via VBA (`modInteractiveScorecard.bas`)
+
+1. In Excel, press **`Alt + F11`** to open the Visual Basic Editor.
+2. In the menu bar, click **File** $\to$ **Import File...** (or press `Ctrl + M`) and select [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas).
+3. Press **`Ctrl + G`** to open the **Immediate Window** at the bottom.
+4. Type this command and press **`Enter`**:
 
 ```vba
-Call modPivotTableFormatting.DockScorecardAsLinkedPicture("SLA_EXCEPTIONS")
+Call modInteractiveScorecard.BuildAndDockInteractiveScorecard
 ```
-*This macro automatically styles the table with Theme 1, converts it into a live Linked Picture, deletes the placeholder watermark, and centers it perfectly inside the card container in 0.1 seconds!*
+
+**What Happens in 0.1 Seconds**:
+- Your dotted box (`DockZone_CC_AgentScorecard`) stays in place, but its background turns pure white and its placeholder text disappears.
+- Your PivotTable `pt_Agent` is transformed with an HTML/CSS theme:
+  - Header: `#0F172A` (Navy Slate) with bold white text.
+  - Alternating rows: `#FFFFFF` and `#F8FAFC` zebra striping.
+  - Green pills (`#DCFCE7`) for Answer Rate $\ge$ 83% and Speed $\le$ 66s.
+  - Red pills (`#FEE2E2`) for Answer Rate < 80%.
+  - Amber pills (`#FEF3C7`) for Speed > 70s.
+  - Gold star badge (`#FEF08A`) for CSAT $\ge$ 3.45.
+- The live table is framed neatly **INSIDE the dotted box**.
+- When you click any Slicer on the dashboard, the numbers and badges update **instantly in real time**!
 
 ---
 
-##### Method C: Visual Option B — The Native PivotChart Alternative
-If you prefer a chart instead of a table:
-- Click `Insert` $\to$ `PivotChart` from the Data Model.
-- Drag `DimAgent[Agent]` to **Axis** and `_Measures[Average CSAT]` to **Values**.
-- Change chart type to **2-D Horizontal Clustered Bar**.
-- Because a PivotChart is already a floating drawing object, it drops right into the box without needing the Linked Picture tool!
+##### 🌐 Standalone HTML5 Report Exporter
+In the same module, you can also run:
+```vba
+Call modInteractiveScorecard.ExportScorecardToHTMLFile
+```
+This reads your live VertiPaq Data Model metrics and outputs a responsive HTML5 page (`agent_scorecard.html`) with full modern CSS styling that you can open in any browser or embed anywhere!
+
+---
+
+##### 🖱️ Manual Excel GUI Method (Keeping the Dotted Box)
+If you prefer doing it manually in the Excel interface:
+1. **Clear Text in Dotted Box**: Click on the dotted box $\to$ click the text $\to$ press `Ctrl + A` $\to$ press `Delete`. Set its Shape Fill to Solid White (`#FFFFFF`). *Do NOT delete the shape itself!*
+2. **Copy the PivotTable**: Go to `Staging_Pivots`, select cells `C3:H11` (the `pt_Agent` table), and press `Ctrl + C`.
+3. **Paste as Linked Picture**: Switch to `03_CallCenter_Cockpit` $\to$ **Home** tab $\to$ click arrow under **Paste** $\to$ click **Linked Picture** (bottom-right icon).
+4. **Position Inside the Dotted Box**: Drag the linked picture directly over the dotted box, resize it slightly so it sits with a small margin inside the dashed border.
 
 ---
 
