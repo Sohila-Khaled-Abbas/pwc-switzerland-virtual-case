@@ -205,83 +205,61 @@ The VBA automation constructs a responsive, mathematically balanced **1214pt mod
 
 #### Step 6.3: Connecting DAX Measures into the Pre-Formed BAN KPI Cards
 
+> [!TIP]
+> **100% Automated by Default via VBA (`AutomateAndLinkKPICards`)**:
+> As of `modDashboardUIUX.bas` v2.6.0, this entire process is **completely automated**!
+> When you run `BuildAllDashboardCanvases()`, VBA automatically:
+> 1. Writes labeled headers to row 64 (`AA64:AE64`).
+> 2. Injects the exact `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[...]")` formulas into row 65 (`AA65:AE65`).
+> 3. Formats each staging cell with enterprise number formats (`#,##0`, `0.00%`, `#,##0.0 "s"`, `$#,##0.00`).
+> 4. Dynamically links each `Value_<cardName>` shape to `='SheetName'!$Col$65` via `DrawingObject.Formula`.
+> **Result**: You do not need to link anything manually! Simply import `modDashboardUIUX.bas` and run `BuildAllDashboardCanvases`.
+
+---
+
 > [!WARNING]
-> **Common Excel Error Resolution: *"This formula is missing a range reference or a defined name"***
-> If you received this error dialog when typing in the Formula Bar, it occurs due to two Excel constraints:
-> 1. **Shape Formula Bar Rule**: Excel shapes and text boxes **CANNOT** evaluate functions like `=CUBEVALUE(...)`, `=SUM(...)`, or calculations directly. A shape's formula bar accepts **only a direct cell reference** (e.g., `='03_CallCenter_Cockpit'!$AA$65`) or a **Defined Range Name**. The `CUBEVALUE` formula must reside in a worksheet cell first!
-> 2. **Single Quotation Rule**: When referencing a worksheet whose name starts with a number or contains special characters (like `'03_CallCenter_Cockpit'`), the sheet name **must be enclosed in single quotes**: `='03_CallCenter_Cockpit'!$AA$65`. If quotes are omitted (e.g. `=03_CallCenter_Cockpit!AA65`), Excel parses `03` as a number, fails to recognize the sheet, and throws this error.
-> 3. **Independent Value Shape**: Each KPI card is built with an independent callout shape (`Value_<cardName>`). Clicking on this shape allows you to link the metric number without overwriting the title label (`Label_<cardName>`) or target subtext (`Subtext_<cardName>`).
-
-Follow these **step-by-step manual instructions** to link your DAX measures dynamically:
-
----
-
-##### Step-by-Step Manual Workflow: Auxiliary CUBE Staging Cells (Standard Enterprise Method)
-
-1. **Step 1: Scroll to the Staging Area Below the Canvas Fold**:
-   On your active dashboard sheet (e.g., `03_CallCenter_Cockpit`), click into row 65 (below the visual grid):
-   - Cell `AA65` $\to$ KPI 1 Value
-   - Cell `AB65` $\to$ KPI 2 Value
-   - Cell `AC65` $\to$ KPI 3 Value
-   - Cell `AD65` $\to$ KPI 4 Value
-   - Cell `AE65` $\to$ KPI 5 Value
-
-2. **Step 2: Enter the CUBEVALUE Formulas into the Cells**:
-   Enter the following formulas directly into the regular Excel cells (NOT inside shapes):
-
-   * **For `03_CallCenter_Cockpit`**:
-     * `AA65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]")`
-     * `AB65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Answer Rate %]")`
-     * `AC65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Abandonment Rate %]")`
-     * `AD65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Avg Speed of Answer]")`
-     * `AE65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Avg CSAT Rating]")`
-
-   * **For `04_CustomerRetention_Cockpit`**:
-     * `AA65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Customers]")`
-     * `AB65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Churn Rate %]")`
-     * `AC65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Revenue at Risk]")`
-     * `AD65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Contract M2M Churn Rate %]")`
-     * `AE65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Tech Tickets per Customer]")`
-
-   * **For `05_DiversityInclusion_Cockpit`**:
-     * `AA65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Headcount]")`
-     * `AB65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Female Headcount Share %]")`
-     * `AC65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Broken Rung Gap]")`
-     * `AD65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Female Promotion Share %]")`
-     * `AE65`: `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Time in Grade Gap]")`
-
-3. **Step 3: Format the Staging Cells**:
-   Apply formatting directly to the cells (`Ctrl + 1`):
-   - Whole counts: `#,##0` (e.g., `5,000` or `7,043`)
-   - Percentages: `0.00%` (e.g., `81.08%` or `26.54%`)
-   - Durations: `#,##0.0 "s"` (e.g., `67.5 s`)
-   - Currency: `$#,##0.00` (e.g., `$2.86M` or `$2,860,000.00`)
-
-4. **Step 4: Select the Shape Border in the KPI Card**:
-   - On the KPI card, click directly on the big number placeholder (`"--"`).
-   - **Crucial**: Ensure the shape's **solid outline border** is selected. Do **NOT** double-click inside the text (there must be NO blinking text cursor inside).
-   - The Name Box in the top-left will show `Value_CC_TotalDemand` (or your card's value shape name).
-
-5. **Step 5: Link the Shape in the Formula Bar**:
-   - Click into the Excel **Formula Bar** at the top (`fx`).
-   - Type `= `
-   - Click on cell `AA65` (or type `='03_CallCenter_Cockpit'!$AA$65`).
-   - Press **Enter**.
-
-6. **Step 6: Slicer Interactivity**:
-   - To make the `CUBEVALUE` formulas react to dashboard slicers dynamically, add the slicer names as arguments:
-     `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]", Slicer_Month, Slicer_Topic)`
-   - The KPI card value will now update in real-time as slicer selections change, with the title and SLA subtext remaining perfectly formatted!
+> **Why the *"This formula is missing a range reference or a defined name"* Error Occurred & How It Was Resolved**:
+> 1. **Shape Formula Bar Rule**: Excel shapes and text boxes **cannot** evaluate functions like `=CUBEVALUE(...)` directly in their formula bar. A shape's formula bar accepts **only a direct cell reference** (e.g. `='03_CallCenter_Cockpit'!$AA$65`) or a Defined Name. The formula must reside in a worksheet cell first!
+> 2. **Single Quotation Rule**: When referencing a sheet name that starts with a number (like `03_CallCenter_Cockpit`), the sheet name **must be enclosed in single quotes**: `='03_CallCenter_Cockpit'!$AA$65`. If quotes are omitted, Excel throws an error.
+> 3. **Independent 3-Layer Shape Architecture**: Each KPI card is structured with **3 separate, independent text shapes**:
+>    - `Label_<cardName>`: Fixed header title (e.g., `TOTAL CALL INTAKE`).
+>    - `Value_<cardName>`: Independent metric value shape (e.g., `Value_CC_TotalDemand`).
+>    - `Subtext_<cardName>`: Fixed benchmark / SLA subtext (e.g., `Gross Intake Demand | 100% Logged`).
+>    **Linking `Value_<cardName>` to a cell replaces only the number itself — the title and subtext are NEVER deleted!**
 
 ---
 
-##### Alternative: Instant Populating via VBA Macro (`SetKPICardValue`)
-If you prefer to populate initial static values or test card rendering without manual cell formulas:
-- In the VBA Immediate Window (`Ctrl + G`), run:
-  ```vba
-  modDashboardUIUX.SetKPICardValue Worksheets("03_CallCenter_Cockpit"), "CC_TotalDemand", "5,000"
-  modDashboardUIUX.SetKPICardValue Worksheets("03_CallCenter_Cockpit"), "CC_Answered", "81.08%"
-  ```
+##### Reference Table: Automated & Manual Staging Cells Mapping
+
+| Sheet Name | Staging Cell | KPI Card Name | Linked DAX Measure | Number Format | Target SLA Subtext |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`03_CallCenter_Cockpit`** | `AA65` | `Value_CC_TotalDemand` | `[Measures].[Total Calls]` | `#,##0` | `Gross Intake Demand \| 100% Logged` |
+| | `AB65` | `Value_CC_Answered` | `[Measures].[Answer Rate %]` | `0.00%` | `SLA Target: >= 80.0% Connected` |
+| | `AC65` | `Value_CC_Abandoned` | `[Measures].[Abandonment Rate %]` | `0.00%` | `SLA Threshold: <= 15.0% Dropped` |
+| | `AD65` | `Value_CC_ASA` | `[Measures].[Avg Speed of Answer]` | `#,##0.0 "s"` | `Target: <= 60.0 Seconds Queue Wait` |
+| | `AE65` | `Value_CC_CSAT` | `[Measures].[Avg CSAT Rating]` | `0.00` | `Service Benchmark: >= 3.50 / 5.0` |
+| **`04_CustomerRetention_Cockpit`** | `AA65` | `Value_CH_Subscribers` | `[Measures].[Total Customers]` | `#,##0` | `Total Active Subscriber Portfolio` |
+| | `AB65` | `Value_CH_ChurnRate` | `[Measures].[Churn Rate %]` | `0.00%` | `Operational Target: < 20.0% Churn` |
+| | `AC65` | `Value_CH_ARRRisk` | `[Measures].[Total Revenue at Risk]` | `$#,##0.00` | `Annualized Lost ARR Exposure` |
+| | `AD65` | `Value_CH_M2MChurn` | `[Measures].[Contract M2M Churn Rate %]` | `0.00%` | `Target: < 25.0% Commitment Retention` |
+| | `AE65` | `Value_CH_Tickets` | `[Measures].[Tech Tickets per Customer]` | `0.00` | `Friction Index: 3+ Tickets Spikes Churn` |
+| **`05_DiversityInclusion_Cockpit`** | `AA65` | `Value_DI_Workforce` | `[Measures].[Total Headcount]` | `#,##0` | `Active Enterprise Headcount Base` |
+| | `AB65` | `Value_DI_FemaleShare` | `[Measures].[Female Headcount Share %]` | `0.00%` | `Corporate Parity Target: 50.0%` |
+| | `AC65` | `Value_DI_BrokenRung` | `[Measures].[Broken Rung Gap]` | `+0.00%;-0.00%;0.00%` | `Critical Manager -> Sr Mgr Pipeline Leak` |
+| | `AD65` | `Value_DI_PromoShare` | `[Measures].[Female Promotion Share %]` | `0.00%` | `Promotions Gender Parity Baseline` |
+| | `AE65` | `Value_DI_TimeInGrade` | `[Measures].[Time in Grade Gap]` | `+0.0 "Mos";-0.0 "Mos";0.0 "Mos"` | `Target: Zero Gender Velocity Variance` |
+
+---
+
+##### Step-by-Step Manual Workflow (For Custom Adaptations)
+
+If you ever wish to re-link a shape manually:
+1. **Select the Outer Border of the Number**: Click on the big metric value (`Value_<cardName>`). Ensure the solid outline border is selected (no blinking cursor inside).
+2. **Formula Bar**: Click into the Excel Formula Bar (`fx`).
+3. **Type the Reference**: Type `= `, then click on the corresponding staging cell (e.g. `AA65`), or type `='03_CallCenter_Cockpit'!$AA$65`.
+4. **Press Enter**: The number callout updates immediately while `Label_` and `Subtext_` remain untouched!
+5. **Slicer Interactivity**: To filter CUBE values with slicers, simply pass slicer names into the cell formula:
+   `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]", Slicer_Topic, Slicer_Agent)`
 
 ---
 

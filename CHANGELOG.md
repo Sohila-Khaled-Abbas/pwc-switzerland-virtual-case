@@ -4,6 +4,28 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.6.0] - 2026-10-02
+
+### 🚀 Added & Automated
+- **Automated CUBEVALUE Engine & 3-Layer Shape Architecture (`vba/modDashboardUIUX.bas`)**:
+  - Re-architected `BuildKPICard` to split every KPI card into 3 distinct, independent Excel shapes:
+    - `Label_<cardName>`: Fixed micro-title label (8pt Bold, `PWC_TEXT_MUTED`).
+    - `Value_<cardName>`: Dedicated dynamic metric callout (22pt Bold, `PWC_TEXT_TITLE`, formula-linkable).
+    - `Subtext_<cardName>`: Fixed SLA / benchmark status badge (8pt, accent color).
+  - **Eliminated Excel Text-Wipe Bug**: When formula-linking an Excel shape to a cell, Excel completely overwrites the shape's formatted text. Decoupling into 3 distinct shapes ensures dynamic cell binding never wipes out the card title or SLA subtext.
+  - **Automated Staging & Linking Routine (`AutomateAndLinkKPICards`)**:
+    - Writes descriptive staging headers in row 64 (`AA64:AE64`).
+    - Injects live `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[...]")` formulas in row 65 (`AA65:AE65`) for all 15 KPI cards across the 3 executive cockpits.
+    - Applies enterprise number formatting (`#,##0`, `0.00%`, `#,##0.0 "s"`, `$#,##0.00`) directly to staged cells.
+    - Automatically binds each `Value_<cardName>` shape to `='SheetName'!$Col$65` via `shpValue.DrawingObject.Formula`.
+  - **Resolved Excel Formula Reference Error**: Addressed *"This formula is missing a range reference or a defined name"* caused by lack of single quotes on numbered sheet names (`03_...`, `04_...`, `05_...`) and illegal function writing in shape formula bars by fully automating proper quoting (`='SheetName'!$Col$65`) in VBA.
+  - Integrated into `BuildCallCenterCanvas`, `BuildCustomerRetentionCanvas`, and `BuildDiversityInclusionCanvas` for 1-click end-to-end canvas generation.
+- **Documentation Masterclass Overhaul**:
+  - Updated `docs/00_master_project_execution_guide.md` Step 6.3 with full error diagnosis, automated engine architecture, and complete 15-KPI reference mapping table.
+  - Updated `docs/07_dashboard_background_and_uiux_guide.md` with visual hierarchy diagram of the 3-layer shape architecture and CUBEVALUE staging grid rules.
+
+---
+
 ## [2.5.0] - 2026-10-02
 
 ### 🔧 Fixed & Enhanced

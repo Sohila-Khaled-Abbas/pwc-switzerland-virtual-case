@@ -55,20 +55,35 @@ Rather than pasting charts directly onto the sheet, place charts inside **floati
 * **Subdue Gridlines**: Value axis gridlines should never be solid black or dark gray; format them in soft `#E2E8F0` at 0.75pt weight.
 * When placed inside a white card, the transparent chart feels natively woven into the application rather than an alien Excel object.
 
-### 4. Visual Hierarchy & Big Number Callouts (BANs)
-Each card should follow a strict typographic hierarchy:
+### 4. Visual Hierarchy & 3-Layer Shape Architecture (BANs)
+
+Each KPI card follows a strict 3-layer typographic hierarchy physically decoupled into independent Excel shapes:
+
 ```
-+-------------------------------------------------------+
-|  TOTAL INBOUND VOLUME                      [SLA Pill] |  <-- 8.5pt Bold UpperCase (#64748B)
-|  5,000                                                |  <-- 22pt-28pt Bold (#0F172A)
-|  Target: 5,000 Inquiries (100% Captured)              |  <-- 8.5pt Regular Subtext / Status
-+-------------------------------------------------------+
++---------------------------------------------------------------+
+| [Card Container: White Rounded Rect with Soft Drop Shadow]    |
+|                                                               |
+|  [Layer 1: Label_CardName]                                    |
+|  TOTAL INBOUND VOLUME                             [SLA Pill]  |  <-- 8pt Bold UpperCase (#64748B)
+|                                                               |
+|  [Layer 2: Value_CardName (Dedicated Dynamic Metric Value)]   |
+|  5,000                                                        |  <-- 22pt Bold Center (#0F172A)
+|  (Formula-linked to CUBEVALUE staging cell AA65)              |
+|                                                               |
+|  [Layer 3: Subtext_CardName]                                  |
+|  Target: >= 80.0% Connected                                   |  <-- 8pt Regular Subtext (#059669)
++---------------------------------------------------------------+
 ```
 
-### 5. Separation of Backend and Presentation
+> [!IMPORTANT]
+> **Why 3 Separate Shapes Instead of a Single Textbox?**  
+> In Microsoft Excel, when an entire shape is formula-linked to a cell (e.g., `='03_CallCenter_Cockpit'!$AA$65`), Excel **completely overwrites all formatted text inside that shape** with the cell value. If title, number, and SLA target reside in a single text box, linking the cell immediately wipes out the title and subtext!  
+> By splitting each card into `Label_<name>`, `Value_<name>`, and `Subtext_<name>`, only `Value_<name>` is bound to the dynamic cell, preserving 100% of the micro-typography and SLA badges permanently.
+
+### 5. Separation of Backend and Presentation (CUBE Staging Grid)
 * **Never mix data entry with visualization**.
 * All raw facts, auxiliary lookups, and pivot data models live on separate sheets (or completely encapsulated inside the **VertiPaq Data Model**).
-* The dashboard sheet contains **zero formulas in visible cells**; every figure is driven by card text boxes linked to DAX measures or pivot tables.
+* Visual dashboards use **off-screen staging rows** (Row 64 for labels, Row 65 for live `=CUBEVALUE(...)` formulas in columns `AA:AE`). The presentation canvas remains pristine, and BAN cards bind dynamically to these off-screen calculation cells.
 
 ---
 
@@ -97,10 +112,11 @@ graph TD
     A["Public Sub BuildAllDashboardCanvases()"] --> B["1. InitializeDashboardCanvas (Hides Grids, Sets #F8FAFC, Standardizes Columns)"]
     A --> C["2. BuildWebTopNavBar (Embeds PwC Logo, Navigation Pills, Live Status Pill)"]
     A --> D["3. BuildHeroHeader (Domain Title, Operational Subtitle, Action Buttons)"]
-    A --> E["4. BuildKPICard (5 BAN Cards: Clean '—' Placeholders + SLA Targets)"]
-    A --> F["5. BuildSlicerPanelContainer (Left Slicer Drawer with 3 Filter Slots)"]
-    A --> G["6. BuildChartContainer (4 Cards with Dashed Drop Zones & Badges)"]
-    A --> H["7. DeclutterAndFormatChart (Strips Borders & Sets 100% Transparency)"]
+    A --> E["4. BuildKPICard (3-Layer Shapes: Label_, Value_, Subtext_)"]
+    A --> F["5. AutomateAndLinkKPICards (Injects CUBEVALUE in AA65:AE65 & Links Value_ Shapes)"]
+    A --> G["6. BuildSlicerPanelContainer (Left Slicer Drawer with 3 Filter Slots)"]
+    A --> H["7. BuildChartContainer (4 Cards with Dashed Drop Zones & Badges)"]
+    A --> I["8. DeclutterAndFormatChart (Strips Borders & Sets 100% Transparency)"]
 ```
 
 ### 1. Web-App Top Navigation Bar with Embedded PwC Logo
@@ -117,15 +133,27 @@ If Dir(logoPath) <> "" Then
 End If
 ```
 
-### 2. BAN KPI Metric Cards (Placeholder-Driven Architecture)
+### 2. 3-Layer BAN KPI Cards & Automated CUBEVALUE Engine
 
-Rather than hardcoding arbitrary static figures, the UI/UX engine formats the KPI cards with clean placeholders (`"—"`) and clear operational SLA targets, making the cards immediately ready for DAX / formula connection:
+Rather than requiring tedious manual cell linking or suffering from the Excel formula error *"This formula is missing a range reference or a defined name"*, `AutomateAndLinkKPICards(ws, moduleCode)` completely automates data staging and shape linking across all 15 KPI cards:
 
 ```vba
-' KPI Card creation snippet:
-BuildKPICard ws, "CC_Answered", 270, 130, 230, 84, _
-             "Operational Answer Rate", "SLA Target: >= 80.0% Connected", PWC_SUCCESS_GREEN
+' Automated CUBEVALUE staging and linking snippet from modDashboardUIUX.bas:
+Public Sub AutomateAndLinkKPICards(ws As Worksheet, moduleCode As String)
+    ' 1. Writes staging headers in row 64 (AA64:AE64)
+    ' 2. Injects live DAX CUBEVALUE formulas in row 65 (AA65:AE65):
+    '    ws.Range("AA65").Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Calls]"")"
+    ' 3. Applies professional enterprise number formatting:
+    '    ws.Range("AA65").NumberFormat = "#,##0"
+    ' 4. Binds dedicated Value_ shape directly to staged cell:
+    '    shpValue.DrawingObject.Formula = "='" & ws.Name & "'!$" & cols(i) & "$65"
+End Sub
 ```
+
+#### Why Excel Throws *"This formula is missing a range reference or a defined name"* and How VBA Fixes It:
+1. **Direct Formula Bar Rejection**: Excel shape formula bars **never** accept functions like `=CUBEVALUE(...)` directly. They only accept direct cell references (`='Sheet'!$Cell`) or Defined Names.
+2. **Sheet Names Starting with Digits**: When a sheet name begins with a number (e.g., `03_CallCenter_Cockpit`), Excel **requires single quotes** around the sheet name: `='03_CallCenter_Cockpit'!$AA$65`. Without quotes, Excel evaluates `03` as an invalid numeric prefix and throws the range reference error dialog.
+3. **Automated Zero-Click Execution**: Calling `BuildAllDashboardCanvases` automatically builds the cards, writes the CUBE formulas to row 65, formats the numbers, and links every single `Value_` shape with proper single-quoted references—with 0 manual clicks required.
 
 ### 3. Visual Docking Zones & Chart Decluttering
 
