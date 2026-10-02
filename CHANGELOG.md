@@ -7,12 +7,16 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 ## [2.6.0] - 2026-10-02
 
 ### 🚀 Added & Automated
+- **26pt Bold Executive BAN Typography (`vba/modDashboardUIUX.bas`)**:
+  - Upgraded `Value_<cardName>` metric callouts to **26pt Bold** high-contrast typography in executive slate (`#0F172A`, `PWC_DARK_SLATE`), increasing textbox height to 40pt with zero margins and middle vertical alignment.
+  - **Countered Excel Font-Reset Bug**: Programmatically re-applies 26pt bold styling across both `TextFrame2.TextRange.Font` and legacy `TextFrame.Characters.Font` immediately after `DrawingObject.Formula` assignment, preventing Excel from defaulting formula-linked shapes to 9pt regular.
+  - Expanded staging columns `AA:AE` width to `18` via VBA, permanently eliminating numeric text truncation (`###`) in off-screen CUBE calculation cells.
 - **Automated CUBEVALUE Engine & 3-Layer Shape Architecture (`vba/modDashboardUIUX.bas`)**:
   - Re-architected `BuildKPICard` to split every KPI card into 3 distinct, independent Excel shapes:
     - `Label_<cardName>`: Fixed micro-title label (8pt Bold, `PWC_TEXT_MUTED`).
-    - `Value_<cardName>`: Dedicated dynamic metric callout (22pt Bold, `PWC_TEXT_TITLE`, formula-linkable).
+    - `Value_<cardName>`: Dedicated dynamic metric callout (26pt Bold, `PWC_DARK_SLATE`, formula-linkable).
     - `Subtext_<cardName>`: Fixed SLA / benchmark status badge (8pt, accent color).
-  - **Eliminated Excel Text-Wipe Bug**: When formula-linking an Excel shape to a cell, Excel completely overwrites the shape's formatted text. Decoupling into 3 distinct shapes ensures dynamic cell binding never wipes out the card title or SLA subtext.
+  - **Eliminated Excel Text-Wipe Bug**: Decoupling into 3 independent shapes ensures dynamic cell binding never wipes out the card title or SLA subtext.
   - **Automated Staging & Linking Routine (`AutomateAndLinkKPICards`)**:
     - Writes descriptive staging headers in row 64 (`AA64:AE64`).
     - Injects live `=CUBEVALUE("ThisWorkbookDataModel", "[Measures].[...]")` formulas in row 65 (`AA65:AE65`) for all 15 KPI cards across the 3 executive cockpits.
@@ -20,9 +24,13 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
     - Automatically binds each `Value_<cardName>` shape to `='SheetName'!$Col$65` via `shpValue.DrawingObject.Formula`.
   - **Resolved Excel Formula Reference Error**: Addressed *"This formula is missing a range reference or a defined name"* caused by lack of single quotes on numbered sheet names (`03_...`, `04_...`, `05_...`) and illegal function writing in shape formula bars by fully automating proper quoting (`='SheetName'!$Col$65`) in VBA.
   - Integrated into `BuildCallCenterCanvas`, `BuildCustomerRetentionCanvas`, and `BuildDiversityInclusionCanvas` for 1-click end-to-end canvas generation.
+- **Power Pivot In-Memory VertiPaq Measure Deployment (`PWC_Switzerland_Virtual_Case.xlsm`)**:
+  - Deployed 55+ missing explicit DAX measures and aliases directly into the VertiPaq tabular model (`_Measures`), bringing total active model measures to 67.
+  - Completely resolved naming conflicts: added bidirectional alias bindings between `[Total Demand]` / `[Total Calls]` / `[Total Inbound Calls]`, `[At-Risk MRR]` / `[Total Revenue at Risk]`, `[Female Count]` / `[Female Employees]`, `[Total Employees]` / `[Total Headcount]`, etc.
+  - Updated `dax/02_Customer_Retention_Measures.dax` and `dax/03_Diversity_Inclusion_Measures.dax` to match all measures and aliases in the data model.
 - **Documentation Masterclass Overhaul**:
   - Updated `docs/00_master_project_execution_guide.md` Step 6.3 with full error diagnosis, automated engine architecture, and complete 15-KPI reference mapping table.
-  - Updated `docs/07_dashboard_background_and_uiux_guide.md` with visual hierarchy diagram of the 3-layer shape architecture and CUBEVALUE staging grid rules.
+  - Updated `docs/07_dashboard_background_and_uiux_guide.md` with visual hierarchy diagram of the 3-layer shape architecture, CUBEVALUE staging grid rules, and 26pt bold typography guidelines.
 
 ---
 
