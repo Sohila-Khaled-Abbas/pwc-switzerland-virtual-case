@@ -4,21 +4,24 @@ Option Explicit
 ' ==============================================================================
 ' PwC Switzerland Digital Accelerator — Publication-Grade PDF Generator
 ' Exports active dashboard canvas formatted for A4 Landscape executive briefing
+' Connected to modAppState and modDashboardUIUX
 ' ==============================================================================
 
 Public Sub ExportExecutiveReport()
     Dim ws As Worksheet
     Dim exportPath As String
+    Dim cleanSheetName As String
     Dim fileName As String
     
     On Error GoTo ErrorHandler
     
     Set ws = ActiveSheet
     exportPath = ThisWorkbook.Path & "\"
-    fileName = exportPath & "PwC_Call_Center_Executive_Report_" & Format(Now, "YYYYMMDD_HHMM") & ".pdf"
+    cleanSheetName = Replace(ws.Name, " ", "_")
+    fileName = exportPath & "PwC_" & cleanSheetName & "_Executive_Report_" & Format(Now, "YYYYMMDD_HHMM") & ".pdf"
     
     modAppState.FreezeAppState
-    Application.StatusBar = "Generating publication-grade PDF report..."
+    Application.StatusBar = "Generating publication-grade PDF report for " & ws.Name & "..."
     
     With ws.PageSetup
         .Orientation = xlLandscape
@@ -27,6 +30,10 @@ Public Sub ExportExecutiveReport()
         .FitToPagesWide = 1
         .FitToPagesTall = 1
         .PrintGridlines = False
+        .LeftMargin = Application.InchesToPoints(0.25)
+        .RightMargin = Application.InchesToPoints(0.25)
+        .TopMargin = Application.InchesToPoints(0.25)
+        .BottomMargin = Application.InchesToPoints(0.25)
     End With
     
     ws.ExportAsFixedFormat _
@@ -38,10 +45,16 @@ Public Sub ExportExecutiveReport()
         OpenAfterPublish:=False
         
     modAppState.RestoreAppState
-    MsgBox "Executive Report successfully generated at:" & vbCrLf & fileName, vbInformation, "PwC PDF Publisher"
+    
+    If Application.UserControl Then
+        MsgBox "Executive PDF Report successfully generated for '" & ws.Name & "'!" & vbCrLf & vbCrLf & _
+               "File saved at:" & vbCrLf & fileName, vbInformation, "PwC PDF Publisher"
+    End If
     Exit Sub
 
 ErrorHandler:
     modAppState.RestoreAppState
-    MsgBox "Export Failed: " & Err.Description, vbCritical, "PwC PDF Publisher Error"
+    If Application.UserControl Then
+        MsgBox "Export Failed: " & Err.Description, vbCritical, "PwC PDF Publisher Error"
+    End If
 End Sub
