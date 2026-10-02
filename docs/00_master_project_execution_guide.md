@@ -379,16 +379,60 @@ For each of the 12 charts below, execute these 7 universal Excel GUI steps:
 ###### Visual 1.4: Representative Quality & CSAT Audit (Right-Bottom)
 * **Container Name**: `CC_AgentScorecard` | **Badge**: `Matrix Table`
 * **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
-* **Visual Option A (Compact Native PivotTable Grid)**:
-  - Drag the PivotTable itself onto `03_CallCenter_Cockpit` into this card zone.
-  - **Rows**: `DimAgent[Agent]`
-  - **Values**: `[Total Calls]`, `[Answer Rate %]`, `[Resolution Rate %]`, `[Average Speed of Answer (s)]`, `[Average CSAT]`.
-  - **PivotTable Style**: Choose **Pivot Style Light 1** or **None** (transparent table).
-  - Add Conditional Formatting Data Bars: Home $\to$ Conditional Formatting $\to$ Data Bars $\to$ Soft Tangerine for `Total Calls`, Soft Emerald for `Answer Rate %`.
-* **Visual Option B (Horizontal Ranked Bar Chart)**:
-  - **Chart Type**: 2-D Clustered Bar.
-  - **Axis**: `DimAgent[Agent]` | **Values**: `[Average CSAT]` sorted descending.
-  - Bar Fill: `#0F172A` (Navy Slate) with Dan & Martha highlighted in `#D04A02`.
+* **PivotTable Layout**:
+  - **Rows**: `DimAgent[Agent]` (Dan, Martha, Becky, Diane, Greg, Jim, Joe, Stewart)
+  - **Values**:
+    1. `_Measures[Total Calls]` $\to$ Header: `Calls Taken` | Format: `#,##0`
+    2. `_Measures[Answer Rate %]` $\to$ Header: `Answer Rate %` | Format: `0.0%`
+    3. `_Measures[Resolution Rate %]` $\to$ Header: `FCR Rate %` | Format: `0.0%`
+    4. `_Measures[Average Speed of Answer (s)]` $\to$ Header: `Avg Speed (s)` | Format: `0.0 "s"`
+    5. `_Measures[Average CSAT]` $\to$ Header: `Avg CSAT` | Format: `0.00`
+  - **Grand Totals**: Set **Off for Rows and Columns** (averaging percentages/CSAT in a grand total row is statistically invalid).
+
+---
+
+###### 4 Theme-Compliant Executive Conditional Formatting Options
+
+Rather than generic rainbow spreadsheets, choose one of these four curated enterprise presentation styles:
+
+| Theme | Visual Philosophy | Formatting Details by Column | Best Suited For |
+| :--- | :--- | :--- | :--- |
+| **Theme 1: Executive SLA Exception Matrix**<br>*(Recommended Default)* | **Discreet SaaS Status Badges**<br>Highlights only operational breaches and top achievements; leaves normal performers neutral. | • `Calls Taken`: Soft Slate Data Bar (`#CBD5E1`).<br>• `Answer Rate %`: `< 80.0%` $\to$ Soft Red Badge (`#FEE2E2` fill, `#991B1B` bold text); `$\ge$ 83.0%` $\to$ Soft Green Badge (`#DCFCE7` / `#166534`).<br>• `FCR Rate %`: `< 89.0%` $\to$ Soft Amber Badge (`#FEF3C7` / `#92400E`); `$\ge$ 91.0%` $\to$ Soft Green.<br>• `Avg Speed (s)` *(Inverted!)*: `> 70.0s` $\to$ Soft Amber Warning (Stewart at 70.8s); `$\le$ 66.0s` $\to$ Soft Green (Becky at 65.3s).<br>• `Avg CSAT`: `< 3.35` $\to$ Soft Red; `$\ge$ 3.45` $\to$ Soft Green Star (Dan & Martha). | Executive operations reviews where immediate exception triage is needed without visual noise. |
+| **Theme 2: Dual-Engine Micro Data Bars** | **Normalized Metric Bars**<br>Visualizes relative performance ratios within a tight numerical range. | • `Calls Taken`: Gradient Slate Bar (`#1E293B`).<br>• `Answer Rate %`: Emerald Bar (`#059669`) scaled from **70% to 100%** (so 78% vs 84% variance is clearly visible).<br>• `FCR Rate %`: Executive Blue Bar (`#1E40AF`) scaled from **80% to 100%**.<br>• `Avg Speed (s)`: Amber Bar (`#D97706`) scaled from **60s to 75s**.<br>• `Avg CSAT`: PwC Tangerine Bar (`#D04A02`) scaled from **3.00 to 3.60**. | Performance pacing dashboards where rapid visual scanning of relative volumes is preferred. |
+| **Theme 3: PwC 3-Tier Soft Color Scales** | **Executive Heatmap**<br>Continuous pastel gradient fills across all cells. | • `Calls Taken`: Muted Data Bar.<br>• `Answer Rate %`, `FCR %`, `Avg CSAT`: 3-Color Pastel Scale (Min: `#FEE2E2` Soft Red $\to$ Mid: `#FEF3C7` Soft Yellow $\to$ Max: `#DCFCE7` Soft Green).<br>• `Avg Speed (s)`: **Inverted 3-Color Scale** (Min / Low seconds: Soft Green $\to$ Max / High seconds: Soft Red). | Deep-dive audit grids and root-cause exploratory analysis. |
+| **Theme 4: Top/Bottom Milestone Badges** | **Ultra-Clean Editorial Minimalist**<br>Only tags the single #1 Star and single #1 Coaching Need per metric. | • `Calls Taken`: Muted Data Bar.<br>• `Answer Rate`: Top 1 (`Jim: 84.3%` in Green); Bottom 1 (`Stewart: 78.4%` in Red).<br>• `FCR Rate`: Top 1 (`Martha: 91.4%` in Green); Bottom 1 (`Stewart: 88.5%` in Red).<br>• `Avg Speed (s)`: Fastest 1 (`Becky: 65.3s` in Green); Slowest 1 (`Stewart: 70.8s` in Amber).<br>• `Avg CSAT`: Top 1 (`Dan: 3.48` in Green); Bottom 1 (`Stewart: 3.32` in Red). | Formal Board briefings and high-level C-suite presentations. |
+
+---
+
+###### ⚡ 1-Click Automated Formatting via VBA (`modPivotTableFormatting.bas`)
+
+A dedicated module [`vba/modPivotTableFormatting.bas`](../vba/modPivotTableFormatting.bas) has been provided and pre-imported into `PWC_Switzerland_Virtual_Case.xlsm`.
+
+To format and style your PivotTable instantly:
+1. Open the VBA Immediate Window by pressing `Ctrl + G` inside Excel.
+2. Run your preferred theme command:
+
+```vba
+' Theme 1: Executive SLA Exception Matrix (Recommended Default)
+Call modPivotTableFormatting.StyleAgentScorecardPivotTable("SLA_EXCEPTIONS")
+
+' Theme 2: Dual-Engine Micro Data Bars
+Call modPivotTableFormatting.StyleAgentScorecardPivotTable("DATA_BARS")
+
+' Theme 3: Continuous Pastel Heatmap Scales
+Call modPivotTableFormatting.StyleAgentScorecardPivotTable("COLOR_SCALES")
+
+' Theme 4: Top/Bottom Milestone Badges
+Call modPivotTableFormatting.StyleAgentScorecardPivotTable("TOP_BOTTOM")
+```
+
+**What the automation handles in 0.1 seconds**:
+- Applies **Tabular Layout** and disables column/row grand totals.
+- Configures **Segoe UI 8.5 pt** typography and sets **PivotStyleLight1**.
+- Formats headers to professional captions (`Calls Taken`, `Answer Rate %`, `FCR Rate %`, `Avg Speed (s)`, `Avg CSAT`).
+- Enforces proper number formats (`#,##0`, `0.0%`, `0.0 "s"`, `0.00`).
+- Clears conflicting rules and builds the chosen conditional formatting rules programmatically!
+
 
 ---
 
