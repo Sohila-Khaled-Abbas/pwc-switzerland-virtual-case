@@ -464,13 +464,36 @@ Public Sub DockScorecardAsLinkedPicture(Optional ByVal themeChoice As String = "
     dockW = 448
     dockH = 210
     
+    On Error Resume Next
     Set shpDockZone = wsDash.Shapes("DockZone_CC_AgentScorecard")
+    If shpDockZone Is Nothing Then
+        Dim shpItem As Shape, shpBox As Shape
+        Set shpBox = wsDash.Shapes("Container_CC_AgentScorecard")
+        If Not shpBox Is Nothing Then
+            For Each shpItem In wsDash.Shapes
+                If shpItem.Name <> shpBox.Name And _
+                   InStr(1, shpItem.Name, "Header", vbTextCompare) = 0 And _
+                   InStr(1, shpItem.Name, "Badge", vbTextCompare) = 0 And _
+                   InStr(1, shpItem.Name, "LinkedPic", vbTextCompare) = 0 Then
+                    If shpItem.Left >= (shpBox.Left - 5) And _
+                       (shpItem.Left + shpItem.Width) <= (shpBox.Left + shpBox.Width + 5) And _
+                       shpItem.Top >= (shpBox.Top + 25) And _
+                       (shpItem.Top + shpItem.Height) <= (shpBox.Top + shpBox.Height + 5) Then
+                        shpItem.Name = "DockZone_CC_AgentScorecard"
+                        Set shpDockZone = shpItem
+                        Exit For
+                    End If
+                End If
+            Next shpItem
+        End If
+    End If
+    On Error GoTo 0
+    
     If Not shpDockZone Is Nothing Then
         dockLeft = shpDockZone.Left
         dockTop = shpDockZone.Top
         dockW = shpDockZone.Width
         dockH = shpDockZone.Height
-        ' Hide the dashed placeholder watermark
         shpDockZone.Visible = msoFalse
     End If
     

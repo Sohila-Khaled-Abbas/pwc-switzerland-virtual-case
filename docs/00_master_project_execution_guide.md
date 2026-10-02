@@ -409,28 +409,41 @@ The script now handles **everything end-to-end**—you do not even need to creat
 1. In Excel, press **`Alt + F11`** to open the Visual Basic Editor.
 2. In the menu bar, click **File** $\to$ **Import File...** (or press `Ctrl + M`) and select [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas).
 3. Press **`Ctrl + G`** to open the **Immediate Window** at the bottom.
-4. Type this command and press **`Enter`**:
+4. Choose between **Modular Step-by-Step** execution or **1-Click Full Automation**:
+
+##### Option A: 1-Click Full Automation (Recommended)
+Type this command in the Immediate Window and press **`Enter`**:
 
 ```vba
 Call modInteractiveScorecard.BuildAndDockInteractiveScorecard
 ```
 
-**What the Macro Executes Automatically in 0.1 Seconds**:
-1. **Automated Data Model PivotTable Creation**:
-   - Connects to `ThisWorkbookDataModel`.
-   - Creates the `Staging_Pivots` worksheet (if missing).
-   - Generates the `pt_Agent` PivotTable from scratch with `DimAgent[Agent]` in Rows.
-   - Adds all 5 DAX measures (`Calls Taken`, `Answer Rate %`, `FCR Rate %`, `Avg Speed (s)`, `Avg CSAT`).
-   - Automatically wires the PivotTable to all dashboard Slicers (`Month`, `Topic`, `Agent`).
-2. **HTML / CSS Visual Styling**:
-   - Applies `#0F172A` (Navy Slate) dark header with crisp white text.
-   - Applies alternating `#FFFFFF` and `#F8FAFC` zebra rows with subtle `#E2E8F0` borders.
-   - Enforces executive pill badges for SLA pass (Green), SLA breach (Red), Speed warnings (Amber), and CSAT stars (Gold).
-3. **Preserves the Dotted Box & Docks the Live Table**:
-   - Keeps `DockZone_CC_AgentScorecard` in place as the card boundary.
-   - Clears its watermark placeholder text and sets a crisp white background.
-   - Docks the table neatly **INSIDE the dotted box** with 8pt inner margins.
-   - **100% Live Interactive**: Click any Slicer item on the dashboard, and the scorecard updates in real time!
+##### Option B: Step-by-Step Modular Control
+If you want to create and inspect the PivotTable **before** applying styles and docking:
+
+1. **Step 1 — Create PivotTable Only**:
+   ```vba
+   Call modInteractiveScorecard.Step1_CreateScorecardPivotTable
+   ```
+   *Creates `pt_Agent` on `Staging_Pivots` from the VertiPaq Data Model with all 5 DAX measures, rows, and slicer wires, and navigates to the table so you can review it.*
+
+2. **Step 2 — Apply Modern HTML/CSS Styling**:
+   ```vba
+   Call modInteractiveScorecard.Step2_FormatScorecardHTML
+   ```
+   *Applies `#0F172A` Navy Slate header, white bold text, alternating `#FFFFFF`/`#F8FAFC` zebra rows, and pill status badges.*
+
+3. **Step 3 — Dock Live Table into Dotted Box**:
+   ```vba
+   Call modInteractiveScorecard.Step3_DockScorecardToDashboard
+   ```
+   *Self-heals the docking zone, clears placeholder text, and docks the live table inside `DockZone_CC_AgentScorecard` with 8pt inner margins.*
+
+---
+
+**Self-Healing Architecture**:
+- **Automatic DockZone Detection**: If `DockZone_CC_AgentScorecard` was deleted, moved, or misnamed (e.g., duplicated from quadrant), the macro automatically detects the inner shape inside `Container_CC_AgentScorecard`, renames it, or reconstructs the dotted rounded frame dynamically.
+- **100% Slicer Interactivity**: The docked table reacts instantaneously to all dashboard slicers (`Month`, `Topic`, `Agent`).
 
 
 ---
