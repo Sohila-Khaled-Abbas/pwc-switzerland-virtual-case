@@ -402,7 +402,9 @@ For each of the 12 charts below, execute these 7 universal Excel GUI steps:
 
 ---
 
-##### ⚡ 1-Click Automated Docker via VBA (`modInteractiveScorecard.bas`)
+##### ⚡ 100% Fully Automated 1-Click Docker via VBA (`modInteractiveScorecard.bas`)
+
+The script now handles **everything end-to-end**—you do not even need to create the PivotTable manually beforehand!
 
 1. In Excel, press **`Alt + F11`** to open the Visual Basic Editor.
 2. In the menu bar, click **File** $\to$ **Import File...** (or press `Ctrl + M`) and select [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas).
@@ -413,17 +415,23 @@ For each of the 12 charts below, execute these 7 universal Excel GUI steps:
 Call modInteractiveScorecard.BuildAndDockInteractiveScorecard
 ```
 
-**What Happens in 0.1 Seconds**:
-- Your dotted box (`DockZone_CC_AgentScorecard`) stays in place, but its background turns pure white and its placeholder text disappears.
-- Your PivotTable `pt_Agent` is transformed with an HTML/CSS theme:
-  - Header: `#0F172A` (Navy Slate) with bold white text.
-  - Alternating rows: `#FFFFFF` and `#F8FAFC` zebra striping.
-  - Green pills (`#DCFCE7`) for Answer Rate $\ge$ 83% and Speed $\le$ 66s.
-  - Red pills (`#FEE2E2`) for Answer Rate < 80%.
-  - Amber pills (`#FEF3C7`) for Speed > 70s.
-  - Gold star badge (`#FEF08A`) for CSAT $\ge$ 3.45.
-- The live table is framed neatly **INSIDE the dotted box**.
-- When you click any Slicer on the dashboard, the numbers and badges update **instantly in real time**!
+**What the Macro Executes Automatically in 0.1 Seconds**:
+1. **Automated Data Model PivotTable Creation**:
+   - Connects to `ThisWorkbookDataModel`.
+   - Creates the `Staging_Pivots` worksheet (if missing).
+   - Generates the `pt_Agent` PivotTable from scratch with `DimAgent[Agent]` in Rows.
+   - Adds all 5 DAX measures (`Calls Taken`, `Answer Rate %`, `FCR Rate %`, `Avg Speed (s)`, `Avg CSAT`).
+   - Automatically wires the PivotTable to all dashboard Slicers (`Month`, `Topic`, `Agent`).
+2. **HTML / CSS Visual Styling**:
+   - Applies `#0F172A` (Navy Slate) dark header with crisp white text.
+   - Applies alternating `#FFFFFF` and `#F8FAFC` zebra rows with subtle `#E2E8F0` borders.
+   - Enforces executive pill badges for SLA pass (Green), SLA breach (Red), Speed warnings (Amber), and CSAT stars (Gold).
+3. **Preserves the Dotted Box & Docks the Live Table**:
+   - Keeps `DockZone_CC_AgentScorecard` in place as the card boundary.
+   - Clears its watermark placeholder text and sets a crisp white background.
+   - Docks the table neatly **INSIDE the dotted box** with 8pt inner margins.
+   - **100% Live Interactive**: Click any Slicer item on the dashboard, and the scorecard updates in real time!
+
 
 ---
 
