@@ -575,6 +575,78 @@ Public Sub SetKPICardValue(ws As Worksheet, ByVal cardName As String, _
 End Sub
 
 ' ==============================================================================
+' 5B. AUTOMATED DATA MODEL STAGING & FORMULA LINKING ENGINE
+' Automatically provisions CUBEVALUE formulas in rows 64-65 and links the
+' independent Value_<cardName> shapes dynamically without manual clicking
+' ==============================================================================
+Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
+    On Error Resume Next
+    Dim cols(1 To 5) As String
+    cols(1) = "AA": cols(2) = "AB": cols(3) = "AC": cols(4) = "AD": cols(5) = "AE"
+    
+    Dim headers(1 To 5) As String
+    Dim measures(1 To 5) As String
+    Dim numFormats(1 To 5) As String
+    Dim cardNames(1 To 5) As String
+    
+    Select Case UCase(moduleCode)
+        Case "CC"
+            headers(1) = "KPI 1: Total Calls": measures(1) = "[Measures].[Total Calls]": numFormats(1) = "#,##0": cardNames(1) = "CC_TotalDemand"
+            headers(2) = "KPI 2: Answer Rate": measures(2) = "[Measures].[Answer Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CC_Answered"
+            headers(3) = "KPI 3: Abandonment Rate": measures(3) = "[Measures].[Abandonment Rate %]": numFormats(3) = "0.00%": cardNames(3) = "CC_Abandoned"
+            headers(4) = "KPI 4: Avg Speed of Answer": measures(4) = "[Measures].[Avg Speed of Answer]": numFormats(4) = "#,##0.0 ""s""": cardNames(4) = "CC_ASA"
+            headers(5) = "KPI 5: Avg CSAT Rating": measures(5) = "[Measures].[Avg CSAT Rating]": numFormats(5) = "0.00": cardNames(5) = "CC_CSAT"
+            
+        Case "CH"
+            headers(1) = "KPI 1: Total Customers": measures(1) = "[Measures].[Total Customers]": numFormats(1) = "#,##0": cardNames(1) = "CH_Subscribers"
+            headers(2) = "KPI 2: Churn Rate": measures(2) = "[Measures].[Churn Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CH_ChurnRate"
+            headers(3) = "KPI 3: Revenue at Risk": measures(3) = "[Measures].[Total Revenue at Risk]": numFormats(3) = "$#,##0.00": cardNames(3) = "CH_ARRRisk"
+            headers(4) = "KPI 4: M2M Churn Rate": measures(4) = "[Measures].[Contract M2M Churn Rate %]": numFormats(4) = "0.00%": cardNames(4) = "CH_M2MChurn"
+            headers(5) = "KPI 5: Tech Tickets / Cust": measures(5) = "[Measures].[Tech Tickets per Customer]": numFormats(5) = "0.00": cardNames(5) = "CH_Tickets"
+            
+        Case "DI"
+            headers(1) = "KPI 1: Total Headcount": measures(1) = "[Measures].[Total Headcount]": numFormats(1) = "#,##0": cardNames(1) = "DI_Workforce"
+            headers(2) = "KPI 2: Female Headcount Share": measures(2) = "[Measures].[Female Headcount Share %]": numFormats(2) = "0.00%": cardNames(2) = "DI_FemaleShare"
+            headers(3) = "KPI 3: Broken Rung Gap": measures(3) = "[Measures].[Broken Rung Gap]": numFormats(3) = "+0.00%;-0.00%;0.00%": cardNames(3) = "DI_BrokenRung"
+            headers(4) = "KPI 4: Female Promotion Share": measures(4) = "[Measures].[Female Promotion Share %]": numFormats(4) = "0.00%": cardNames(4) = "DI_PromoShare"
+            headers(5) = "KPI 5: Time in Grade Gap": measures(5) = "[Measures].[Time in Grade Gap]": numFormats(5) = "+0.0 ""Mos"";-0.0 ""Mos"";0.0 ""Mos""": cardNames(5) = "DI_TimeInGrade"
+    End Select
+    
+    Dim i As Integer
+    Dim cellRef As String
+    Dim shpValue As Shape
+    
+    For i = 1 To 5
+        ' 1. Set Staging Header
+        With ws.Range(cols(i) & "64")
+            .Value = headers(i)
+            .Font.Name = FONT_FAMILY
+            .Font.Size = 8
+            .Font.Bold = True
+            .Font.Color = PWC_TEXT_MUTED
+        End With
+        
+        ' 2. Set CUBEVALUE Formula and Format
+        With ws.Range(cols(i) & "65")
+            .Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", """ & measures(i) & """)"
+            .NumberFormat = numFormats(i)
+            .Font.Name = FONT_FAMILY
+            .Font.Size = 9
+            .Font.Bold = False
+        End With
+        
+        ' 3. Automatically Link Value Shape to Staging Cell
+        cellRef = "='" & ws.Name & "'!$" & cols(i) & "$65"
+        Set shpValue = Nothing
+        Set shpValue = ws.Shapes("Value_" & cardNames(i))
+        If Not shpValue Is Nothing Then
+            shpValue.DrawingObject.Formula = cellRef
+        End If
+    Next i
+    On Error GoTo 0
+End Sub
+
+' ==============================================================================
 ' 6. LEFT GLOBAL FILTER DRAWER (SLICER CONTAINER)
 ' ==============================================================================
 Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
@@ -972,6 +1044,9 @@ Public Sub BuildCallCenterCanvas(Optional ByVal populateInitialData As Boolean =
                         "FCR %, Answer Speed, CSAT Ratings & Assigned Tier", _
                         "Matrix Table"
                         
+    ' 7. Automated Data Model CUBE Staging & Formula Linking
+    Call AutomateAndLinkKPICards(ws, "CC")
+    
     ws.Range("A1").Select
 End Sub
 
