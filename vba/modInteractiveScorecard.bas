@@ -49,6 +49,124 @@ Private Const PWC_BADGE_GOLD_TXT    As Long = 937349     ' #854D0E - RGB(133, 77
 Private Const FONT_FAMILY           As String = "Segoe UI"
 
 ' ==============================================================================
+' 0. AUTOMATED DATA MODEL PIVOTTABLE PROVISIONER
+' Automatically creates pt_Agent on Staging_Pivots from VertiPaq Data Model
+' ==============================================================================
+Public Function EnsureOrBuildAgentPivotTable(wsStaging As Worksheet) As PivotTable
+    Dim wb As Workbook
+    Dim pt As PivotTable
+    Dim pc As PivotCache
+    Dim conn As WorkbookConnection
+    Dim ptDest As Range
+    Dim i As Long
+    
+    Set wb = wsStaging.Parent
+    On Error Resume Next
+    Set pt = wsStaging.PivotTables("pt_Agent")
+    On Error GoTo 0
+    
+    ' If pt_Agent already exists and has all 5 fields, return it directly!
+    If Not pt Is Nothing Then
+        If pt.DataFields.Count >= 5 And pt.RowFields.Count >= 1 Then
+            Set EnsureOrBuildAgentPivotTable = pt
+            Exit Function
+        Else
+            ' Clear destination and rebuild if incomplete
+            On Error Resume Next
+            pt.TableRange2.Clear
+            Set pt = Nothing
+            On Error GoTo 0
+        End If
+    End If
+    
+    ' 1. Locate the VertiPaq Data Model Connection
+    For Each conn In wb.Connections
+        If InStr(1, conn.Name, "ThisWorkbookDataModel", vbTextCompare) > 0 Or _
+           InStr(1, conn.Name, "DataModel", vbTextCompare) > 0 Or _
+           conn.Type = xlConnectionTypeModel Then
+            Set pc = wb.PivotCaches.Create(SourceType:=xlExternal, SourceData:=conn, Version:=6)
+            Exit For
+        End If
+    Next conn
+    
+    ' Fallback to existing external PivotCache if available
+    If pc Is Nothing Then
+        For i = 1 To wb.PivotCaches.Count
+            If wb.PivotCaches.Item(i).SourceType = xlExternal Then
+                Set pc = wb.PivotCaches.Item(i)
+                Exit For
+            End If
+        Next i
+    End If
+    
+    If pc Is Nothing Then
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Cannot find Data Model connection or PivotCache in this workbook!" & vbCrLf & _
+                   "Please ensure your VertiPaq Data Model is initialized.", vbCritical, "PwC Provisioner"
+        End If
+        Exit Function
+    End If
+    
+    ' 2. Clean Destination Area on Staging_Pivots (Range C3:H20)
+    Set ptDest = wsStaging.Range("C3")
+    On Error Resume Next
+    wsStaging.Range("C3:H20").Clear
+    On Error GoTo 0
+    
+    ' 3. Create PivotTable from Data Model PivotCache
+    Set pt = pc.CreatePivotTable(TableDestination:=ptDest, TableName:="pt_Agent", DefaultVersion:=6)
+    
+    ' 4. Add Row Dimension: DimAgent[Agent]
+    On Error Resume Next
+    pt.CubeFields("[DimAgent].[Agent]").Orientation = xlRowField
+    If Err.Number <> 0 Then
+        Err.Clear
+        pt.CubeFields("[Fact_Calls].[Agent]").Orientation = xlRowField
+    End If
+    On Error GoTo 0
+    
+    ' 5. Add All 5 DAX Measures in Standard Executive Order
+    On Error Resume Next
+    ' Measure 1: Total Calls Taken
+    pt.AddDataField pt.CubeFields("[Measures].[Total Calls]"), "Calls Taken"
+    If Err.Number <> 0 Then
+        Err.Clear
+        pt.AddDataField pt.CubeFields("[Measures].[Total Demand]"), "Calls Taken"
+    End If
+    
+    ' Measure 2: Answer Rate %
+    pt.AddDataField pt.CubeFields("[Measures].[Answer Rate %]"), "Answer Rate %"
+    If Err.Number <> 0 Then
+        Err.Clear
+        pt.AddDataField pt.CubeFields("[Measures].[Answered Calls %]"), "Answer Rate %"
+    End If
+    
+    ' Measure 3: First Contact Resolution Rate %
+    pt.AddDataField pt.CubeFields("[Measures].[First Contact Resolution %]"), "FCR Rate %"
+    If Err.Number <> 0 Then
+        Err.Clear
+        pt.AddDataField pt.CubeFields("[Measures].[Resolution Rate %]"), "FCR Rate %"
+    End If
+    
+    ' Measure 4: Average Speed of Answer (s)
+    pt.AddDataField pt.CubeFields("[Measures].[Average Speed of Answer (s)]"), "Avg Speed (s)"
+    
+    ' Measure 5: Average CSAT
+    pt.AddDataField pt.CubeFields("[Measures].[Average CSAT]"), "Avg CSAT"
+    On Error GoTo 0
+    
+    ' 6. Wire SlicerCaches to the new PivotTable
+    Dim sc As SlicerCache
+    For Each sc In wb.SlicerCaches
+        On Error Resume Next
+        sc.PivotTables.AddPivotTable pt
+        On Error GoTo 0
+    Next sc
+    
+    Set EnsureOrBuildAgentPivotTable = pt
+End Function
+
+' ==============================================================================
 ' 1. MASTER ENTRY POINT: BUILD & DOCK LIVE INTERACTIVE SCORECARD
 ' ==============================================================================
 Public Sub BuildAndDockInteractiveScorecard()
@@ -72,25 +190,16 @@ Public Sub BuildAndDockInteractiveScorecard()
         Exit Sub
     End If
     
+    ' Automatically create Staging_Pivots if not already present
     If wsStaging Is Nothing Then
-        MsgBox "Staging sheet 'Staging_Pivots' not found!", vbCritical, "PwC Scorecard Docker"
-        Exit Sub
+        Set wsStaging = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
+        wsStaging.Name = "Staging_Pivots"
+        wsStaging.Tab.Color = RGB(100, 116, 139)
     End If
     
-    ' 1. Locate the PivotTable (pt_Agent or first PivotTable on Staging_Pivots)
-    On Error Resume Next
-    Set pt = wsStaging.PivotTables("pt_Agent")
+    ' 1. Automatically Ensure or Build the Agent Scorecard PivotTable from Data Model
+    Set pt = EnsureOrBuildAgentPivotTable(wsStaging)
     If pt Is Nothing Then
-        If wsStaging.PivotTables.Count > 0 Then
-            Set pt = wsStaging.PivotTables(1)
-        End If
-    End If
-    On Error GoTo 0
-    
-    If pt Is Nothing Then
-        MsgBox "No PivotTable found on 'Staging_Pivots'!" & vbCrLf & _
-               "Please ensure your Agent Scorecard PivotTable is created on Staging_Pivots first.", _
-               vbExclamation, "PwC Scorecard Docker"
         Exit Sub
     End If
     
