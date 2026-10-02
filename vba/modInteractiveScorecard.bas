@@ -176,7 +176,7 @@ Public Sub BuildAndDockInteractiveScorecard()
     modAppState.RestoreAppState
     On Error GoTo 0
     
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         MsgBox "Agent Scorecard successfully docked INSIDE the dotted box!" & vbCrLf & _
                "- Dotted box preserved as the outer container frame." & vbCrLf & _
                "- HTML/CSS theme formatting applied." & vbCrLf & _
@@ -463,7 +463,7 @@ Public Sub ExportScorecardToHTMLFile()
     Print #fNum, html
     Close #fNum
     
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         Dim resp As VbMsgBoxResult
         resp = MsgBox("HTML Scorecard exported successfully to:" & vbCrLf & filePath & vbCrLf & vbCrLf & _
                       "Would you like to open it in your web browser now?", vbQuestion + vbYesNo, "PwC HTML Exporter")
