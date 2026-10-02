@@ -40,7 +40,7 @@ Rather than treating each consulting task as an isolated exercise, this platform
 
 ## 🏛️ Enterprise Galaxy Data Model (Constellation Schema)
 
-The core semantic model resides inside [`PWC_Switzerland_Virtual_Case.xlsx`](PWC_Switzerland_Virtual_Case.xlsx) and is modeled in **Power Pivot Diagram View** with **zero Many-to-Many (`* : *`) relationships**:
+The core semantic model resides inside [`PWC_Switzerland_Virtual_Case.xlsm`](PWC_Switzerland_Virtual_Case.xlsm) and is modeled in **Power Pivot Diagram View** with **zero Many-to-Many (`* : *`) relationships**:
 
 <p align="center">
   <img src="assets/diagrams/galaxy_schema_architecture.svg" alt="Ralph Kimball Galaxy Schema Constellation Architecture" width="100%" />
@@ -168,7 +168,7 @@ pwc-switzerland-virtual-case/
 ├── CHANGELOG.md                           # Version history & release notes
 ├── CONTRIBUTING.md                        # Dimensional modeling & DAX style guide
 ├── LICENSE                                # MIT Open-Source License
-├── PWC_Switzerland_Virtual_Case.xlsx      # Master production workbook (VertiPaq Model)
+├── PWC_Switzerland_Virtual_Case.xlsm      # Master production workbook (VertiPaq Model & VBA Suite)
 └── README.md                              # Master architectural documentation index
 ```
 
@@ -190,7 +190,7 @@ pwc-switzerland-virtual-case/
    cd pwc-switzerland-virtual-case
    ```
 
-2. Open [`PWC_Switzerland_Virtual_Case.xlsx`](PWC_Switzerland_Virtual_Case.xlsx) in Excel.
+2. Open [`PWC_Switzerland_Virtual_Case.xlsm`](PWC_Switzerland_Virtual_Case.xlsm) in Excel.
 3. Navigate to **Power Pivot** on the Excel ribbon $\to$ click **Manage**.
 4. In the Power Pivot window, click **Diagram View** to inspect the 12-table Galaxy Schema and active 1-to-many relationships.
 

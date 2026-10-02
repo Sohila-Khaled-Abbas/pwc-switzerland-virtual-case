@@ -46,7 +46,7 @@ timeline
 
 ## 🏗️ Architectural Topology: The Kimball Galaxy Schema
 
-Instead of creating fragmented, isolated spreadsheets, this project synthesizes all three domains into an **Enterprise Ralph Kimball Galaxy Schema (Constellation)** inside [`PWC_Switzerland_Virtual_Case.xlsx`](../PWC_Switzerland_Virtual_Case.xlsx):
+Instead of creating fragmented, isolated spreadsheets, this project synthesizes all three domains into an **Enterprise Ralph Kimball Galaxy Schema (Constellation)** inside [`PWC_Switzerland_Virtual_Case.xlsm`](../PWC_Switzerland_Virtual_Case.xlsm):
 
 ```mermaid
 flowchart TD

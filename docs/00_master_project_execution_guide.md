@@ -3,7 +3,7 @@
 
 > **Role**: Senior Analytics Consultant & BI Architect (PwC Digital Accelerator)  
 > **Ecosystem**: Microsoft Excel, Power Query (M), Power Pivot (VertiPaq Tabular Engine), DAX, VBA  
-> **Master Workbook**: `PWC_Switzerland_Virtual_Case.xlsx`
+> **Master Workbook**: `PWC_Switzerland_Virtual_Case.xlsm` (Macro-Enabled Enterprise Semantic Model)
 
 ---
 
