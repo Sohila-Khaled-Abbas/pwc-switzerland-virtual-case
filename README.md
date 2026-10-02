@@ -6,13 +6,17 @@
 ### Enterprise Business Intelligence, Ralph Kimball Galaxy Semantic Model & Executive Analytics Application
 
 <p align="center">
-  <a href="https://www.theforage.com/simulations/pwc-ch/power-bi-ch"><img src="https://img.shields.io/badge/PwC_Switzerland-Digital_Accelerator-D04A02?style=for-the-badge&logo=pwc&logoColor=white" alt="PwC Switzerland" /></a>
-  <a href="https://www.microsoft.com/excel"><img src="https://img.shields.io/badge/Microsoft_Excel-365_ProPlus-107C41?style=for-the-badge&logo=microsoftexcel&logoColor=white" alt="Microsoft Excel" /></a>
-  <a href="https://learn.microsoft.com/powerquery-m/"><img src="https://img.shields.io/badge/Power_Query-M_Engine-2EA44F?style=for-the-badge&logo=powerbi&logoColor=white" alt="Power Query M" /></a>
-  <a href="https://learn.microsoft.com/analysis-services/tabular-models/"><img src="https://img.shields.io/badge/Engine-VertiPaq_Tabular-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white" alt="VertiPaq Tabular Engine" /></a>
-  <a href="docs/02_galaxy_data_model.md"><img src="https://img.shields.io/badge/Architecture-Kimball_Galaxy-4F46E5?style=for-the-badge&logo=diagramsdotnet&logoColor=white" alt="Kimball Galaxy Architecture" /></a>
-  <a href=".github/workflows/ci_validation.yml"><img src="https://img.shields.io/badge/CI-Automated_Validation-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI Automated Validation" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-10B981?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License: MIT" /></a>
+  <a href="https://github.com/Sohila-Khaled-Abbas/pwc-switzerland-virtual-case"><img src="https://img.shields.io/badge/Standalone_Repo-pwc--switzerland--virtual--case-D04A02?style=flat-square&logo=github&logoColor=white&labelColor=0F172A" alt="Standalone Repo" /></a>
+  <a href="https://www.theforage.com/simulations/pwc-ch/power-bi-ch"><img src="https://img.shields.io/badge/PwC_Switzerland-Digital_Accelerator-EA580C?style=flat-square&logo=pwc&logoColor=white&labelColor=0F172A" alt="PwC Switzerland" /></a>
+  <a href=".github/workflows/ci_validation.yml"><img src="https://img.shields.io/badge/CI-Automated_Audit-10B981?style=flat-square&logo=githubactions&logoColor=white&labelColor=0F172A" alt="CI Status" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-38BDF8?style=flat-square&logo=opensourceinitiative&logoColor=white&labelColor=0F172A" alt="License: MIT" /></a>
+</p>
+<p align="center">
+  <a href="https://www.microsoft.com/excel"><img src="https://img.shields.io/badge/Microsoft_Excel-365_ProPlus-107C41?style=flat-square&logo=microsoftexcel&logoColor=white&labelColor=0F172A" alt="Microsoft Excel" /></a>
+  <a href="https://learn.microsoft.com/powerquery-m/"><img src="https://img.shields.io/badge/Power_Query-M_Engine-2EA44F?style=flat-square&logo=powerbi&logoColor=white&labelColor=0F172A" alt="Power Query M" /></a>
+  <a href="https://learn.microsoft.com/analysis-services/tabular-models/"><img src="https://img.shields.io/badge/Engine-VertiPaq_Tabular-0078D4?style=flat-square&logo=microsoftazure&logoColor=white&labelColor=0F172A" alt="VertiPaq Tabular Engine" /></a>
+  <a href="docs/02_galaxy_data_model.md"><img src="https://img.shields.io/badge/Architecture-Kimball_Galaxy-6366F1?style=flat-square&logo=diagramsdotnet&logoColor=white&labelColor=0F172A" alt="Kimball Galaxy Architecture" /></a>
+  <a href="dax/05_Executive_KPI_Catalog.dax"><img src="https://img.shields.io/badge/DAX-28_Measures-F59E0B?style=flat-square&logo=speedtest&logoColor=white&labelColor=0F172A" alt="DAX Catalog" /></a>
 </p>
 
 **Engineered by [Sohila Khaled Abbas](https://github.com/Sohila-Khaled-Abbas)**  
