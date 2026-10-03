@@ -38,6 +38,31 @@ Rather than treating each consulting task as an isolated exercise, this platform
 
 ---
 
+## 💻 Modern SaaS UI/UX Architecture & Web Application Companion
+
+The platform elevates conventional Excel deliverables into a **state-of-the-art Web Application (SaaS) experience**, offering both an in-workbook executive interface and a standalone interactive web companion:
+
+1. **Executive Home Portal (`00_Home_Portal`)**:
+   * **Official PwC Branding**: Embeds the official color logo (`assets/PwC_logo_rgb_colour_pos.png`) into an elevated white card header, replacing static text boxes.
+   * **Cross-Enterprise Ticker**: 4 floating cards with circular colored badges and vector SVG icons (`assets/icons/web/`) summarizing Telephony SLA, ARR Preservation, Executive Parity, and Model Fidelity.
+   * **Interactive Cockpit Launchers**: 3 large SaaS cards with domain tags, live metrics, and single-click navigation buttons.
+   * **Dynamic Light/Dark Theme Engine**: Pure ASCII engine (`vba/modThemeEngine.bas`) allowing seamless toggling between Crisp Light (`#F8FAFC`) and Slate Dark (`#0F172A`).
+
+2. **Cockpit Visual Modernization (`03_CallCenter_Cockpit`)**:
+   * **Dark Slate Global Slicer Drawer (`#182234`)**: Structured filter slots, white headers with orange funnel icon, orange `Reset Filters` action button, and an executive quote pill: *“Delivering value through insights. — PwC”*.
+   * **Circular KPI Badges**: 5 BAN scorecards adorned with colored circular badges, vector SVG icons, and trend indicators (`▲ 12.4% vs PY`).
+   * **Modern Gradient Chart Styling**: Warm two-color gradient stops (`#EA580C` to `#FF8C42`), smooth bezier curves (`srs.Smooth = True`) with white circular markers, and zero chart borders.
+   * **Docked Interactive Agent Scorecard**: Pixel-perfect linked picture table with enforced `0.0 "s"` speed format, hidden filter dropdowns, and calibrated container fit.
+
+3. **High-Fidelity Web Application Companion (`dashboards/call_center_website_dashboard.html`)**:
+   * Inspired directly by modern executive SaaS designs, powered by our live Q1 2021 VertiPaq semantic model.
+   * **7 KPI Cards**: Total Calls (5,000), Answered (4,054), Missed (946), SLA (81.1%), Avg Speed (67.5s), CSAT (3.40 / 5), and FCR (89.9%) with circular badges and animated SVG sparkline waves.
+   * **Interactive Middle Row**: HTML5 Canvas area trend with glowing orange gradient and peak callout badge; 7x12 Calls-by-Hour Heatmap grid with color temperature scaling; Resolution Breakdown Donut chart with center total metric (`5,000 Total Calls`).
+   * **Bottom Row**: Horizontal Agent Performance scorecard with gold stars, AHT vs Volume combo chart, Top Inquiry Topics Pareto chart (80/20 rule), Sentiment Analysis pills, and Multi-channel SLA table.
+   * **Live Dynamic Filtering**: Real-time client-side filter engine that re-indexes and animates metrics dynamically upon dropdown changes.
+
+---
+
 ## 🏛️ Enterprise Galaxy Data Model (Constellation Schema)
 
 The core semantic model resides inside [`PWC_Switzerland_Virtual_Case.xlsm`](PWC_Switzerland_Virtual_Case.xlsm) and is modeled in **Power Pivot Diagram View** with **zero Many-to-Many (`* : *`) relationships**:
@@ -172,12 +197,14 @@ pwc-switzerland-virtual-case/
 ├── .github/workflows/ci_validation.yml    # Continuous Integration pipeline
 ├── assets/
 │   ├── diagrams/                          # SVG architectural blueprints
-│   ├── icons/                             # Modern vector SVG icon suite (11 icons)
-│   └── PwC_logo_rgb_colour_pos.png        # Official branding asset
+│   ├── icons/
+│   │   └── web/                           # 280 colored vector stroke SVG icons (10 colorways)
+│   └── PwC_logo_rgb_colour_pos.png        # Official PwC branding asset
 │
 ├── dashboards/
 │   ├── index.html                         # SaaS Executive Landing Page & Portal
-│   └── interactive_call_center_dashboard.html # Standalone interactive Call Center cockpit
+│   ├── call_center_website_dashboard.html # Reference-inspired SaaS Call Center Web App
+│   └── interactive_call_center_dashboard.html # Interactive Call Center analytics prototype
 │
 ├── data/
 │   ├── 01 Call-Center-Dataset.xlsx        # 5,000 telephony interactions
@@ -192,7 +219,7 @@ pwc-switzerland-virtual-case/
 │   └── 05_Executive_KPI_Catalog.dax       # Master certified measure dictionary
 │
 ├── docs/
-│   ├── 00_master_project_execution_guide.md# Complete 8-phase step-by-step manual build guide
+│   ├── 00_master_project_execution_guide.md# Complete 9-phase step-by-step manual build guide
 │   ├── 01_executive_summary.md            # Client engagement scope & executive briefs
 │   ├── 02_galaxy_data_model.md            # Kimball constellation design & VertiPaq mechanics
 │   ├── 03_power_query_etl_pipeline.md     # 3-tier M ETL lifecycle & forensic null triage
@@ -208,6 +235,11 @@ pwc-switzerland-virtual-case/
 │   ├── 02_dimension_transformations.m     # Deduplication, enrichment & lookup extraction
 │   ├── 03_fact_transformations.m          # Key normalization, duration & typing
 │   └── 04_calendar_generator.m            # Autonomous dynamic date dimension M-code
+│
+├── scripts/
+│   ├── apply_all_excel_updates.py         # Complete Excel automation & VBA injector
+│   ├── generate_web_icons.py              # Generator for 280 colored vector SVG icons
+│   └── modernize_cockpit_styling.py       # Cockpit chart gradients, SVG badges & styling
 │
 ├── vba/
 │   ├── modAppState.bas                    # Application screen updating & calculation state

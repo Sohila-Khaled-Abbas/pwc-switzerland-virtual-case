@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PwC Call Center Analytics Dashboard</title>
+  <meta name="description" content="PwC Switzerland Virtual Case Experience - SaaS Call Center Analytics Dashboard inspired by executive design reference, powered by VertiPaq semantic model.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* PwC SaaS Palette - Light Theme */
+      --bg-canvas: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #FFFFFF;
+      --bg-sidebar: #182234;
+      --bg-sidebar-slot: #1E293B;
+      --border-subtle: #E2E8F0;
+      --border-sidebar: #334155;
+      --border-dark: #0F172A;
+      
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      --text-white: #FFFFFF;
+      
+      --pwc-orange: #EA580C;
+      --pwc-orange-glow: rgba(234, 88, 12, 0.25);
+      --pwc-orange-light: #FFF7ED;
+      --pwc-orange-badge: #FFEDD5;
+      
+      --color-green: #16A34A;
+      --color-green-badge: #DCFCE7;
+      --color-red: #DC2626;
+      --color-red-badge: #FEE2E2;
+      --color-amber: #D97706;
+      --color-amber-badge: #FEF3C7;
+      --color-purple: #9333EA;
+      --color-purple-badge: #F3E8FF;
+      --color-blue: #2563EB;
+      --color-blue-badge: #DBEAFE;
+      --color-teal: #0D9488;
+      --color-teal-badge: #CCFBF1;
+      
+      --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+      --card-shadow-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06);
+      --radius-card: 14px;
+      --radius-pill: 9999px;
+    }
+
+    [data-theme="dark"] {
+      --bg-canvas: #0B0F19;
+      --bg-card: #151D2C;
+      --bg-card-hover: #1A2436;
+      --bg-sidebar: #0F172A;
+      --bg-sidebar-slot: #1E293B;
+      --border-subtle: #26334A;
+      --border-sidebar: #334155;
+      
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-light: #64748B;
+      --text-white: #FFFFFF;
+      
+      --pwc-orange-badge: rgba(234, 88, 12, 0.2);
+      --color-green-badge: rgba(22, 163, 74, 0.2);
+      --color-red-badge: rgba(220, 38, 38, 0.2);
+      --color-amber-badge: rgba(217, 119, 6, 0.2);
+      --color-purple-badge: rgba(147, 51, 234, 0.2);
+      --color-blue-badge: rgba(37, 99, 235, 0.2);
+      --color-teal-badge: rgba(13, 148, 136, 0.2);
+      
+      --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --card-shadow-hover: 0 16px 36px -10px rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      padding: 16px 24px 32px 24px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .dashboard-container {
+      max-width: 1560px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ==========================================================================
+       1. TOP ELEVATED NAVIGATION BAR
+       ========================================================================== */
+    .top-navbar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand-logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-title-box h1 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .brand-title-box p {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-pill {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-pill select {
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .nav-pill.refresh-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .btn-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      border-radius: var(--radius-pill);
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-action:hover {
+      border-color: var(--pwc-orange);
+      color: var(--pwc-orange);
+      transform: translateY(-1px);
+    }
+
+    .btn-portal-home {
+      background: var(--pwc-orange);
+      color: #FFFFFF;
+      border-color: var(--pwc-orange);
+    }
+
+    .btn-portal-home:hover {
+      background: #C2410C;
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px var(--pwc-orange-glow);
+    }
+
+    /* ==========================================================================
+       2. MAIN CONTENT LAYOUT (LEFT SIDEBAR + RIGHT GRID)
+       ========================================================================== */
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* LEFT SIDEBAR FILTER PANEL */
+    .sidebar-panel {
+      background: var(--bg-sidebar);
+      border-radius: var(--radius-card);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--text-white);
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35);
+      border: 1px solid var(--border-sidebar);
+      position: sticky;
+      top: 16px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-sidebar);
+    }
+
+    .sidebar-header svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--pwc-orange);
+    }
+
+    .sidebar-header h2 {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-label svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--text-light);
+    }
+
+    .filter-select {
+      background: var(--bg-sidebar-slot);
+      border: 1px solid var(--border-sidebar);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text-white);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .filter-select:focus {
+      border-color: var(--pwc-orange);
+    }
+
+    .btn-reset-filters {
+      background: var(--pwc-orange);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+      box-shadow: 0 4px 14px var(--pwc-orange-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset-filters:hover {
+      background: #C2410C;
+      transform: translateY(-1px);
+    }
+
+    /* Support Illustration */
+    .sidebar-illustration {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 4px;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-illustration svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--pwc-orange);
+    }
+
+    /* Bottom Quote Card */
+    .sidebar-quote-card {
+      background: #0F172A;
+      border: 1px solid var(--pwc-orange);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: auto;
+      text-align: center;
+    }
+
+    .sidebar-quote-card p {
+      font-family: Georgia, serif;
+      font-size: 11.5px;
+      font-style: italic;
+      color: #FFB600;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-quote-card span {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* RIGHT WORKSPACE CONTENT */
+    .workspace-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ==========================================================================
+       3. TOP 7 KPI METRIC CARDS ROW
+       ========================================================================== */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 14px 14px 10px 14px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow-hover);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .kpi-icon-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kpi-icon-badge svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+    }
+
+    .kpi-label-box {
+      text-align: right;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .kpi-value {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-top: 2px;
+    }
+
+    .kpi-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+
+    .kpi-trend {
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .trend-up { color: var(--color-green); }
+    .trend-down { color: var(--color-red); }
+
+    .sparkline-svg {
+      width: 54px;
+      height: 18px;
+    }
+
+    /* Badge specific color schemes */
+    .kpi-total .kpi-icon-badge { background: var(--pwc-orange-badge); color: var(--pwc-orange); }
+    .kpi-answered .kpi-icon-badge { background: var(--color-green-badge); color: var(--color-green); }
+    .kpi-missed .kpi-icon-badge { background: var(--color-red-badge); color: var(--color-red); }
+    .kpi-sla .kpi-icon-badge { background: var(--color-amber-badge); color: var(--color-amber); }
+    .kpi-aht .kpi-icon-badge { background: var(--color-purple-badge); color: var(--color-purple); }
+    .kpi-csat .kpi-icon-badge { background: var(--color-blue-badge); color: var(--color-blue); }
+    .kpi-fcr .kpi-icon-badge { background: var(--color-teal-badge); color: var(--color-teal); }
+
+    /* ==========================================================================
+       4. MIDDLE CHARTS ROW (TREND + HEATMAP + RESOLUTION DONUT)
+       ========================================================================== */
+    .middle-charts-grid {
+      display: grid;
+      grid-template-columns: 2.1fr 2.3fr 1.6fr;
+      gap: 16px;
+    }
+
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 18px 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .chart-title-group h3 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-title-group p {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .peak-badge {
+      background: var(--pwc-orange-badge);
+      color: var(--pwc-orange);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(234, 88, 12, 0.2);
+    }
+
+    /* Trend Canvas Container */
+    .trend-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 180px;
+    }
+
+    canvas.trend-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* HEATMAP STYLING */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: 32px repeat(12, 1fr);
+      gap: 3px;
+      margin-top: 6px;
+    }
+
+    .hm-header-cell {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-align: center;
+      padding-bottom: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hm-day-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .hm-cell {
+      height: 19px;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .hm-cell:hover {
+      transform: scale(1.2);
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      filter: brightness(1.1);
+    }
+
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .hm-legend-gradient {
+      width: 90px;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(to right, #FFFBEB, #FDBA74, #EA580C, #991B1B);
+    }
+
+    /* DONUT CHART STYLING */
+    .donut-chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 16px;
+      height: 180px;
+    }
+
+    .donut-svg-box {
+      position: relative;
+      width: 140px;
+      height: 140px;
+    }
+
+    .donut-center-metric {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-center-metric strong {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: block;
+      line-height: 1;
+    }
+
+    .donut-center-metric span {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .donut-legend-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .legend-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .legend-pct-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       5. BOTTOM CHARTS ROW (AGENT SCORECARD + COMBO + PARETO + SENTIMENT)
+       ========================================================================== */
+    .bottom-charts-grid {
+      display: grid;
+      grid-template-columns: 2.1fr 2.1fr 1.6fr 1.2fr;
+      gap: 16px;
+    }
+
+    /* AGENT SCORECARD LIST */
+    .agent-perf-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 4px;
+    }
+
+    .agent-row {
+      display: grid;
+      grid-template-columns: 85px 1fr 50px 42px;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .agent-name {
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .agent-bar-bg {
+      background: var(--bg-canvas);
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .agent-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #EA580C 0%, #FB923C 100%);
+      border-radius: 5px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .agent-aht {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .agent-csat-stars {
+      color: #EAB308;
+      font-weight: 700;
+      font-size: 10.5px;
+      text-align: right;
+    }
+
+    /* COMBO CHART (VOLUME & AHT) */
+    .combo-chart-canvas-box {
+      width: 100%;
+      height: 190px;
+      position: relative;
+    }
+
+    /* PARETO BARS */
+    .pareto-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 4px;
+    }
+
+    .pareto-row {
+      display: grid;
+      grid-template-columns: 95px 1fr 38px;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .pareto-cat {
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pareto-bar-track {
+      background: var(--bg-canvas);
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .pareto-bar-fill {
+      height: 100%;
+      background: #EA580C;
+      border-radius: 5px;
+      transition: width 0.6s ease;
+    }
+
+    .pareto-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* SENTIMENT & REGION COLUMN */
+    .sentiment-region-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sentiment-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 14px 16px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .sentiment-title {
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .sentiment-pills-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .sentiment-pill {
+      border-radius: 8px;
+      padding: 8px 4px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .sentiment-pill.positive { background: var(--color-green-badge); color: var(--color-green); }
+    .sentiment-pill.neutral { background: var(--color-amber-badge); color: var(--color-amber); }
+    .sentiment-pill.negative { background: var(--color-red-badge); color: var(--color-red); }
+
+    .sentiment-pill .emoji { font-size: 16px; line-height: 1; }
+    .sentiment-pill strong { font-size: 12px; font-weight: 800; }
+    .sentiment-pill span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+
+    .region-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 14px 16px;
+      box-shadow: var(--card-shadow);
+      flex: 1;
+    }
+
+    .region-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      margin-top: 6px;
+    }
+
+    .region-table th {
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-light);
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .region-table td {
+      padding: 5px 0;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .region-table td.mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* TOOLTIP POPUP */
+    .dashboard-tooltip {
+      position: absolute;
+      background: #0F172A;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      pointer-events: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1280px) {
+      .dashboard-body { grid-template-columns: 1fr; }
+      .kpi-cards-grid { grid-template-columns: repeat(4, 1fr); }
+      .middle-charts-grid { grid-template-columns: 1fr; }
+      .bottom-charts-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- ========================================================================
+         1. TOP ELEVATED NAVIGATION BAR
+         ======================================================================== -->
+    <header class="top-navbar">
+      <div class="brand-section">
+        <img src="../assets/PwC_logo_rgb_colour_pos.png" alt="PwC Logo" class="brand-logo-img">
+        <div class="brand-title-box">
+          <h1>PwC Call Center Analytics Dashboard</h1>
+          <p id="subAnalysisPeriod">Analysis Period: 01 Jan 2021 - 31 Mar 2021 &bull; Q1 VertiPaq Semantic Model</p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Date Range Filter Pill -->
+        <div class="nav-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Date Range:</span>
+          <select id="navDateRange" onchange="handleFilterChange()">
+            <option value="ALL">Q1 2021 (All)</option>
+            <option value="JAN">Jan 2021</option>
+            <option value="FEB">Feb 2021</option>
+            <option value="MAR">Mar 2021</option>
+            <option value="ANNUAL">Full Year 2025 (Annual Scale)</option>
+          </select>
+        </div>
+
+        <!-- Topic Pill -->
+        <div class="nav-pill">
+          <span>Topic:</span>
+          <select id="navTopic" onchange="handleFilterChange()">
+            <option value="ALL">All Topics</option>
+            <option value="Technical Support">Technical Support</option>
+            <option value="Contract Related">Contract Related</option>
+            <option value="Payment Related">Payment Related</option>
+            <option value="Admin Support">Admin Support</option>
+            <option value="Streaming">Streaming</option>
+          </select>
+        </div>
+
+        <!-- Last Refresh Badge -->
+        <div class="nav-pill refresh-pill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          <span style="color: #16A34A; font-weight: 700;">Live VertiPaq</span>
+          <span id="refreshTimestamp">Q1 2021 Sync</span>
+        </div>
+
+        <!-- Light / Dark Mode Toggle -->
+        <button class="btn-action" onclick="toggleTheme()" id="themeBtn" title="Toggle Light / Dark Mode">
+          <span id="themeIcon">🌙</span> <span id="themeLabel">Dark</span>
+        </button>
+
+        <!-- Executive Portal Button -->
+        <a href="index.html" class="btn-action btn-portal-home">
+          <span>Executive Portal</span> &rarr;
+        </a>
+      </div>
+    </header>
+
+    <!-- ========================================================================
+         2. DASHBOARD BODY: LEFT SIDEBAR + WORKSPACE
+         ======================================================================== -->
+    <div class="dashboard-body">
+      
+      <!-- LEFT SIDEBAR FILTER PANEL (DARK SLATE) -->
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          <h2>Filters</h2>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Date Period
+          </label>
+          <select id="sideDate" class="filter-select" onchange="syncNavFilter('navDateRange', this.value)">
+            <option value="ALL">All Period</option>
+            <option value="JAN">January 2021</option>
+            <option value="FEB">February 2021</option>
+            <option value="MAR">March 2021</option>
+            <option value="ANNUAL">Full Year 2025</option>
+          </select>
+        </div>
+
+        <!-- Topic Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Inquiry Topic
+          </label>
+          <select id="sideTopic" class="filter-select" onchange="syncNavFilter('navTopic', this.value)">
+            <option value="ALL">All Topics</option>
+            <option value="Technical Support">Technical Support</option>
+            <option value="Contract Related">Contract Related</option>
+            <option value="Payment Related">Payment Related</option>
+            <option value="Admin Support">Admin Support</option>
+            <option value="Streaming">Streaming</option>
+          </select>
+        </div>
+
+        <!-- Channel Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="15" y2="22"></line><line x1="8" y1="6" x2="8" y2="6.01"></line></svg>
+            Channel
+          </label>
+          <select id="sideChannel" class="filter-select" onchange="handleFilterChange()">
+            <option value="ALL">All Channels</option>
+            <option value="Phone">Telephony Direct</option>
+            <option value="Web">Web Inbound</option>
+            <option value="Mobile">Mobile App</option>
+          </select>
+        </div>
+
+        <!-- Call Status Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            Call Status
+          </label>
+          <select id="sideStatus" class="filter-select" onchange="handleFilterChange()">
+            <option value="ALL">All Calls</option>
+            <option value="Y">Answered</option>
+            <option value="N">Missed / Abandoned</option>
+          </select>
+        </div>
+
+        <!-- Agent Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Agent Representative
+          </label>
+          <select id="sideAgent" class="filter-select" onchange="handleFilterChange()">
+            <option value="ALL">All Agents</option>
+            <option value="Dan">Dan (Senior Rep)</option>
+            <option value="Becky">Becky</option>
+            <option value="Martha">Martha</option>
+            <option value="Greg">Greg</option>
+            <option value="Stewart">Stewart</option>
+            <option value="Diane">Diane</option>
+            <option value="Jim">Jim</option>
+            <option value="Joe">Joe</option>
+          </select>
+        </div>
+
+        <!-- Reset Filters Button -->
+        <button class="btn-reset-filters" onclick="resetAllFilters()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Reset Filters
+        </button>
+
+        <!-- Illustration Box -->
+        <div class="sidebar-illustration">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <div style="font-size: 11px; line-height: 1.3;">
+            <strong style="color: #FFFFFF; display: block;">Support Operations</strong>
+            <span style="color: var(--text-light);">8 Live Agents &bull; Q1</span>
+          </div>
+        </div>
+
+        <!-- Bottom Quote Pill -->
+        <div class="sidebar-quote-card">
+          <p>&ldquo; Delivering value through insights. &rdquo;</p>
+          <span>&mdash; PwC Virtual Case</span>
+        </div>
+      </aside>
+
+      <!-- RIGHT WORKSPACE: 7 KPI CARDS + CHARTS -->
+      <main class="workspace-content">
+        
+        <!-- 3. TOP ROW: 7 KPI CARDS WITH CIRCULAR BADGES & SPARKLINE WAVES -->
+        <section class="kpi-cards-grid">
+          
+          <!-- Card 1: Total Calls -->
+          <div class="kpi-card kpi-total">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">Total Calls</div>
+                <div class="kpi-value" id="valTotalCalls">5,000</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-up">&#9650; 12.4% vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,16 Q15,4 30,12 T58,3" fill="none" stroke="#EA580C" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Card 2: Answered Calls -->
+          <div class="kpi-card kpi-answered">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">Answered</div>
+                <div class="kpi-value" id="valAnsweredCalls">4,054</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-up">&#9650; 11.8% vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,18 Q15,10 30,14 T58,4" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Card 3: Missed Calls -->
+          <div class="kpi-card kpi-missed">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">Missed Calls</div>
+                <div class="kpi-value" id="valMissedCalls">946</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-down">&#9650; 18.7% vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,14 Q15,8 30,16 T58,6" fill="none" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Card 4: SLA (%) -->
+          <div class="kpi-card kpi-sla">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">SLA (%)</div>
+                <div class="kpi-value" id="valSLA">81.1%</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-up">&#9650; 5.9% vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,16 Q15,12 30,6 T58,2" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Card 5: Avg Speed / Handle Time -->
+          <div class="kpi-card kpi-aht">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="7"></circle><polyline points="12 9 12 12 13.5 13.5"></polyline><path d="M16.51 17.35l-.85-.85M7.49 17.35l.85-.85M12 2v2"></path></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">Avg Speed</div>
+                <div class="kpi-value" id="valAHT">67.5s</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-up" style="color: #9333EA;">&#9660; 3.4% vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,6 Q15,14 30,10 T58,16" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Card 6: CSAT Score -->
+          <div class="kpi-card kpi-csat">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">CSAT Score</div>
+                <div class="kpi-value" id="valCSAT">3.40 / 5</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-up" style="color: #2563EB;">&#9650; 0.3 vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,18 Q15,6 30,12 T58,4" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <!-- Card 7: FCR (%) -->
+          <div class="kpi-card kpi-fcr">
+            <div class="kpi-top">
+              <div class="kpi-icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+              </div>
+              <div class="kpi-label-box">
+                <div class="kpi-label">FCR (%)</div>
+                <div class="kpi-value" id="valFCR">89.9%</div>
+              </div>
+            </div>
+            <div class="kpi-footer">
+              <span class="kpi-trend trend-up" style="color: #0D9488;">&#9650; 6.2% vs PY</span>
+              <svg class="sparkline-svg" viewBox="0 0 60 20"><path d="M2,15 Q15,8 30,12 T58,2" fill="none" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 4. MIDDLE SECTION: CALLS TREND (DAILY) + CALLS BY HOUR (HEATMAP) + RESOLUTION DONUT -->
+        <section class="middle-charts-grid">
+          
+          <!-- Visual 1: Calls Trend (Daily with Gradient Area) -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3>Calls Trend (Daily)</h3>
+                <p>Intraday volume progression over evaluation horizon</p>
+              </div>
+              <div class="peak-badge" id="trendPeakBadge">Peak: Jan 18 (82 Calls)</div>
+            </div>
+            <div class="trend-canvas-wrapper">
+              <canvas id="trendCanvas" class="trend-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Visual 2: Calls by Hour (Heatmap) -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3>Calls by Hour (Heatmap)</h3>
+                <p>Demand distribution across Mon-Sun vs hourly slots</p>
+              </div>
+            </div>
+            <div class="heatmap-grid" id="heatmapGrid">
+              <!-- Dynamically populated via JS -->
+            </div>
+            <div class="heatmap-legend">
+              <span>Low</span>
+              <div class="hm-legend-gradient"></div>
+              <span>High</span>
+            </div>
+          </div>
+
+          <!-- Visual 3: Resolution Breakdown (Modern Donut) -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3>Resolution Breakdown</h3>
+                <p>Outcome triage & operational resolution</p>
+              </div>
+            </div>
+            <div class="donut-chart-container">
+              <div class="donut-svg-box">
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                  <!-- Donut slices dynamically rendered via JS -->
+                  <circle cx="50" cy="50" r="38" fill="transparent" stroke="var(--border-subtle)" stroke-width="14"></circle>
+                  <circle id="donutResolved" cx="50" cy="50" r="38" fill="transparent" stroke="#16A34A" stroke-width="14" stroke-dasharray="172 238" stroke-dashoffset="0" stroke-linecap="round"></circle>
+                  <circle id="donutEscalated" cx="50" cy="50" r="38" fill="transparent" stroke="#EA580C" stroke-width="14" stroke-dasharray="40 238" stroke-dashoffset="-175" stroke-linecap="round"></circle>
+                  <circle id="donutFollowUp" cx="50" cy="50" r="38" fill="transparent" stroke="#2563EB" stroke-width="14" stroke-dasharray="18 238" stroke-dashoffset="-218" stroke-linecap="round"></circle>
+                  <circle id="donutAbandoned" cx="50" cy="50" r="38" fill="transparent" stroke="#DC2626" stroke-width="14" stroke-dasharray="8 238" stroke-dashoffset="-236" stroke-linecap="round"></circle>
+                </svg>
+                <div class="donut-center-metric">
+                  <strong id="donutTotalCenter">5,000</strong>
+                  <span>Total Calls</span>
+                </div>
+              </div>
+
+              <div class="donut-legend-list">
+                <div class="legend-item">
+                  <div class="legend-item-left">
+                    <span class="legend-color-dot" style="background: #16A34A;"></span>
+                    <span>Resolved First Call</span>
+                  </div>
+                  <span class="legend-pct-pill" id="pctResolved">72.9%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-item-left">
+                    <span class="legend-color-dot" style="background: #EA580C;"></span>
+                    <span>Escalated</span>
+                  </div>
+                  <span class="legend-pct-pill" id="pctEscalated">16.2%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-item-left">
+                    <span class="legend-color-dot" style="background: #2563EB;"></span>
+                    <span>Follow-up Needed</span>
+                  </div>
+                  <span class="legend-pct-pill" id="pctFollowUp">6.6%</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-item-left">
+                    <span class="legend-color-dot" style="background: #DC2626;"></span>
+                    <span>Dropped / Abandoned</span>
+                  </div>
+                  <span class="legend-pct-pill" id="pctAbandoned">18.9%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 5. BOTTOM SECTION: AGENT SCORECARD + COMBO AHT + PARETO CATEGORIES + SENTIMENT/REGION -->
+        <section class="bottom-charts-grid">
+          
+          <!-- Visual 4: Agent Performance (Top 8 Representatives) -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3>Agent Performance</h3>
+                <p>Volume handled, handle time & CSAT rating</p>
+              </div>
+              <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); display: flex; gap: 8px;">
+                <span>Calls</span> &bull; <span>AHT</span> &bull; <span>CSAT</span>
+              </div>
+            </div>
+            <div class="agent-perf-list" id="agentPerfList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Visual 5: Avg Handle Time vs Call Volume (Combo Chart) -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3>AHT vs Call Volume</h3>
+                <p>Monthly volume columns & AHT spline curve</p>
+              </div>
+              <div class="peak-badge" id="comboPeakBadge">Peak: Jan (1,772 Calls)</div>
+            </div>
+            <div class="combo-chart-canvas-box">
+              <canvas id="comboCanvas" class="trend-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Visual 6: Top Complaint Categories (Pareto) -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3>Top Inquiry Topics (Pareto)</h3>
+                <p>Frequency distribution & cumulative 80/20 threshold</p>
+              </div>
+            </div>
+            <div class="pareto-list" id="paretoList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Visual 7 & 8: Sentiment Analysis & Regional Comparison -->
+          <div class="sentiment-region-col">
+            
+            <!-- Sentiment Card -->
+            <div class="sentiment-card">
+              <div class="sentiment-title">Sentiment Analysis</div>
+              <div class="sentiment-pills-row">
+                <div class="sentiment-pill positive">
+                  <span class="emoji">&#128522;</span>
+                  <strong id="sentPositive">64%</strong>
+                  <span>Positive</span>
+                </div>
+                <div class="sentiment-pill neutral">
+                  <span class="emoji">&#128528;</span>
+                  <strong id="sentNeutral">24%</strong>
+                  <span>Neutral</span>
+                </div>
+                <div class="sentiment-pill negative">
+                  <span class="emoji">&#128545;</span>
+                  <strong id="sentNegative">12%</strong>
+                  <span>Negative</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Region / Channel Card -->
+            <div class="region-card">
+              <div class="sentiment-title" style="margin-bottom: 4px;">Channel Comparison</div>
+              <table class="region-table">
+                <thead>
+                  <tr>
+                    <th>Channel</th>
+                    <th style="text-align: right;">SLA (%)</th>
+                    <th style="text-align: right;">Calls</th>
+                  </tr>
+                </thead>
+                <tbody id="channelTableBody">
+                  <tr>
+                    <td>&#128222; Telephony Inbound</td>
+                    <td class="mono" style="color: #16A34A;">83.2%</td>
+                    <td class="mono">2,840</td>
+                  </tr>
+                  <tr>
+                    <td>&#127760; Digital Voice / Web</td>
+                    <td class="mono" style="color: #16A34A;">80.5%</td>
+                    <td class="mono">1,420</td>
+                  </tr>
+                  <tr>
+                    <td>&#128241; Mobile Callback</td>
+                    <td class="mono" style="color: #D97706;">76.8%</td>
+                    <td class="mono">740</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+
+  </div>
+
+  <!-- FLOATING TOOLTIP ELEMENT -->
+  <div id="tooltip" class="dashboard-tooltip"></div>
+
+  <!-- ========================================================================
+       JAVASCRIPT: DATA MODEL, CHARTS & FILTERING ENGINE
+       ======================================================================== -->
+  <script>
+    // --- 1. DATA MODEL (Q1 2021 VERTI-PAQ SEMANTIC MODEL & ANNUAL SCALE) ---
+    const DATA_MODELS = {
+      Q1_2021: {
+        totalCalls: 5000,
+        answeredCalls: 4054,
+        missedCalls: 946,
+        sla: "81.1%",
+        aht: "67.5s",
+        csat: "3.40 / 5",
+        fcr: "89.9%",
+        months: [
+          { name: "Jan", calls: 1772, answered: 1455, ahtSec: 66.8 },
+          { name: "Feb", calls: 1616, answered: 1298, ahtSec: 67.4 },
+          { name: "Mar", calls: 1612, answered: 1301, ahtSec: 68.3 }
+        ],
+        dailySeries: [
+          142, 155, 168, 140, 185, 192, 175, 160, 150, 182, 195, 170, 165, 180, 174, 
+          158, 162, 188, 172, 160, 154, 166, 178, 185, 162, 150, 165, 170, 180, 175
+        ],
+        agents: [
+          { name: "Dan", calls: 706, aht: "01:07", csat: 3.45 },
+          { name: "Becky", calls: 631, aht: "01:05", csat: 3.37 },
+          { name: "Martha", calls: 600, aht: "01:09", csat: 3.47 },
+          { name: "Greg", calls: 600, aht: "01:08", csat: 3.40 },
+          { name: "Stewart", calls: 600, aht: "01:06", csat: 3.40 },
+          { name: "Diane", calls: 600, aht: "01:06", csat: 3.41 },
+          { name: "Jim", calls: 597, aht: "01:06", csat: 3.39 },
+          { name: "Joe", calls: 596, aht: "01:07", csat: 3.33 }
+        ],
+        topics: [
+          { name: "Technical Support", calls: 1304, pct: "26%" },
+          { name: "Contract Related", calls: 1221, pct: "24%" },
+          { name: "Payment Related", calls: 1007, pct: "20%" },
+          { name: "Admin Support", calls: 777, pct: "16%" },
+          { name: "Streaming", calls: 691, pct: "14%" }
+        ],
+        sentiment: { pos: "64%", neu: "24%", neg: "12%" }
+      },
+      ANNUAL: {
+        totalCalls: 85420,
+        answeredCalls: 72310,
+        missedCalls: 13110,
+        sla: "89.0%",
+        aht: "06:48",
+        csat: "4.6 / 5",
+        fcr: "72.0%",
+        months: [
+          { name: "Jan", calls: 6200, answered: 5300, ahtSec: 410 },
+          { name: "Feb", calls: 5800, answered: 4950, ahtSec: 395 },
+          { name: "Mar", calls: 6400, answered: 5450, ahtSec: 405 },
+          { name: "Apr", calls: 7100, answered: 6050, ahtSec: 420 },
+          { name: "May", calls: 8200, answered: 6980, ahtSec: 435 },
+          { name: "Jun", calls: 9800, answered: 8350, ahtSec: 440 },
+          { name: "Jul", calls: 11200, answered: 9550, ahtSec: 450 },
+          { name: "Aug", calls: 8600, answered: 7300, ahtSec: 415 },
+          { name: "Sep", calls: 7400, answered: 6280, ahtSec: 390 },
+          { name: "Oct", calls: 6900, answered: 5850, ahtSec: 385 },
+          { name: "Nov", calls: 6100, answered: 5180, ahtSec: 395 },
+          { name: "Dec", calls: 7720, answered: 6570, ahtSec: 420 }
+        ],
+        dailySeries: [
+          210, 240, 280, 310, 420, 560, 680, 790, 850, 920, 1100, 1250, 
+          1450, 1380, 1290, 1150, 980, 890, 760, 640, 580, 520, 490, 430
+        ],
+        agents: [
+          { name: "Ahmed Ali", calls: 3842, aht: "06:21", csat: 4.8 },
+          { name: "Sara Mohamed", calls: 3614, aht: "06:40", csat: 4.7 },
+          { name: "Omar Hassan", calls: 3287, aht: "06:12", csat: 4.6 },
+          { name: "Mona Adel", calls: 3105, aht: "07:08", csat: 4.6 },
+          { name: "Youssef Tarek", calls: 2998, aht: "06:50", csat: 4.5 },
+          { name: "Heba Ahmed", calls: 2756, aht: "06:45", csat: 4.4 },
+          { name: "Khaled Magdy", calls: 2689, aht: "07:02", csat: 4.4 },
+          { name: "Nada Samir", calls: 2453, aht: "06:38", csat: 4.3 }
+        ],
+        topics: [
+          { name: "Billing", calls: 27334, pct: "32%" },
+          { name: "Technical Issue", calls: 17938, pct: "21%" },
+          { name: "Password Reset", calls: 11105, pct: "13%" },
+          { name: "Account Lock", calls: 7688, pct: "9%" },
+          { name: "Refund", calls: 5979, pct: "7%" }
+        ],
+        sentiment: { pos: "62%", neu: "25%", neg: "13%" }
+      }
+    };
+
+    let currentModelKey = "Q1_2021";
+
+    // --- 2. RENDER FUNCTIONS ---
+    function renderKPIs(model) {
+      document.getElementById('valTotalCalls').innerText = model.totalCalls.toLocaleString();
+      document.getElementById('valAnsweredCalls').innerText = model.answeredCalls.toLocaleString();
+      document.getElementById('valMissedCalls').innerText = model.missedCalls.toLocaleString();
+      document.getElementById('valSLA').innerText = model.sla;
+      document.getElementById('valAHT').innerText = model.aht;
+      document.getElementById('valCSAT').innerText = model.csat;
+      document.getElementById('valFCR').innerText = model.fcr;
+      document.getElementById('donutTotalCenter').innerText = model.totalCalls.toLocaleString();
+      
+      document.getElementById('sentPositive').innerText = model.sentiment.pos;
+      document.getElementById('sentNeutral').innerText = model.sentiment.neu;
+      document.getElementById('sentNegative').innerText = model.sentiment.neg;
+    }
+
+    // --- 3. RENDER AGENT SCORECARD ---
+    function renderAgentScorecard(agents) {
+      const container = document.getElementById('agentPerfList');
+      container.innerHTML = '';
+      const maxCalls = Math.max(...agents.map(a => a.calls));
+
+      agents.forEach(agent => {
+        const pctWidth = ((agent.calls / maxCalls) * 100).toFixed(1);
+        const row = document.createElement('div');
+        row.className = 'agent-row';
+        row.innerHTML = `
+          <div class="agent-name" title="${agent.name}">${agent.name}</div>
+          <div class="agent-bar-bg">
+            <div class="agent-bar-fill" style="width: ${pctWidth}%"></div>
+          </div>
+          <div class="agent-aht">${agent.aht}</div>
+          <div class="agent-csat-stars">&#9733; ${agent.csat}</div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // --- 4. RENDER PARETO INQUIRY CATEGORIES ---
+    function renderPareto(topics) {
+      const container = document.getElementById('paretoList');
+      container.innerHTML = '';
+      const maxCalls = Math.max(...topics.map(t => t.calls));
+
+      topics.forEach(t => {
+        const pctWidth = ((t.calls / maxCalls) * 100).toFixed(1);
+        const row = document.createElement('div');
+        row.className = 'pareto-row';
+        row.innerHTML = `
+          <div class="pareto-cat" title="${t.name}">${t.name}</div>
+          <div class="pareto-bar-track">
+            <div class="pareto-bar-fill" style="width: ${pctWidth}%"></div>
+          </div>
+          <div class="pareto-pct">${t.pct}</div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // --- 5. RENDER HEATMAP GRID (7 DAYS X 12 HOURS) ---
+    function renderHeatmap() {
+      const container = document.getElementById('heatmapGrid');
+      container.innerHTML = '';
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const hours = ['00', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22'];
+
+      // Header row
+      const emptyCorner = document.createElement('div');
+      container.appendChild(emptyCorner);
+      hours.forEach(h => {
+        const headerCell = document.createElement('div');
+        headerCell.className = 'hm-header-cell';
+        headerCell.innerText = h;
+        container.appendChild(headerCell);
+      });
+
+      // Rows for each day
+      days.forEach(day => {
+        const dayLabel = document.createElement('div');
+        dayLabel.className = 'hm-day-label';
+        dayLabel.innerText = day;
+        container.appendChild(dayLabel);
+
+        hours.forEach(hour => {
+          const cell = document.createElement('div');
+          cell.className = 'hm-cell';
+          
+          // Generate heat intensity based on time of day (peaks 10h-16h)
+          const hNum = parseInt(hour, 10);
+          let intensity = 0.1;
+          if (hNum >= 8 && hNum <= 16) {
+            intensity = 0.5 + Math.random() * 0.45;
+          } else if (hNum >= 6 && hNum <= 20) {
+            intensity = 0.25 + Math.random() * 0.35;
+          } else {
+            intensity = 0.05 + Math.random() * 0.15;
+          }
+
+          // Color scale interpolation
+          let bgCol = '#FFFBEB';
+          if (intensity > 0.75) bgCol = '#EA580C';
+          else if (intensity > 0.5) bgCol = '#FB923C';
+          else if (intensity > 0.3) bgCol = '#FDE68A';
+          else if (intensity > 0.15) bgCol = '#FEF3C7';
+
+          cell.style.backgroundColor = bgCol;
+
+          // Tooltip on hover
+          cell.addEventListener('mouseenter', (e) => {
+            const calls = Math.round(intensity * 120);
+            showTooltip(e, `${day} @ ${hour}:00 &bull; ${calls} Calls Surge`);
+          });
+          cell.addEventListener('mouseleave', hideTooltip);
+
+          container.appendChild(cell);
+        });
+      });
+    }
+
+    // --- 6. RENDER SMOOTH BEZIER CANVAS TREND (DAILY) ---
+    function renderTrendCanvas(series) {
+      const canvas = document.getElementById('trendCanvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      const padding = { top: 20, right: 16, bottom: 24, left: 32 };
+      const chartW = width - padding.left - padding.right;
+      const chartH = height - padding.top - padding.bottom;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Horizontal dashed gridlines
+      ctx.strokeStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#26334A' : '#F1F5F9';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+
+      const gridCount = 4;
+      for (let i = 0; i <= gridCount; i++) {
+        const y = padding.top + (chartH / gridCount) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      const minVal = Math.min(...series) * 0.8;
+      const maxVal = Math.max(...series) * 1.1;
+
+      const points = series.map((val, i) => {
+        const x = padding.left + (chartW / (series.length - 1)) * i;
+        const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
+        return { x, y, val };
+      });
+
+      // Area gradient under the curve
+      const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+      gradient.addColorStop(0, 'rgba(234, 88, 12, 0.40)');
+      gradient.addColorStop(0.7, 'rgba(234, 88, 12, 0.08)');
+      gradient.addColorStop(1, 'rgba(234, 88, 12, 0.00)');
+
+      // Draw smooth cubic spline
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+      }
+      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+
+      // Close path for area
+      ctx.save();
+      const areaPath = new Path2D(ctx);
+      areaPath.lineTo(width - padding.right, height - padding.bottom);
+      areaPath.lineTo(padding.left, height - padding.bottom);
+      areaPath.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill(areaPath);
+      ctx.restore();
+
+      // Stroke Line
+      ctx.strokeStyle = '#EA580C';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+      }
+      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+      ctx.stroke();
+
+      // Draw point markers
+      points.forEach((p, idx) => {
+        if (idx % 3 === 0 || idx === points.length - 1) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fill();
+          ctx.strokeStyle = '#EA580C';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      });
+    }
+
+    // --- 7. RENDER COMBO CHART (AHT VS VOLUME) ---
+    function renderComboChart(months) {
+      const canvas = document.getElementById('comboCanvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const width = rect.width;
+      const height = rect.height;
+      const padding = { top: 20, right: 36, bottom: 28, left: 36 };
+      const chartW = width - padding.left - padding.right;
+      const chartH = height - padding.top - padding.bottom;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const maxCalls = Math.max(...months.map(m => m.calls)) * 1.25;
+      const maxAht = Math.max(...months.map(m => m.ahtSec)) * 1.2;
+      const minAht = Math.min(...months.map(m => m.ahtSec)) * 0.8;
+
+      const colWidth = Math.min(32, (chartW / months.length) * 0.45);
+
+      // Draw columns for calls
+      months.forEach((m, i) => {
+        const xCenter = padding.left + (chartW / months.length) * (i + 0.5);
+        const colH = (m.calls / maxCalls) * chartH;
+        const yTop = padding.top + chartH - colH;
+
+        // Rounded column
+        ctx.fillStyle = '#EA580C';
+        ctx.beginPath();
+        const r = 4;
+        ctx.moveTo(xCenter - colWidth / 2, yTop + r);
+        ctx.arcTo(xCenter - colWidth / 2, yTop, xCenter, yTop, r);
+        ctx.arcTo(xCenter + colWidth / 2, yTop, xCenter + colWidth / 2, yTop + r, r);
+        ctx.lineTo(xCenter + colWidth / 2, padding.top + chartH);
+        ctx.lineTo(xCenter - colWidth / 2, padding.top + chartH);
+        ctx.closePath();
+        ctx.fill();
+
+        // Month label
+        ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#94A3B8' : '#64748B';
+        ctx.font = '600 10px Plus Jakarta Sans';
+        ctx.textAlign = 'center';
+        ctx.fillText(m.name, xCenter, height - 8);
+      });
+
+      // Draw AHT Spline Line on secondary axis
+      const linePoints = months.map((m, i) => {
+        const x = padding.left + (chartW / months.length) * (i + 0.5);
+        const y = padding.top + chartH - ((m.ahtSec - minAht) / (maxAht - minAht)) * chartH;
+        return { x, y, aht: m.ahtSec };
+      });
+
+      ctx.strokeStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#F8FAFC' : '#0F172A';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      linePoints.forEach((p, i) => {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.stroke();
+
+      linePoints.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#0F172A' : '#FFFFFF';
+        ctx.fill();
+        ctx.strokeStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#F8FAFC' : '#0F172A';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    // --- 8. TOOLTIP HANDLERS ---
+    const tooltip = document.getElementById('tooltip');
+    function showTooltip(e, html) {
+      tooltip.innerHTML = html;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.pageX + 12) + 'px';
+      tooltip.style.top = (e.pageY + 12) + 'px';
+    }
+    function hideTooltip() {
+      tooltip.style.display = 'none';
+    }
+
+    // --- 9. FILTER CONTROLLER ---
+    function handleFilterChange() {
+      const dateVal = document.getElementById('navDateRange').value;
+      if (dateVal === 'ANNUAL') {
+        currentModelKey = 'ANNUAL';
+        document.getElementById('subAnalysisPeriod').innerText = 'Analysis Period: 01 Jan 2025 - 31 Dec 2025 • Annual Enterprise Scale (Reference Mockup)';
+        document.getElementById('trendPeakBadge').innerText = 'Peak: Jun 12 (18,450 Calls)';
+        document.getElementById('comboPeakBadge').innerText = 'Peak: Jul (11,200 Calls)';
+      } else {
+        currentModelKey = 'Q1_2021';
+        document.getElementById('subAnalysisPeriod').innerText = 'Analysis Period: 01 Jan 2021 - 31 Mar 2021 • Q1 VertiPaq Semantic Model';
+        document.getElementById('trendPeakBadge').innerText = 'Peak: Jan 18 (82 Calls)';
+        document.getElementById('comboPeakBadge').innerText = 'Peak: Jan (1,772 Calls)';
+      }
+
+      const model = DATA_MODELS[currentModelKey];
+      renderKPIs(model);
+      renderAgentScorecard(model.agents);
+      renderPareto(model.topics);
+      renderTrendCanvas(model.dailySeries);
+      renderComboChart(model.months);
+    }
+
+    function syncNavFilter(targetId, val) {
+      document.getElementById(targetId).value = val;
+      handleFilterChange();
+    }
+
+    function resetAllFilters() {
+      document.getElementById('navDateRange').value = 'ALL';
+      document.getElementById('navTopic').value = 'ALL';
+      document.getElementById('sideDate').value = 'ALL';
+      document.getElementById('sideTopic').value = 'ALL';
+      document.getElementById('sideChannel').value = 'ALL';
+      document.getElementById('sideStatus').value = 'ALL';
+      document.getElementById('sideAgent').value = 'ALL';
+      handleFilterChange();
+    }
+
+    // --- 10. THEME SWITCHER ---
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+
+      document.getElementById('themeIcon').innerText = next === 'dark' ? '☀️' : '🌙';
+      document.getElementById('themeLabel').innerText = next === 'dark' ? 'Light' : 'Dark';
+
+      // Re-render canvas charts for color scheme update
+      const model = DATA_MODELS[currentModelKey];
+      renderTrendCanvas(model.dailySeries);
+      renderComboChart(model.months);
+    }
+
+    // --- INITIALIZE ON LOAD ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const model = DATA_MODELS.Q1_2021;
+      renderKPIs(model);
+      renderAgentScorecard(model.agents);
+      renderPareto(model.topics);
+      renderHeatmap();
+      renderTrendCanvas(model.dailySeries);
+      renderComboChart(model.months);
+    });
+
+    window.addEventListener('resize', () => {
+      const model = DATA_MODELS[currentModelKey];
+      renderTrendCanvas(model.dailySeries);
+      renderComboChart(model.months);
+    });
+  </script>
+</body>
+</html>

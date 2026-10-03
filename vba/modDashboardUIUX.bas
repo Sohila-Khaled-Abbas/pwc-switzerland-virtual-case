@@ -1266,141 +1266,80 @@ Public Sub ApplyModernChartTheme(chtObj As ChartObject, ByVal chartRole As Strin
         Select Case UCase(Trim(chartRole))
 
             ' Visual 1.1: Intraday Demand Surge (Hourly Clustered Column)
-
             Case "HOURLY_VOLUME", "CC_HOURLYVOLUME"
-
                 .ChartType = xlColumnClustered
-
-                .ChartGroups(1).GapWidth = 65
-
+                .ChartGroups(1).GapWidth = 45
                 .ChartGroups(1).Overlap = 0
-
                 If .SeriesCollection.Count >= 1 Then
-
                     Set srs = .SeriesCollection(1)
-
                     srs.Format.Fill.Solid
-
-                    srs.Format.Fill.ForeColor.RGB = PWC_CHARCOAL  ' #1E293B
-
+                    srs.Format.Fill.ForeColor.RGB = RGB(234, 88, 12)  ' #EA580C Warm Orange
                     srs.Format.Line.Visible = msoFalse
-
                 End If
-
                 If .SeriesCollection.Count >= 2 Then
-
                     Set srs = .SeriesCollection(2)
-
                     srs.Format.Fill.Solid
-
-                    srs.Format.Fill.ForeColor.RGB = RGB(5, 150, 105) ' #059669 Emerald
-
+                    srs.Format.Fill.ForeColor.RGB = RGB(15, 23, 42)   ' #0F172A Deep Slate Navy
                     srs.Format.Line.Visible = msoFalse
-
                 End If
-
-                
 
             ' Visual 1.2: Inquiry Topic SLA Compliance (Horizontal Clustered Bar)
-
             Case "TOPIC_BREAKDOWN", "CC_TOPICBREAKDOWN"
-
                 .ChartType = xlBarClustered
-
-                .ChartGroups(1).GapWidth = 55
-
-                If .Axes(xlCategory, xlPrimary) IsNot Nothing Then
-
+                .ChartGroups(1).GapWidth = 50
+                If Not .Axes(xlCategory, xlPrimary) Is Nothing Then
                     .Axes(xlCategory, xlPrimary).ReversePlotOrder = True
-
                 End If
-
                 If .SeriesCollection.Count >= 1 Then
-
                     Set srs = .SeriesCollection(1)
-
                     srs.Format.Fill.Solid
-
-                    srs.Format.Fill.ForeColor.RGB = PWC_TANGERINE  ' #D04A02
-
+                    srs.Format.Fill.ForeColor.RGB = RGB(234, 88, 12)  ' #EA580C Tangerine
                     srs.Format.Line.Visible = msoFalse
-
                     srs.ApplyDataLabels
-
                     With srs.DataLabels
-
                         .Font.Name = FONT_FAMILY
-
                         .Font.Size = 8
-
                         .Font.Bold = True
-
-                        .Font.Color = PWC_DARK_SLATE
-
+                        .Font.Color = RGB(15, 23, 42)
                         .Position = xlLabelPositionOutsideEnd
-
                     End With
-
                 End If
-
-                
+                If .SeriesCollection.Count >= 2 Then
+                    Set srs = .SeriesCollection(2)
+                    srs.Format.Fill.Solid
+                    srs.Format.Fill.ForeColor.RGB = RGB(245, 158, 11) ' #F59E0B Amber
+                    srs.Format.Line.Visible = msoFalse
+                End If
 
             ' Visual 1.3: Representative Efficiency Matrix (Combo Chart)
-
             Case "AGENT_QUADRANT", "CC_AGENTQUADRANT"
-
                 If .SeriesCollection.Count >= 1 Then
-
                     Set srs = .SeriesCollection(1)
-
                     srs.ChartType = xlColumnClustered
-
                     srs.AxisGroup = xlPrimary
-
                     srs.Format.Fill.Solid
-
-                    srs.Format.Fill.ForeColor.RGB = RGB(59, 130, 246) ' #3B82F6 Blue
-
+                    srs.Format.Fill.ForeColor.RGB = RGB(234, 88, 12)  ' #EA580C Tangerine
                     srs.Format.Line.Visible = msoFalse
-
                 End If
-
                 If .SeriesCollection.Count >= 2 Then
-
                     Set srs = .SeriesCollection(2)
-
                     srs.ChartType = xlLineMarkers
-
                     srs.AxisGroup = xlSecondary
-
-                    srs.Format.Line.ForeColor.RGB = PWC_TANGERINE
-
+                    srs.Format.Line.ForeColor.RGB = RGB(15, 23, 42)   ' #0F172A Deep Navy
                     srs.Format.Line.Weight = 2
-
+                    srs.Smooth = True                                 ' Modern Smooth Curve!
                     srs.MarkerStyle = xlMarkerStyleCircle
-
                     srs.MarkerSize = 6
-
-                    srs.MarkerBackgroundColor = PWC_TANGERINE
-
-                    srs.MarkerForegroundColor = RGB(255, 255, 255)
-
+                    srs.MarkerBackgroundColor = RGB(255, 255, 255)
+                    srs.MarkerForegroundColor = RGB(15, 23, 42)
                     srs.ApplyDataLabels
-
                     With srs.DataLabels
-
                         .Font.Name = FONT_FAMILY
-
                         .Font.Size = 7.5
-
                         .Font.Bold = True
-
-                        .Font.Color = PWC_TANGERINE
-
+                        .Font.Color = RGB(15, 23, 42)
                         .Position = xlLabelPositionAbove
-
                     End With
-
                 End If
 
         End Select

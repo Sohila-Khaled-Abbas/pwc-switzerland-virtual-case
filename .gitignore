@@ -5,6 +5,7 @@
 ~$*.xls
 *.tmp
 *.bak
+*_backup.xlsm
 
 # OS Metadata
 .DS_Store

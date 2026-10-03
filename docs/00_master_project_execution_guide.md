@@ -1048,7 +1048,101 @@ flowchart TD
 1. **Sheet Protection Configuration**:
    - Protect sheets with `AllowUsingPivotTables = True` and `AllowFiltering = True` so users can interact with Slicers without modifying grid structures.
 2. **Configure Browser View Options**:
-   - Go to **File** $\to$ **Info** $\to$ **Browser View Options** $\to$ Display ONLY dashboard sheets (`01_Business_Domains`, `02_Metadata_&_KPI_Catalog`, `03_CallCenter`, `04_Retention`, `05_D&I`).
+   - Go to **File** $\to$ **Info** $\to$ **Browser View Options** $\to$ Display ONLY dashboard sheets (`00_Home_Portal`, `01_Business_Domains`, `02_Metadata_&_KPI_Catalog`, `03_CallCenter`, `04_Retention`, `05_D&I`).
 3. **Deploy to Target Channel**:
    - Publish to **SharePoint / OneDrive** for web-based interactive consumption.
    - Publish to **Power BI Service** or export executive **PDF briefings**.
+
+---
+
+### Phase 9: Modern SaaS UI/UX Modernization & Web Application Companion
+*Reference Modules*: [`vba/modPortalLanding.bas`](../vba/modPortalLanding.bas), [`vba/modThemeEngine.bas`](../vba/modThemeEngine.bas), [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas), [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas)  
+*Automation Scripts*: [`scripts/apply_all_excel_updates.py`](../scripts/apply_all_excel_updates.py), [`scripts/modernize_cockpit_styling.py`](../scripts/modernize_cockpit_styling.py)  
+*Web Application Companion*: [`dashboards/call_center_website_dashboard.html`](../dashboards/call_center_website_dashboard.html), [`dashboards/index.html`](../dashboards/index.html)
+
+This phase elevates the workbook from traditional spreadsheet aesthetics to an **ultra-modern executive SaaS website experience**, directly inspired by modern web dashboards while preserving the live VertiPaq tabular model.
+
+```mermaid
+flowchart TD
+    subgraph S1["1. Executive Home Portal (00_Home_Portal)"]
+        H1["Official PwC Color Logo (assets/PwC_logo_rgb_colour_pos.png) in Elevated Navbar"]
+        H2["Cross-Enterprise Ticker Cards with Circular Badges & Vector SVG Icons"]
+        H3["3 Interactive Cockpit Launcher Cards with Hover Elevation"]
+        H4["Dynamic Light/Dark Theme Switcher (modThemeEngine.bas)"]
+    end
+
+    subgraph S2["2. Cockpit Visual Modernization (03_CallCenter_Cockpit)"]
+        C1["Dark Slate Global Slicer Drawer (#182234) with Quote Pill"]
+        C2["5 KPI Cards with Circular Badges & Web SVG Icons (assets/icons/web/)"]
+        C3["Warm Two-Color Gradients (#EA580C to #FF8C42) on Columns & Bars"]
+        C4["Smooth Bezier Spline Curves with Circular Markers on Line Series"]
+        C5["Pixel-Perfect Docked Agent Scorecard (0.0 's' Speed Formatting)"]
+    end
+
+    subgraph S3["3. High-Fidelity Web Application Companion (HTML5/Canvas)"]
+        W1["dashboards/call_center_website_dashboard.html"]
+        W2["7 KPI Cards with Circular Badges & SVG Sparkline Waves"]
+        W3["Middle Row: Daily Calls Trend with Gradient Area, 7x12 Heatmap Grid, Donut Chart"]
+        W4["Bottom Row: Agent Horizontal Bars, AHT vs Volume Combo, Pareto Categories, Sentiment"]
+        W5["Live Interactive Filtering Engine & Light/Dark Theme Switcher"]
+    end
+
+    S1 --> S2 --> S3
+```
+
+#### Step 9.1: Executive Home Portal (`00_Home_Portal`)
+1. **Official PwC Brand Logo**:
+   - The top navigation bar embeds the real `assets/PwC_logo_rgb_colour_pos.png` image on the left (`Left: 36pt, Top: 24pt, Width: 60pt, Height: 38pt`), replacing generic text boxes.
+2. **Branded Header & Analysis Period**:
+   - Displays `PwC Switzerland BI Intelligence Suite` with operational subtext: `Analysis Period: Q1 2021 (Jan 2021 - Mar 2021) | Ralph Kimball Galaxy Architecture`.
+3. **Cross-Enterprise Performance Ticker**:
+   - 4 floating white cards featuring circular colored badges (`#FFEDD5` Orange, `#DCFCE7` Emerald, `#FEE2E2` Rose, `#DBEAFE` Blue) containing colored vector SVG icons (`assets/icons/web/`).
+4. **Interactive Cockpit Launchers**:
+   - 3 large SaaS cards with circular icon badges, domain tags, core KPI summaries, and direct 1-click jump buttons (`btn_Launch_1` to `btn_Launch_3`) navigating to each cockpit.
+5. **Theme Engine & Governance Quick Links**:
+   - Integrated `modThemeEngine.ToggleDashboardTheme` toggling between Crisp Light (`#F8FAFC`) and Executive Dark (`#0F172A`).
+   - Quick jump links to `01_Business_Domains` and `02_Metadata_&_KPI_Catalog`.
+
+#### Step 9.2: Modernizing Visual Charts & Slicers (`03_CallCenter_Cockpit`)
+1. **Left Global Slicer Drawer (Dark Slate SaaS Aesthetics)**:
+   - Panel Background: Solid Dark Slate `#182234` (`RGB(24, 34, 52)`) with subtle border `#334155`.
+   - Header: White text `FILTERS` with glowing orange funnel icon.
+   - Slicer Slots: Dark slate cards `#1E293B` with border `#334155`.
+   - Action Button: Warm orange `Reset Filters` button (`#EA580C`).
+   - Bottom Quote Card: Rounded gold card with quotation:
+     `“ Delivering value through insights. ”`
+     `— PwC Virtual Case`
+2. **KPI Scorecard Upgrades**:
+   - Circular icon badges (`32pt × 32pt`) positioned in the upper right corner of each card.
+   - Vector SVG icons embedded: `phone.svg` (Orange), `check-circle.svg` (Green), `phone-off.svg` (Red), `clock.svg` (Amber), `star.svg` (Blue).
+   - Trend subtext badges: `▲ 12.4% vs PY`, `▲ 11.8% vs PY`, `▲ 18.7% vs PY`, `▼ 3.4% vs PY`, `▲ 0.3 vs PY`.
+3. **Chart Visual Decluttering & Warm Gradient Styling**:
+   - **`CC_HourlyVolume`**: Intraday demand columns formatted with two-color gradient stops in warm PwC Tangerine (`#EA580C` to `#FF8C42`), gap width `45%`, zero border, and dashed soft gridlines (`#F1F5F9`).
+   - **`CC_TopicBreakdown`**: Horizontal bars with reverse category plot order, warm orange fill, and clean bold data labels placed Outside End (`Segoe UI 8pt bold`).
+   - **`CC_AgentQuadrant`**: Dual-axis combo chart featuring warm orange columns for First Contact Resolution % and a smooth curved spline line (`srs.Smooth = True`) with white-centered circular markers for Average CSAT.
+4. **Docked Agent Scorecard Geometry**:
+   - Live linked picture table (`LiveScorecard_HTMLTable`) docked over `DockZone_CC_AgentScorecard`.
+   - Calibrated column widths (`C: 12.5, D: 10.5, E: 11.5, F: 10.5, G: 12.0, H: 10.5`) and row heights (`22.5pt`).
+   - Average Speed of Answer permanently enforced with `0.0 "s"` formatting, and AutoFilter dropdowns hidden for seamless card integration.
+
+#### Step 9.3: Dedicated SaaS Web Dashboard Companion
+For stakeholders requiring a native browser experience, the companion web dashboard in `dashboards/call_center_website_dashboard.html` provides:
+1. **Interactive Left Filter Sidebar**:
+   - Dropdown selectors for Date Period, Inquiry Topic, Channel, Call Status, and Agent Representative.
+   - Real-time client-side JavaScript filtering engine that dynamically recalculates all metrics and re-renders charts.
+2. **7 Top KPI Cards**:
+   - Total Calls (`5,000`), Answered (`4,054`), Missed (`946`), SLA (`81.1%`), Avg Speed (`67.5s`), CSAT (`3.40 / 5`), and FCR (`89.9%`).
+   - Circular colored icon badges and glowing SVG sparkline waves.
+3. **Middle Section Visuals**:
+   - **Daily Calls Trend**: HTML5 Canvas area chart with cubic bezier spline, glowing orange gradient fill, peak callout pill (`Peak: Jan 18 - 82 Calls`), and hover crosshairs.
+   - **Calls by Hour (Heatmap)**: 7-day × 12-hour matrix with color temperature interpolation (pale cream to deep vermilion) and hover tooltips showing hourly surge volume.
+   - **Resolution Breakdown**: Modern Donut chart with center cutout metric (`5,000 Total Calls`) and categorized legend.
+4. **Bottom Section Visuals**:
+   - **Agent Performance Scorecard**: Horizontal progress bars for calls handled, handle time column, and gold CSAT star ratings (`★ 3.45`).
+   - **AHT vs Call Volume Combo**: Orange column bars with dark navy spline line and peak callout.
+   - **Top Inquiry Topics (Pareto)**: Horizontal category bars with cumulative 80/20 threshold line.
+   - **Sentiment Analysis & Channel Comparison**: Positive/Neutral/Negative pills and multi-channel SLA benchmark table.
+5. **Scale Toggle & Theme Switcher**:
+   - Allows instant toggling between `Live Q1 2021 VertiPaq Model (5,000 calls)` and `Annual Enterprise Scale (85,420 calls)`.
+   - Seamless Light and Dark mode switching with CSS custom properties and smooth transitions.
+
