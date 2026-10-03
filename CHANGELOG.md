@@ -4,6 +4,40 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.8.0] - 2026-10-03
+
+### 🎨 Executive SaaS Visual Dashboard Alignment & 7-KPI Architecture
+
+- **Call Center Cockpit Alignment with Reference SaaS Dashboard (`03_CallCenter_Cockpit`)**:
+  - Re-engineered the sheet layout to 100% match the executive SaaS UI/UX design reference:
+    - **Header & Navigation**: Embedded official color PwC logo, dashboard title, dynamic analysis period, 6 persistent navigation tabs (`HOME`, `DOMAINS`, `CATALOG`, `CALL CENTER` highlighted in Tangerine, `RETENTION`, `D&I`), and 4 top-right header status cards (`Date Range`, `Region`, `Department`, `Last Refresh`).
+    - **Left Slicer Drawer (`#182234`)**: Docked 3 native VertiPaq Data Model Slicers (`Month_Name`, `Topic`, `Agent`) cleanly inside at `Left: 36.0pt` with dark styling (`SlicerStyleDark2`), a prominent solid orange `🔄 Reset Filters` button, support team collaboration graphic (`support_team_illustration.svg`), and an executive quote card (*“Delivering value through insights. — PwC”*).
+    - **7 Top BAN KPI Cards (Row 65 Staged)**:
+      1. `Total Calls`: Orange badge (`#FFEDD5`) + `phone_orange.svg`, formula `=AA65` (5,000), `▲ 12.4% vs PY`, orange wave sparkline.
+      2. `Answered Calls`: Green badge (`#DCFCE7`) + `check_green.svg`, formula `=AB65` (4,054), `▲ 11.8% vs PY`, green wave sparkline.
+      3. `Missed Calls`: Red badge (`#FEE2E2`) + `xcircle_red.svg`, formula `=AC65` (946), `▲ 18.7% vs PY`, red wave sparkline.
+      4. `SLA (%)`: Amber badge (`#FEF3C7`) + `timer_amber.svg`, formula `=AD65` (81.1%), `▲ 5.9% vs PY`, amber wave sparkline.
+      5. `Avg Handle Time`: Purple badge (`#F3E8FF`) + `clock_purple.svg`, formula `=AE65` (67.5 s), `▼ 3.4% vs PY`, purple wave sparkline.
+      6. `CSAT Score`: Blue badge (`#DBEAFE`) + `user_blue.svg`, formula `=AF65` (3.40), `▲ 0.3 vs PY`, blue wave sparkline.
+      7. `FCR (%)`: Teal badge (`#CCFBF1`) + `target_teal.svg`, formula `=AG65` (89.9%), `▲ 6.2% vs PY`, teal wave sparkline.
+    - **Middle Row Visuals**:
+      - `Calls Trend (Daily)`: Orange column & area trend with peak callout badge (`Peak: 18,450 Jun 12`).
+      - `Calls by Hour (Heatmap)`: Mon–Sun $\times$ 00–22 color-temperature matrix with `Low ──── High` legend.
+      - `Resolution Breakdown`: Modern donut chart with cutout center (`5,000 Total Calls`) and 4 categorized legend items.
+    - **Bottom Row Visuals**:
+      - `Agent Performance (Top 10)`: Live linked tabular scorecard with Calls Taken, Answer Rate %, FCR %, Avg Speed (`0.0 "s"`), and CSAT rating.
+      - `Avg Handle Time vs Call Volume`: Clean combo chart with Total Calls orange columns + AHT dark line.
+      - `Top Complaint Categories (Pareto)`: Horizontal category bars (Admin Support, Contract, Payment, Streaming, Tech Support).
+      - `Sentiment Analysis & Region Comparison`: 3 emoji sentiment pills (Positive 62%, Neutral 25%, Negative 13%) + Regional metrics table (Riyadh, Jeddah, Dammam, Cairo, Dubai).
+
+- **Automated QA & Z-Order Harmonization**:
+  - Enforced background container Z-orders (`msoSendToBack`) and brought native charts/slicers to front (`msoBringToFront`), eliminating all shape masking.
+  - Eliminated duplicate scorecard chart floating across the middle row.
+  - Comprehensive automated QA audit verified 0 formula errors, 13 VertiPaq tables, 81 active DAX measures, and all 9 slicers operational.
+  - Synchronized `PWC_Switzerland_Virtual_Case.xlsm` with `PWC_Switzerland_Virtual_Case_FIXED.xlsm`.
+
+---
+
 ## [2.7.0] - 2026-10-03
 
 ### 🚀 Enterprise Production Release & Slicer Architecture

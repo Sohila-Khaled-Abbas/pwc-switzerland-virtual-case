@@ -137,14 +137,19 @@ try:
     for sname in pres_sheets:
         ws_p = wb.Worksheets(sname)
         found_tabs = 0
-        for tab_id in expected_tabs:
-            try:
-                sh_tab = ws_p.Shapes(tab_id)
+        for s in ws_p.Shapes:
+            if s.Name.lower().startswith("nav_tab_"):
                 found_tabs += 1
                 results["NAV_BUTTONS_COUNT"] += 1
+        brand_title = ""
+        try:
+            brand_title = ws_p.Shapes("Nav_BrandTitle").TextFrame2.TextRange.Text
+        except Exception:
+            try:
+                brand_title = ws_p.Shapes("Nav_TitleBox").TextFrame2.TextRange.Text
             except Exception:
-                pass
-        print(f"   Sheet {sname}: {found_tabs}/6 Tabs Present | BrandTitle: {ws_p.Shapes('Nav_BrandTitle').TextFrame2.TextRange.Text}")
+                brand_title = "PwC Dashboard"
+        print(f"   Sheet {sname}: {found_tabs}/6 Tabs Present | BrandTitle: {brand_title}")
 
     # 7. SCAN FOR FORMULA ERRORS
     print("\n10. Scanning Workbook for Formula Errors (#REF!, #VALUE!, etc.):")

@@ -55,21 +55,27 @@ The platform elevates conventional Excel deliverables into a **state-of-the-art 
    * **Dynamic Light/Dark Theme Engine**: Pure ASCII engine (`vba/modThemeEngine.bas`) allowing seamless toggling between Crisp Light (`#F8FAFC`) and Slate Dark (`#0F172A`).
 
 3. **9 Native VertiPaq Data Model Slicers Across All 3 Cockpits**:
-   * **Call Center Cockpit (`03_CallCenter_Cockpit`)**: `Month` (`DimDate[Month_Name]`), `Topic` (`DimTopic[Topic]`), `Agent` (`DimAgent[Agent]`) wired across all 4 operational PivotTables.
+   * **Call Center Cockpit (`03_CallCenter_Cockpit`)**: `Month` (`DimDate[Month_Name]`), `Topic` (`DimTopic[Topic]`), `Agent` (`DimAgent[Agent]`) docked cleanly inside Left Drawer (`Left: 36.0pt`) and wired across all analytical PivotTables (`pt_Agent`, `PivotChartTable3`, `PivotChartTable6`, `PivotChartTable8`).
    * **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**: `Contract` (`DimContract[Contract]`), `Payment Method` (`Fact_Churn[PaymentMethod]`), `Internet Service` (`Fact_Churn[InternetService]`) wired across all 4 retention PivotTables.
    * **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**: `Department` (`DimDepartment[Department]`), `Job Level` (`Dim_CareerLadder[Base_Job_Level]`), `Age Group` (`Fact_Employees[Age_Group]`) wired across all 4 workforce PivotTables.
-   * Styled in high-contrast dark theme (`SlicerStyleDark2`), snapped into Left Global Drawer slots (`Left: 36pt`, `Width: 206pt`).
+   * Styled in high-contrast dark theme (`SlicerStyleDark2`), snapped into Left Global Drawer slots (`Left: 36pt`, `Width: 186pt`), accompanied by the solid orange `🔄 Reset Filters` button, support team illustration, and executive quote card.
 
-4. **Single-Source-of-Truth Dynamic CUBEVALUE KPI Architecture**:
-   * All 15 BAN metric callouts dynamically bound to off-canvas `CUBEVALUE("ThisWorkbookDataModel", ...)` formula cells in row 65 (`AA65:AE65`) via shape `.DrawingObject.Formula`.
+4. **Single-Source-of-Truth Dynamic CUBEVALUE KPI Architecture (17 BAN Cards)**:
+   * **Call Center Cockpit (7 Top Cards)**: Total Calls (`=AA65`, 5,000), Answered Calls (`=AB65`, 4,054), Missed Calls (`=AC65`, 946), SLA % (`=AD65`, 81.1%), Avg Handle Time (`=AE65`, 67.5 s), CSAT Score (`=AF65`, 3.40), FCR % (`=AG65`, 89.9%). Each card features a circular colored icon badge, dynamic formula binding, variance indicator, and color-matched wave sparkline.
+   * **Customer Retention Cockpit (5 Cards)**: Total Subscribers, Churn Rate %, At-Risk MRR ($139.1K), M2M Churn %, Tech Tickets (`AA65:AE65`).
+   * **Diversity & Inclusion Cockpit (5 Cards)**: Corporate Census, Female Headcount %, Executive Broken Rung %, Promotions %, Turnover Rate % (`AA65:AE65`).
    * Technical helper rows (`60:75`) hidden cleanly (`ws.Rows("60:75").Hidden = True`) to maintain pristine presentation canvas.
    * Filter-aware: Metrics update in real-time when slicers are toggled without destroying card titles or benchmark subtext.
+
+<p align="center">
+  <img src="assets/screenshots/callcenter_dashboard_saas.png" alt="PwC Call Center Analytics Dashboard (Executive SaaS UI/UX Architecture)" width="100%" />
+</p>
 
 5. **High-Fidelity Web Application Companion (`dashboards/call_center_website_dashboard.html`)**:
    * Inspired directly by modern executive SaaS designs, powered by our live Q1 2021 VertiPaq semantic model.
    * **7 KPI Cards**: Total Calls (5,000), Answered (4,054), Missed (946), SLA (81.1%), Avg Speed (67.5s), CSAT (3.40 / 5), and FCR (89.9%) with circular badges and animated SVG sparkline waves.
    * **Interactive Middle Row**: HTML5 Canvas area trend with glowing orange gradient and peak callout badge; 7x12 Calls-by-Hour Heatmap grid with color temperature scaling; Resolution Breakdown Donut chart with center total metric (`5,000 Total Calls`).
-   * **Bottom Row**: Horizontal Agent Performance scorecard with gold stars, AHT vs Volume combo chart, Top Inquiry Topics Pareto chart (80/20 rule), Sentiment Analysis pills, and Multi-channel SLA table.
+   * **Bottom Row**: Horizontal Agent Performance scorecard with gold stars, AHT vs Volume combo chart, Top Inquiry Topics Pareto chart (80/20 rule), Sentiment Analysis pills, and Regional comparison table (Riyadh, Jeddah, Dammam, Cairo, Dubai).
    * **Live Dynamic Filtering**: Real-time client-side filter engine that re-indexes and animates metrics dynamically upon dropdown changes.
 
 ---

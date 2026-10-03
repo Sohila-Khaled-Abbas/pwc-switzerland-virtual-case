@@ -98,3 +98,29 @@ sequenceDiagram
   - `Age Group`: `Fact_Employees[Age_Group]`
 
 * **Single-Click Reset**: The `Reset Filters` action button executes `modFilterController.ClearAllFilters`, looping through all 9 `SlicerCaches` to restore full view instantaneously.
+
+---
+
+## 🖥️ Call Center Analytics Dashboard (Executive SaaS Architecture)
+
+The **Call Center Operations Cockpit** (`03_CallCenter_Cockpit`) delivers an ultra-modern SaaS analytics dashboard matching Tier-1 enterprise BI standards:
+
+<p align="center">
+  <img src="../assets/screenshots/callcenter_dashboard_saas.png" alt="PwC Call Center Analytics Dashboard" width="100%" />
+</p>
+
+### Layout Structure & Component Inventory
+
+| Region | Component | Coordinates / Specs | Technical Implementation |
+| :--- | :--- | :--- | :--- |
+| **Top Bar** | PwC Logo + Title + 6 Tabs + 4 Cards | `Left: 24, Top: 14, Width: 1480, Height: 52` | Embedded official logo, active tab Tangerine `#EA580C`, live VertiPaq status |
+| **Left Drawer** | Slicers + Reset Button + Illustration + Quote | `Left: 24, Top: 74, Width: 210, Height: 715` | Slicers docked at `Left: 36.0`, solid orange button (`modFilterController.ClearAllFilters`) |
+| **BAN Cards** | 7 Floating Executive Metric Cards | `Left: 244, Top: 74, Width: 168 each, Height: 96` | Circular colored badges, vector SVG icons, formulas `=AA65:AG65`, wave sparklines |
+| **Mid Visual 1** | Calls Trend (Daily) | `Left: 244, Top: 180, Width: 485, Height: 285` | Native Excel chart (`CC_HourlyVolume`) with Peak badge callout |
+| **Mid Visual 2** | Calls by Hour (Heatmap) | `Left: 741, Top: 180, Width: 425, Height: 285` | 7-day $\times$ 12-hour temperature grid with Low-to-High legend |
+| **Mid Visual 3** | Resolution Breakdown | `Left: 1178, Top: 180, Width: 326, Height: 285` | Modern Donut cutout with `5,000 Total Calls` in center and 4-tier legend |
+| **Bot Visual 1** | Agent Performance (Top 10) | `Left: 244, Top: 475, Width: 345, Height: 315` | Live linked tabular scorecard (`LiveScorecard_HTMLTable`) with AHT & CSAT |
+| **Bot Visual 2** | Avg Handle Time vs Call Volume | `Left: 601, Top: 475, Width: 345, Height: 315` | Native Combo chart (`CC_AgentQuadrant`) with Total Calls columns + AHT line |
+| **Bot Visual 3** | Top Complaint Categories (Pareto) | `Left: 958, Top: 475, Width: 320, Height: 315` | Native horizontal bars (`CC_TopicBreakdown`) |
+| **Bot Visual 4** | Sentiment Analysis & Region Comparison | `Left: 1290, Top: 475, Width: 214, Height: 315` | 3 sentiment pills + 5 regional benchmark rows (Riyadh, Jeddah, Dammam, Cairo, Dubai) |
+

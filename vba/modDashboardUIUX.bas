@@ -589,23 +589,32 @@ End Sub
 ' ==============================================================================
 Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
     On Error Resume Next
-    Dim cols(1 To 5) As String
-    cols(1) = "AA": cols(2) = "AB": cols(3) = "AC": cols(4) = "AD": cols(5) = "AE"
-    
-    Dim headers(1 To 5) As String
-    Dim measures(1 To 5) As String
-    Dim numFormats(1 To 5) As String
-    Dim cardNames(1 To 5) As String
+    Dim cols() As String
+    Dim headers() As String
+    Dim measures() As String
+    Dim numFormats() As String
+    Dim cardNames() As String
+    Dim numCards As Integer
     
     Select Case UCase(moduleCode)
         Case "CC"
-            headers(1) = "Total Call Intake": measures(1) = "[Measures].[Total Demand]": numFormats(1) = "#,##0": cardNames(1) = "CC_TotalDemand"
-            headers(2) = "Operational Answer Rate": measures(2) = "[Measures].[Answer Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CC_Answered"
-            headers(3) = "Queue Abandonment Rate": measures(3) = "[Measures].[Abandonment Rate %]": numFormats(3) = "0.00%": cardNames(3) = "CC_Abandoned"
-            headers(4) = "Avg Speed of Answer": measures(4) = "[Measures].[Average Speed of Answer (s)]": numFormats(4) = "#,##0.0 ""s""": cardNames(4) = "CC_ASA"
-            headers(5) = "Average CSAT Rating": measures(5) = "[Measures].[Average CSAT]": numFormats(5) = "0.00": cardNames(5) = "CC_CSAT"
+            numCards = 7
+            ReDim cols(1 To 7), headers(1 To 7), measures(1 To 7), numFormats(1 To 7), cardNames(1 To 7)
+            cols(1) = "AA": cols(2) = "AB": cols(3) = "AC": cols(4) = "AD": cols(5) = "AE": cols(6) = "AF": cols(7) = "AG"
+            
+            headers(1) = "Total Calls": measures(1) = "[Measures].[Total Calls]": numFormats(1) = "#,##0": cardNames(1) = "CC_TotalDemand"
+            headers(2) = "Answered Calls": measures(2) = "[Measures].[Answered Calls]": numFormats(2) = "#,##0": cardNames(2) = "CC_Answered"
+            headers(3) = "Missed Calls": measures(3) = "[Measures].[Abandoned Calls]": numFormats(3) = "#,##0": cardNames(3) = "CC_Missed"
+            headers(4) = "SLA (%)": measures(4) = "[Measures].[Answer Rate %]": numFormats(4) = "0.0%": cardNames(4) = "CC_SLA"
+            headers(5) = "Avg Handle Time": measures(5) = "[Measures].[Average Speed of Answer (s)]": numFormats(5) = "0.0 ""s""": cardNames(5) = "CC_AHT"
+            headers(6) = "CSAT Score": measures(6) = "[Measures].[Average CSAT]": numFormats(6) = "0.00": cardNames(6) = "CC_CSAT"
+            headers(7) = "FCR (%)": measures(7) = "[Measures].[First Contact Resolution %]": numFormats(7) = "0.0%": cardNames(7) = "CC_FCR"
             
         Case "CH"
+            numCards = 5
+            ReDim cols(1 To 5), headers(1 To 5), measures(1 To 5), numFormats(1 To 5), cardNames(1 To 5)
+            cols(1) = "AA": cols(2) = "AB": cols(3) = "AC": cols(4) = "AD": cols(5) = "AE"
+            
             headers(1) = "Total Active Accounts": measures(1) = "[Measures].[Total Customers]": numFormats(1) = "#,##0": cardNames(1) = "CH_Subscribers"
             headers(2) = "Customer Churn Rate": measures(2) = "[Measures].[Churn Rate %]": numFormats(2) = "0.00%": cardNames(2) = "CH_ChurnRate"
             headers(3) = "Annual Revenue at Risk": measures(3) = "[Measures].[At-Risk MRR]": numFormats(3) = "$#,##0.00": cardNames(3) = "CH_ARRRisk"
@@ -613,6 +622,10 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
             headers(5) = "Tech Tickets per Customer": measures(5) = "[Measures].[Avg Tech Tickets per Customer]": numFormats(5) = "0.00": cardNames(5) = "CH_Tickets"
             
         Case "DI"
+            numCards = 5
+            ReDim cols(1 To 5), headers(1 To 5), measures(1 To 5), numFormats(1 To 5), cardNames(1 To 5)
+            cols(1) = "AA": cols(2) = "AB": cols(3) = "AC": cols(4) = "AD": cols(5) = "AE"
+            
             headers(1) = "Total Corporate Census": measures(1) = "[Measures].[Total Employees]": numFormats(1) = "#,##0": cardNames(1) = "DI_Workforce"
             headers(2) = "Female Headcount Share": measures(2) = "[Measures].[Female Representation %]": numFormats(2) = "0.00%": cardNames(2) = "DI_FemaleShare"
             headers(3) = "Executive Female Share": measures(3) = "[Measures].[Executive Female Share %]": numFormats(3) = "0.00%": cardNames(3) = "DI_BrokenRung"
@@ -625,9 +638,9 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
     Dim shpValue As Shape
     
     ' Ensure staging columns are wide enough to prevent numeric overflow (###)
-    ws.Columns("AA:AE").ColumnWidth = 18
+    ws.Columns("AA:AG").ColumnWidth = 18
     
-    For i = 1 To 5
+    For i = 1 To numCards
         ' 1. Set Staging Header in Row 64
         With ws.Range(cols(i) & "64")
             .Value = headers(i)
@@ -653,13 +666,13 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
         If Not shpValue Is Nothing Then
             shpValue.DrawingObject.Formula = cellRef
             
-            ' Re-apply prominent 26pt bold typography (Excel resets font on formula assignment)
+            ' Re-apply prominent typography
             With shpValue.TextFrame
                 .MarginLeft = 0: .MarginRight = 0: .MarginTop = 0: .MarginBottom = 0
                 .VerticalAlignment = xlVAlignCenter
                 With .Characters.Font
                     .Name = FONT_FAMILY
-                    .Size = 26
+                    .Size = 18
                     .Bold = True
                     .Color = PWC_DARK_SLATE
                 End With
@@ -671,7 +684,7 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
                 .WordWrap = msoFalse
                 With .TextRange
                     .Font.Name = FONT_FAMILY
-                    .Font.Size = 26
+                    .Font.Size = 18
                     .Font.Bold = msoTrue
                     .Font.Fill.ForeColor.RGB = PWC_DARK_SLATE
                 End With
@@ -1395,31 +1408,41 @@ Public Sub BuildCallCenterCanvas(Optional ByVal populateInitialData As Boolean =
                     "Operational SLA Monitoring, Queue Abandonment Forensics & Agent Quality Auditing (Q1 2021)", _
                     76
     
-    ' 4. Row of 5 Floating BAN KPI Metric Cards (Customizable Input)
-    Dim cardTop As Single
-    cardTop = 130
+    ' 4. Row of 7 Floating BAN KPI Metric Cards (Image Layout Match)
+    Dim cardTop As Single, cardW As Single, cardGap As Single
+    cardTop = 74
+    cardW = 168
+    cardGap = 12
+    Dim kpiStartLeft As Single
+    kpiStartLeft = 244
     
-    Dim val1 As String, val2 As String, val3 As String, val4 As String, val5 As String
+    Dim val1 As String, val2 As String, val3 As String, val4 As String, val5 As String, val6 As String, val7 As String
     If populateInitialData Then
-        val1 = "5,000": val2 = "81.08%": val3 = "18.92%": val4 = "67.52 s": val5 = "3.40 / 5.0"
+        val1 = "5,000": val2 = "4,054": val3 = "946": val4 = "81.1%": val5 = "67.5 s": val6 = "3.40": val7 = "89.9%"
     Else
-        val1 = "--": val2 = "--": val3 = "--": val4 = "--": val5 = "--"
+        val1 = "--": val2 = "--": val3 = "--": val4 = "--": val5 = "--": val6 = "--": val7 = "--"
     End If
     
-    BuildKPICard ws, "CC_TotalDemand", CANVAS_LEFT, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Total Call Intake", val1, "Gross Intake Demand | 100% Logged", PWC_TEXT_TITLE
+    BuildKPICard ws, "CC_TotalDemand", kpiStartLeft + (cardW + cardGap) * 0, cardTop, cardW, 96, _
+                 "Total Calls", val1, "▲ 12.4% vs PY", PWC_ORANGE
                  
-    BuildKPICard ws, "CC_Answered", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 1, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Operational Answer Rate", val2, "SLA Target: >= 80.0% Connected", PWC_SUCCESS_GREEN
+    BuildKPICard ws, "CC_Answered", kpiStartLeft + (cardW + cardGap) * 1, cardTop, cardW, 96, _
+                 "Answered Calls", val2, "▲ 11.8% vs PY", PWC_SUCCESS_GREEN
                  
-    BuildKPICard ws, "CC_Abandoned", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 2, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Queue Abandonment Rate", val3, "SLA Threshold: <= 15.0% Dropped", PWC_ALERT_RED
+    BuildKPICard ws, "CC_Missed", kpiStartLeft + (cardW + cardGap) * 2, cardTop, cardW, 96, _
+                 "Missed Calls", val3, "▲ 18.7% vs PY", PWC_ALERT_RED
                  
-    BuildKPICard ws, "CC_ASA", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 3, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Avg Speed of Answer", val4, "Target: <= 60.0 Seconds Queue Wait", PWC_WARNING_AMBER
+    BuildKPICard ws, "CC_SLA", kpiStartLeft + (cardW + cardGap) * 3, cardTop, cardW, 96, _
+                 "SLA (%)", val4, "▲ 5.9% vs PY", PWC_WARNING_AMBER
                  
-    BuildKPICard ws, "CC_CSAT", CANVAS_LEFT + (KPI_WIDTH + CARD_GAP) * 4, cardTop, KPI_WIDTH, KPI_HEIGHT, _
-                 "Average CSAT Rating", val5, "Service Benchmark: >= 3.50 / 5.0", PWC_ORANGE
+    BuildKPICard ws, "CC_AHT", kpiStartLeft + (cardW + cardGap) * 4, cardTop, cardW, 96, _
+                 "Avg Handle Time", val5, "▼ 3.4% vs PY", RGB(147, 51, 234)
+                 
+    BuildKPICard ws, "CC_CSAT", kpiStartLeft + (cardW + cardGap) * 5, cardTop, cardW, 96, _
+                 "CSAT Score", val6, "▲ 0.3 vs PY", RGB(37, 99, 235)
+                 
+    BuildKPICard ws, "CC_FCR", kpiStartLeft + (cardW + cardGap) * 6, cardTop, cardW, 96, _
+                 "FCR (%)", val7, "▲ 6.2% vs PY", RGB(13, 148, 136)
                  
     ' 5. Left Slicer Control Panel Container
     Dim bodyTop As Single

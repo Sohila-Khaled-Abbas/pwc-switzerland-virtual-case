@@ -1304,26 +1304,36 @@ flowchart TD
    - Quick jump links to `01_Business_Domains` and `02_Metadata_&_KPI_Catalog`.
 
 #### Step 9.2: Modernizing Visual Charts & Slicers (`03_CallCenter_Cockpit`)
-1. **Left Global Slicer Drawer (Dark Slate SaaS Aesthetics)**:
-   - Panel Background: Solid Dark Slate `#182234` (`RGB(24, 34, 52)`) with subtle border `#334155`.
-   - Header: White text `FILTERS` with glowing orange funnel icon.
-   - Slicer Slots: Dark slate cards `#1E293B` with border `#334155`.
-   - Action Button: Warm orange `Reset Filters` button (`#EA580C`).
+1. **Left Global Slicer Drawer (Dark Slate SaaS Aesthetics #182234)**:
+   - Panel Background: Solid Dark Slate `#182234` (`RGB(24, 34, 52)`) with border `#334155` (`Left: 24pt, Top: 74pt, Width: 210pt, Height: 715pt`).
+   - Slicer Docking: 3 native VertiPaq Data Model Slicers (`Month_Name`, `Topic`, `Agent`) cleanly docked inside at `Left: 36.0pt`, styled in `SlicerStyleDark2`.
+   - Action Button: Solid orange `🔄 Reset Filters` button (`#EA580C`) mapped to `modFilterController.ClearAllFilters`.
+   - Collaboration Graphic: Embedded vector graphic `assets/icons/support_team_illustration.svg`.
    - Bottom Quote Card: Rounded gold card with quotation:
      `“ Delivering value through insights. ”`
-     `— PwC Virtual Case`
-2. **KPI Scorecard Upgrades**:
-   - Circular icon badges (`32pt × 32pt`) positioned in the upper right corner of each card.
-   - Vector SVG icons embedded: `phone.svg` (Orange), `check-circle.svg` (Green), `phone-off.svg` (Red), `clock.svg` (Amber), `star.svg` (Blue).
-   - Trend subtext badges: `▲ 12.4% vs PY`, `▲ 11.8% vs PY`, `▲ 18.7% vs PY`, `▼ 3.4% vs PY`, `▲ 0.3 vs PY`.
-3. **Chart Visual Decluttering & Warm Gradient Styling**:
-   - **`CC_HourlyVolume`**: Intraday demand columns formatted with two-color gradient stops in warm PwC Tangerine (`#EA580C` to `#FF8C42`), gap width `45%`, zero border, and dashed soft gridlines (`#F1F5F9`).
-   - **`CC_TopicBreakdown`**: Horizontal bars with reverse category plot order, warm orange fill, and clean bold data labels placed Outside End (`Segoe UI 8pt bold`).
-   - **`CC_AgentQuadrant`**: Dual-axis combo chart featuring warm orange columns for First Contact Resolution % and a smooth curved spline line (`srs.Smooth = True`) with white-centered circular markers for Average CSAT.
-4. **Docked Agent Scorecard Geometry**:
-   - Live linked picture table (`LiveScorecard_HTMLTable`) docked over `DockZone_CC_AgentScorecard`.
-   - Calibrated column widths (`C: 12.5, D: 10.5, E: 11.5, F: 10.5, G: 12.0, H: 10.5`) and row heights (`22.5pt`).
-   - Average Speed of Answer permanently enforced with `0.0 "s"` formatting, and AutoFilter dropdowns hidden for seamless card integration.
+     `— PwC`
+
+2. **7 Top BAN KPI Cards (Row 65 CUBE Staging Architecture)**:
+   - Card dimensions: `Width: 168pt, Height: 96pt, Gap: 12pt` spanning horizontally across `Left: 244pt` to `1504pt`.
+   - Circular icon badges (`32pt × 32pt`) positioned on the upper left with custom backgrounds:
+     1. `Total Calls`: Orange badge (`#FFEDD5`) + `phone_orange.svg`, formula `=AA65` (5,000), `▲ 12.4% vs PY`, orange wave sparkline.
+     2. `Answered Calls`: Green badge (`#DCFCE7`) + `check_green.svg`, formula `=AB65` (4,054), `▲ 11.8% vs PY`, green wave sparkline.
+     3. `Missed Calls`: Red badge (`#FEE2E2`) + `xcircle_red.svg`, formula `=AC65` (946), `▲ 18.7% vs PY`, red wave sparkline.
+     4. `SLA (%)`: Amber badge (`#FEF3C7`) + `timer_amber.svg`, formula `=AD65` (81.1%), `▲ 5.9% vs PY`, amber wave sparkline.
+     5. `Avg Handle Time`: Purple badge (`#F3E8FF`) + `clock_purple.svg`, formula `=AE65` (67.5 s), `▼ 3.4% vs PY`, purple wave sparkline.
+     6. `CSAT Score`: Blue badge (`#DBEAFE`) + `user_blue.svg`, formula `=AF65` (3.40), `▲ 0.3 vs PY`, blue wave sparkline.
+     7. `FCR (%)`: Teal badge (`#CCFBF1`) + `target_teal.svg`, formula `=AG65` (89.9%), `▲ 6.2% vs PY`, teal wave sparkline.
+
+3. **Middle Row Visuals (Trend, Heatmap, Donut Cutout)**:
+   - **`Calls Trend (Daily)`**: Native Excel chart (`CC_HourlyVolume`) docked at `Left: 244pt, Top: 180pt, Width: 485pt, Height: 285pt` with `Peak: 18,450 Jun 12` badge.
+   - **`Calls by Hour (Heatmap)`**: Matrix container docked at `Left: 741pt, Top: 180pt, Width: 425pt, Height: 285pt` with a 7-day $\times$ 12-hour temperature grid and Low-to-High legend.
+   - **`Resolution Breakdown`**: Container at `Left: 1178pt, Top: 180pt, Width: 326pt, Height: 285pt` featuring a modern donut cutout with center total callout (`5,000 Total Calls`) and 4-tier colored status breakdown.
+
+4. **Bottom Row Visuals (Scorecard, Combo, Pareto, Sentiment/Region)**:
+   - **`Agent Performance (Top 10)`**: Live linked tabular scorecard (`LiveScorecard_HTMLTable`) docked at `Left: 244pt, Top: 475pt, Width: 345pt, Height: 315pt` showing Calls Taken, Answer Rate %, FCR %, AHT (`0.0 "s"`), and CSAT.
+   - **`Avg Handle Time vs Call Volume`**: Native combo chart (`CC_AgentQuadrant`) docked at `Left: 601pt, Top: 475pt, Width: 345pt, Height: 315pt` with Total Calls orange columns + AHT dark line.
+   - **`Top Complaint Categories (Pareto)`**: Horizontal category bars (`CC_TopicBreakdown`) docked at `Left: 958pt, Top: 475pt, Width: 320pt, Height: 315pt`.
+   - **`Sentiment Analysis & Region Comparison`**: Container at `Left: 1290pt, Top: 475pt, Width: 214pt, Height: 315pt` housing 3 sentiment pills (Positive 62%, Neutral 25%, Negative 13%) and a 5-row regional benchmark table (Riyadh, Jeddah, Dammam, Cairo, Dubai).
 
 #### Step 9.3: Dedicated SaaS Web Dashboard Companion
 For stakeholders requiring a native browser experience, the companion web dashboard in `dashboards/call_center_website_dashboard.html` provides:
