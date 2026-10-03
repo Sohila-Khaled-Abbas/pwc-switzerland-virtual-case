@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PwC Switzerland | Enterprise BI & Analytics Portal</title>
+  <meta name="description" content="PwC Switzerland Virtual Case Experience: Enterprise BI Executive Intelligence Suite connecting Telephony Operations, Customer Retention, and Diversity & Inclusion Parity models.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Dark Theme (Default) */
+      --bg-canvas: #0B0F19;
+      --bg-surface: #111827;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --bg-card-hover: rgba(26, 36, 56, 0.95);
+      --border-subtle: #1F2937;
+      --border-highlight: #374151;
+      --text-primary: #F9FAFB;
+      --text-secondary: #9CA3AF;
+      --text-muted: #6B7280;
+      --accent-pwc: #D04A02;
+      --accent-pwc-glow: rgba(208, 74, 2, 0.35);
+      --accent-pwc-light: #FF7A33;
+      --accent-emerald: #10B981;
+      --accent-rose: #F43F5E;
+      --accent-blue: #3B82F6;
+      --shadow-elevation: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 50px -10px rgba(208, 74, 2, 0.25);
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-canvas: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-card: rgba(255, 255, 255, 0.9);
+      --bg-card-hover: #FFFFFF;
+      --border-subtle: #E2E8F0;
+      --border-highlight: #CBD5E1;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --accent-pwc: #D04A02;
+      --accent-pwc-glow: rgba(208, 74, 2, 0.2);
+      --accent-pwc-light: #EA580C;
+      --accent-emerald: #059669;
+      --accent-rose: #E11D48;
+      --accent-blue: #2563EB;
+      --shadow-elevation: 0 15px 30px -10px rgba(15, 23, 42, 0.08);
+      --shadow-glow: 0 0 40px -10px rgba(208, 74, 2, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease; }
+    body { font-family: var(--font-main); background-color: var(--bg-canvas); color: var(--text-primary); line-height: 1.5; min-height: 100vh; overflow-x: hidden; position: relative; }
+
+    /* Background Ambient Glow */
+    .ambient-glow {
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 500px;
+      background: radial-gradient(circle, var(--accent-pwc-glow) 0%, rgba(208, 74, 2, 0.05) 50%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(60px);
+    }
+
+    .container { max-width: 1320px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+    /* Top Navigation Bar */
+    header.navbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 25, 0.75);
+    }
+    [data-theme="light"] header.navbar {
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .brand-wrap { display: flex; align-items: center; gap: 14px; text-decoration: none; color: inherit; }
+    .logo-badge {
+      background: linear-gradient(135deg, #D04A02 0%, #EA580C 100%);
+      color: #FFF;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(208, 74, 2, 0.3);
+    }
+    .brand-text h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+    .brand-text span { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent-emerald);
+    }
+    .status-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+
+    .btn-toggle-theme {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-toggle-theme:hover { border-color: var(--accent-pwc); }
+
+    .btn-primary-action {
+      background: var(--accent-pwc);
+      color: #FFF;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(208, 74, 2, 0.25);
+    }
+    .btn-primary-action:hover { background: var(--accent-pwc-light); transform: translateY(-1px); }
+
+    /* Hero Section */
+    .hero {
+      padding: 64px 0 44px 0;
+      text-align: center;
+      position: relative;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      background: rgba(208, 74, 2, 0.12);
+      border: 1px solid rgba(208, 74, 2, 0.35);
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-pwc-light);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      max-width: 950px;
+      margin-left: auto;
+      margin-right: auto;
+      background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-pwc-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 780px;
+      margin: 0 auto 36px auto;
+      line-height: 1.6;
+    }
+
+    /* Cross-Enterprise Metrics Ticker */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 56px;
+    }
+    .ticker-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-elevation);
+    }
+    .ticker-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--ticker-accent, var(--accent-pwc));
+    }
+    .ticker-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+    .ticker-val { font-size: 28px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; font-family: var(--font-mono); }
+    .ticker-sub { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* The 3 SaaS Cockpit Cards */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+    }
+    .section-header h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .section-header p { font-size: 13.5px; color: var(--text-secondary); }
+
+    .cockpit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    .cockpit-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-elevation);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .cockpit-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--card-border-hover, var(--accent-pwc));
+      box-shadow: var(--shadow-glow), var(--shadow-elevation);
+    }
+    .card-top { margin-bottom: 22px; }
+    .card-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--card-accent);
+      margin-bottom: 14px;
+    }
+    .card-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 10px; line-height: 1.3; }
+    .card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; }
+
+    .card-kpis {
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    [data-theme="light"] .card-kpis { background: #F1F5F9; }
+    .kpi-item h4 { font-size: 15px; font-weight: 800; font-family: var(--font-mono); color: var(--text-primary); }
+    .kpi-item span { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+    .card-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      background: var(--btn-cta-bg, #1F2937);
+      border: 1px solid var(--border-highlight);
+      border-radius: 12px;
+      color: #FFF;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .cockpit-card:hover .card-cta {
+      background: var(--card-accent, var(--accent-pwc));
+      border-color: transparent;
+    }
+
+    /* Bottom Governance Section */
+    .governance-banner {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 28px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 72px;
+      box-shadow: var(--shadow-elevation);
+    }
+    .gov-info h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .gov-info p { font-size: 13px; color: var(--text-secondary); }
+    .gov-links { display: flex; gap: 14px; }
+    .btn-gov {
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-gov:hover { border-color: var(--accent-pwc); color: var(--accent-pwc); }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 32px 0;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 1024px) {
+      .ticker-grid { grid-template-columns: repeat(2, 1fr); }
+      .cockpit-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 34px; }
+      .governance-banner { flex-direction: column; gap: 20px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+
+  <!-- Header Navbar -->
+  <header class="navbar">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+      <a href="index.html" class="brand-wrap">
+        <div class="logo-badge">pwc</div>
+        <div class="brand-text">
+          <h1>PwC Switzerland BI Suite</h1>
+          <span>Digital Acceleration & Strategic Analytics</span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <div class="status-badge">
+          <div class="status-pulse"></div>
+          <span>VertiPaq Engine v2.1 Online</span>
+        </div>
+        <button class="btn-toggle-theme" id="themeToggleBtn" onclick="toggleTheme()">
+          <span id="themeIcon">☀️</span>
+          <span id="themeLabel">Light Mode</span>
+        </button>
+        <a href="interactive_call_center_dashboard.html" class="btn-primary-action">
+          <span>Live Demo</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-pill">PwC Digital Accelerator · Virtual Case Experience</div>
+      <h1 class="hero-title">Executive BI Intelligence & Enterprise Governance Portal</h1>
+      <p class="hero-desc">
+        A unified multi-domain analytics ecosystem engineered on Ralph Kimball galaxy data architecture. Delivers real-time frontline telephony audit, churn risk mitigation, and executive diversity parity analytics.
+      </p>
+
+      <!-- Enterprise Metrics Ticker -->
+      <div class="ticker-grid">
+        <div class="ticker-card" style="--ticker-accent: var(--accent-emerald);">
+          <div class="ticker-label">Telephony SLA Compliance</div>
+          <div class="ticker-val" id="cntCalls">81.1%</div>
+          <div class="ticker-sub">4,054 Answered / 5,000 Total</div>
+        </div>
+        <div class="ticker-card" style="--ticker-accent: var(--accent-pwc);">
+          <div class="ticker-label">Customer ARR Preservation</div>
+          <div class="ticker-val" id="cntArr">$2.86M</div>
+          <div class="ticker-sub">26.5% Churn across 7,043 Accounts</div>
+        </div>
+        <div class="ticker-card" style="--ticker-accent: var(--accent-rose);">
+          <div class="ticker-label">Executive Gender Parity</div>
+          <div class="ticker-val" id="cntParity">41.0%</div>
+          <div class="ticker-sub">28.0% Executive Tier Representation</div>
+        </div>
+        <div class="ticker-card" style="--ticker-accent: var(--accent-blue);">
+          <div class="ticker-label">Data Architecture Fidelity</div>
+          <div class="ticker-val">100%</div>
+          <div class="ticker-sub">13 Star-Schema Models & Lookups</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cockpit Launcher Cards -->
+  <section class="container">
+    <div class="section-header">
+      <div>
+        <h2>Interactive Strategic Cockpits</h2>
+        <p>Direct access into certified domain performance workspaces</p>
+      </div>
+    </div>
+
+    <div class="cockpit-grid">
+      <!-- Cockpit 1: Call Center -->
+      <div class="cockpit-card" style="--card-accent: var(--accent-emerald); --card-border-hover: var(--accent-emerald);">
+        <div class="card-top">
+          <span class="card-tag">01 TELEPHONY OPERATIONS</span>
+          <h3 class="card-title">Call Center Operations & Agent Audit</h3>
+          <p class="card-desc">
+            Real-time queue triage, intraday hourly volume distributions, first-contact resolution audit, and representative efficiency scorecards with live SLA compliance metrics.
+          </p>
+          <div class="card-kpis">
+            <div class="kpi-item">
+              <h4>81.1%</h4>
+              <span>Answer Rate</span>
+            </div>
+            <div class="kpi-item">
+              <h4>67.5s</h4>
+              <span>Avg Speed</span>
+            </div>
+            <div class="kpi-item">
+              <h4>3.40</h4>
+              <span>CSAT Rating</span>
+            </div>
+          </div>
+        </div>
+        <a href="interactive_call_center_dashboard.html" class="card-cta">
+          <span>Launch Interactive Cockpit</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Cockpit 2: Customer Retention -->
+      <div class="cockpit-card" style="--card-accent: var(--accent-pwc); --card-border-hover: var(--accent-pwc);">
+        <div class="card-top">
+          <span class="card-tag">02 CUSTOMER RETENTION</span>
+          <h3 class="card-title">Customer Retention & Revenue Risk</h3>
+          <p class="card-desc">
+            Contract vulnerability profiling, early tenure decay curve analytics, payment friction diagnostics, and tech support bundling matrices to stem ARR revenue attrition.
+          </p>
+          <div class="card-kpis">
+            <div class="kpi-item">
+              <h4>7,043</h4>
+              <span>Subscribers</span>
+            </div>
+            <div class="kpi-item">
+              <h4>26.5%</h4>
+              <span>Churn Rate</span>
+            </div>
+            <div class="kpi-item">
+              <h4>$2.86M</h4>
+              <span>At-Risk ARR</span>
+            </div>
+          </div>
+        </div>
+        <a href="../PWC_Switzerland_Virtual_Case.xlsm" class="card-cta">
+          <span>Explore in Master Workbook</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Cockpit 3: Diversity & Inclusion -->
+      <div class="cockpit-card" style="--card-accent: var(--accent-rose); --card-border-hover: var(--accent-rose);">
+        <div class="card-top">
+          <span class="card-tag">03 DIVERSITY & INCLUSION</span>
+          <h3 class="card-title">Diversity, Equity & Executive Parity</h3>
+          <p class="card-desc">
+            Comprehensive workforce census, corporate ladder broken-rung discovery, promotion velocity differentials, and performance appraisal parity audits.
+          </p>
+          <div class="card-kpis">
+            <div class="kpi-item">
+              <h4>500</h4>
+              <span>Headcount</span>
+            </div>
+            <div class="kpi-item">
+              <h4>41.0%</h4>
+              <span>Female %</span>
+            </div>
+            <div class="kpi-item">
+              <h4>10.2%</h4>
+              <span>Promo Velocity</span>
+            </div>
+          </div>
+        </div>
+        <a href="../PWC_Switzerland_Virtual_Case.xlsm" class="card-cta">
+          <span>Explore in Master Workbook</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Governance Banner -->
+    <div class="governance-banner">
+      <div class="gov-info">
+        <h3>Enterprise Governance & Data Dictionary Repositories</h3>
+        <p>Explore official entity grains, VertiPaq tabular schema definitions, and certified KPI formulation logic.</p>
+      </div>
+      <div class="gov-links">
+        <a href="../docs/02_galaxy_data_model.md" class="btn-gov">
+          <span>Data Model Spec</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        </a>
+        <a href="../docs/00_master_project_execution_guide.md" class="btn-gov">
+          <span>Execution Guide</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>PwC Switzerland Virtual Case Experience · Senior BI Architecture & Executive Analytics Suite</p>
+      <p style="margin-top: 4px; font-size: 11px;">Powered by Microsoft Excel, Power Query, VertiPaq Data Model & VBA Platform</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme') || 'dark';
+      const target = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', target);
+      localStorage.setItem('pwc_portal_theme', target);
+
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      if (target === 'light') {
+        icon.textContent = '🌙';
+        label.textContent = 'Dark Mode';
+      } else {
+        icon.textContent = '☀️';
+        label.textContent = 'Light Mode';
+      }
+    }
+
+    // Initialize stored theme
+    (function() {
+      const saved = localStorage.getItem('pwc_portal_theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        if (icon && label) {
+          if (saved === 'light') {
+            icon.textContent = '🌙';
+            label.textContent = 'Dark Mode';
+          } else {
+            icon.textContent = '☀️';
+            label.textContent = 'Light Mode';
+          }
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

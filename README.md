@@ -137,18 +137,71 @@ pwc-switzerland-virtual-case/
 │   ├── 03_Diversity_Inclusion_Measures.dax# Gender parity, promotion velocity & turnover
 │   ├── 04_Time_Intelligence_Measures.dax  # MTD, QTD, Prior Month & 7D rolling averages
 │   └── 05_Executive_KPI_Catalog.dax       # Master catalog of all 28 explicit measures
+---
+
+## 🖥️ Executive Landing Page & Dynamic Light/Dark Theme Platform
+
+The platform delivers an ultra-modern SaaS web application experience directly inside Microsoft Excel, accompanied by a standalone HTML5/CSS3 executive portal companion.
+
+```
++---------------------------------------------------------------------------------------------------------+
+| [PORTAL HOMEPAGE] 00_Home_Portal                        | [DYNAMIC THEME ENGINE] modThemeEngine.bas     |
+| * Hero Banner with Glowing Accent & Enterprise Status   | * Real-time 1-Click Toggle: Light & Dark Mode |
+| * 4 Cross-Enterprise Performance BAN Metric Cards       | * Deep Slate Navy (#0B0F19) vs Slate 50 (#F8FAFC) |
+| * 3 Interactive 3D SaaS Cockpit Launcher Cards          | * Adapts Canvas, Containers, Badges & Charts  |
+| * One-Click Direct Navigation & Governance Access       | * Persistent Custom Document Property State   |
++---------------------------------------------------------------------------------------------------------+
+```
+
+### Key UI/UX Innovations:
+1. **Executive Homepage (`00_Home_Portal`)**: The central entry point featuring a gradient hero banner, operational status ticker, cross-enterprise metrics (Telephony SLA, ARR Preservation, Diversity Parity), and interactive launcher cards linking to all three cockpits.
+2. **Light / Dark Mode Engine (`modThemeEngine.bas`)**: Full visual theme switching across all dashboard cockpits, background cells, cards, text typography, and PivotCharts via a single-click button on each header.
+3. **Pixel-Perfect Agent Scorecard Docker (`modInteractiveScorecard.bas`)**:
+   - Resolves the legacy `6533.1%` speed bug permanently with strict `0.0 "s"` numeric formatting.
+   - Hides Excel's default AutoFilter dropdown arrows (`pt.DisplayFieldCaptions = False`) for a clean SaaS widget look.
+   - Calibrates column widths and row heights for a 1:1 box fit with zero clipping.
+   - Replaces dashed wireframe borders with crisp, solid `#E2E8F0` cards and subtle elevation shadows.
+4. **Standalone Web Portal Companion (`dashboards/index.html` & `interactive_call_center_dashboard.html`)**: Fully responsive web applications with CSS glassmorphism, Lucide SVG icons, live filter chips, and interactive data tables for executive presentations.
+
+---
+
+## 📂 Repository File Tree & Architecture
+
+```text
+pwc-switzerland-virtual-case/
+├── .github/workflows/ci_validation.yml    # Continuous Integration pipeline
+├── assets/
+│   ├── diagrams/                          # SVG architectural blueprints
+│   ├── icons/                             # Modern vector SVG icon suite (11 icons)
+│   └── PwC_logo_rgb_colour_pos.png        # Official branding asset
+│
+├── dashboards/
+│   ├── index.html                         # SaaS Executive Landing Page & Portal
+│   └── interactive_call_center_dashboard.html # Standalone interactive Call Center cockpit
+│
+├── data/
+│   ├── 01 Call-Center-Dataset.xlsx        # 5,000 telephony interactions
+│   ├── 02 Churn-Dataset.xlsx              # 7,043 customer accounts & billing
+│   └── 03 Diversity-Inclusion-Dataset.xlsx# 500 employee records & backing tables
+│
+├── dax/
+│   ├── 01_Call_Center_Measures.dax        # Telephony SLA, CSAT & volume measures
+│   ├── 02_Customer_Retention_Measures.dax # Churn probability, risk ARR & cohort measures
+│   ├── 03_Diversity_Inclusion_Measures.dax# Gender parity, promotion velocity & rating measures
+│   ├── 04_Time_Intelligence_Measures.dax  # MTD, QTD, MoM growth & 7-day moving averages
+│   └── 05_Executive_KPI_Catalog.dax       # Master certified measure dictionary
 │
 ├── docs/
-│   ├── 00_master_project_execution_guide.md# End-to-end 8-phase implementation & build blueprint
+│   ├── 00_master_project_execution_guide.md# Complete 8-phase step-by-step manual build guide
 │   ├── 01_executive_summary.md            # Client engagement scope & executive briefs
 │   ├── 02_galaxy_data_model.md            # Kimball constellation design & VertiPaq mechanics
 │   ├── 03_power_query_etl_pipeline.md     # 3-tier M ETL lifecycle & forensic null triage
 │   ├── 04_dax_and_kpi_glossary.md         # DAX formulas, storage engine rules & SLAs
 │   ├── 05_dashboard_design_system.md      # UI/UX 8pt grid, color system & wireframes
 │   ├── 06_business_insights_and_playbook.md# Strategic recommendations & ROI models
-│   ├── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & Reddit best practices
-│   ├── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer, metadata catalog & KPI governance
-│   └── 09_excel_dashboard_publishing_and_distribution_guide.md # Browser view options, SharePoint, Power BI & web embed
+│   ├── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & best practices
+│   ├── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer & catalog
+│   └── 09_excel_dashboard_publishing_and_distribution_guide.md # Browser view, SharePoint & Power BI
 │
 ├── power_query/
 │   ├── 01_staging_queries.m               # Parameterized staging connections
@@ -163,7 +216,11 @@ pwc-switzerland-virtual-case/
 │   ├── modDataRefresh.bas                 # Clean VertiPaq model refresh handler
 │   ├── modExportPDF.bas                   # Automated executive report PDF generator
 │   ├── modFilterController.bas            # Slicer reset and interactive filter controls
-│   └── modNavigation.bas                  # Dashboard tab navigation router
+│   ├── modInteractiveScorecard.bas        # Pixel-perfect agent scorecard docker & formatter
+│   ├── modNavigation.bas                  # Dashboard tab navigation router
+│   ├── modPivotTableFormatting.bas        # Enterprise PivotTable geometry & typography formatter
+│   ├── modPortalLanding.bas               # Executive homepage & web landing page builder
+│   └── modThemeEngine.bas                 # Enterprise Light / Dark Mode dynamic theme engine
 │
 ├── CHANGELOG.md                           # Version history & release notes
 ├── CONTRIBUTING.md                        # Dimensional modeling & DAX style guide

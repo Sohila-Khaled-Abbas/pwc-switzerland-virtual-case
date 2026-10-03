@@ -814,164 +814,609 @@ End Sub
 ' 7. VISUAL CONTAINER CARD (CHART DOCKING FRAME)
 ' ==============================================================================
 Public Sub BuildChartContainer(ws As Worksheet, _
-                               ByVal containerName As String, _
-                               ByVal leftPos As Single, _
-                               ByVal topPos As Single, _
-                               ByVal cardWidth As Single, _
-                               ByVal cardHeight As Single, _
-                               ByVal chartTitle As String, _
-                               ByVal chartSubtitle As String, _
-                               ByVal chartTypeBadge As String)
+
+                                ByVal containerName As String, _
+
+                                ByVal leftPos As Single, _
+
+                                ByVal topPos As Single, _
+
+                                ByVal cardWidth As Single, _
+
+                                ByVal cardHeight As Single, _
+
+                                ByVal chartTitle As String, _
+
+                                ByVal chartSubtitle As String, _
+
+                                ByVal chartTypeBadge As String, _
+
+                                Optional ByVal iconFileName As String = "")
+
     Dim shpContainer As Shape
+
     Dim shpHeader As Shape
+
     Dim shpBadge As Shape
+
     Dim shpDockingZone As Shape
+
+    Dim shpIcon As Shape
+
+    Dim headerLeft As Single
+
     
-    ' 1. Base Floating Card Container
+
+    ' 1. Base Floating Card Container with Glassmorphic Drop Shadow
+
     Set shpContainer = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
+
     With shpContainer
+
         .Name = "Container_" & containerName
+
         .Fill.Solid
+
         .Fill.ForeColor.RGB = PWC_CARD_FILL
+
         .Line.ForeColor.RGB = PWC_CARD_BORDER
+
         .Line.Weight = 1
+
         .Adjustments.Item(1) = 0.04
+
         With .Shadow
-            .Type = msoShadow21: .Visible = msoTrue: .Blur = 8: .Transparency = 0.88: .OffsetX = 0: .OffsetY = 3
+
+            .Type = msoShadow21: .Visible = msoTrue: .Blur = 10: .Transparency = 0.88: .OffsetX = 0: .OffsetY = 3.5
+
         End With
+
     End With
+
     
-    ' 2. Container Header Title & Subtitle
-    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, leftPos + 16, topPos + 10, cardWidth - 140, 36)
+
+    ' 2. Vector SVG Icon in Card Header (If provided)
+
+    headerLeft = leftPos + 16
+
+    If Len(iconFileName) > 0 Then
+
+        Set shpIcon = InsertVectorIcon(ws, iconFileName, leftPos + 16, topPos + 14, 18, 18, "Icon_" & containerName)
+
+        If Not shpIcon Is Nothing Then
+
+            headerLeft = leftPos + 42
+
+        End If
+
+    End If
+
+    
+
+    ' 3. Container Header Title & Subtitle
+
+    Set shpHeader = ws.Shapes.AddTextbox(msoTextOrientationHorizontal, headerLeft, topPos + 10, cardWidth - (headerLeft - leftPos) - 124, 36)
+
     With shpHeader
+
         .Name = "Header_" & containerName
+
         .Fill.Visible = msoFalse
+
         .Line.Visible = msoFalse
+
         With .TextFrame2
+
             .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+
             .WordWrap = msoFalse
+
             With .TextRange
+
                 .Text = chartTitle & vbCrLf & chartSubtitle
+
                 With .Paragraphs(1).Font
+
                     .Name = FONT_FAMILY: .Size = 10.5: .Bold = msoTrue
+
                     .Fill.ForeColor.RGB = PWC_TEXT_TITLE
+
                 End With
+
                 With .Paragraphs(2).Font
+
                     .Name = FONT_FAMILY: .Size = 8: .Bold = msoFalse
+
                     .Fill.ForeColor.RGB = PWC_TEXT_MUTED
+
                 End With
+
             End With
+
         End With
+
     End With
+
     
-    ' 3. Visual Type Badge (Top Right)
+
+    ' 4. Visual Type Badge (Top Right)
+
     Set shpBadge = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + cardWidth - 116, topPos + 10, 102, 22)
+
     With shpBadge
+
         .Name = "Badge_" & containerName
+
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_PILL_BG
+
         .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 0.75
+
         .Adjustments.Item(1) = 0.25
+
         .TextFrame.VerticalAlignment = xlVAlignCenter
+
         .TextFrame.HorizontalAlignment = xlHAlignCenter
+
         .TextFrame.MarginLeft = 0: .TextFrame.MarginRight = 0: .TextFrame.MarginTop = 0: .TextFrame.MarginBottom = 0
+
         With .TextFrame2
+
             .VerticalAnchor = msoAnchorMiddle
+
             .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+
             .WordWrap = msoFalse
+
             With .TextRange
+
                 .Text = chartTypeBadge
+
                 .Font.Name = FONT_FAMILY: .Font.Size = 7.5: .Font.Bold = msoTrue
+
                 .Font.Fill.ForeColor.RGB = PWC_TEXT_MUTED
+
                 .ParagraphFormat.Alignment = msoAlignCenter
+
             End With
+
         End With
+
     End With
+
     
-    ' 4. Visual Docking Drop Zone (Watermarked Placeholder)
+
+    ' 5. Visual Docking Drop Zone (Solid Modern Panel Border - NOT legacy dashed!)
+
     Dim dockLeft As Single, dockTop As Single, dockW As Single, dockH As Single
+
     dockLeft = leftPos + 14
-    dockTop = topPos + 48
+
+    dockTop = topPos + 46
+
     dockW = cardWidth - 28
-    dockH = cardHeight - 60
+
+    dockH = cardHeight - 56
+
     
+
     Set shpDockingZone = ws.Shapes.AddShape(msoShapeRoundedRectangle, dockLeft, dockTop, dockW, dockH)
+
     With shpDockingZone
+
         .Name = "DockZone_" & containerName
-        .Fill.Solid: .Fill.ForeColor.RGB = PWC_SLOT_FILL
-        .Line.ForeColor.RGB = PWC_BORDER_DASHED: .Line.Weight = 0.75: .Line.DashStyle = msoLineDash
-        .Adjustments.Item(1) = 0.04
+
+        .Fill.Solid: .Fill.ForeColor.RGB = PWC_WHITE
+
+        .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 0.75: .Line.DashStyle = msoLineSolid
+
+        .Adjustments.Item(1) = 0.03
+
         .TextFrame.VerticalAlignment = xlVAlignCenter
+
         .TextFrame.HorizontalAlignment = xlHAlignCenter
+
         With .TextFrame2
+
             .VerticalAnchor = msoAnchorMiddle
+
             .MarginLeft = 12: .MarginTop = 12: .MarginRight = 12: .MarginBottom = 12
+
             With .TextRange
+
                 .Text = "[ PIVOTCHART DOCKING ZONE ]" & vbCrLf & _
+
                         "Insert PivotChart or Table into this card boundary." & vbCrLf & _
+
                         "Run DeclutterAndFormatChart for transparent integration."
+
                 With .Paragraphs(1).Font
+
                     .Name = FONT_FAMILY: .Size = 9: .Bold = msoTrue
+
                     .Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+
                 End With
+
                 With .Paragraphs(2).Font
+
                     .Name = FONT_FAMILY: .Size = 8: .Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+
                 End With
+
                 With .Paragraphs(3).Font
+
                     .Name = FONT_FAMILY: .Size = 7.5: .Italic = msoTrue
+
                     .Fill.ForeColor.RGB = PWC_TEXT_LIGHT
+
                 End With
+
                 .ParagraphFormat.Alignment = msoAlignCenter
+
             End With
+
         End With
+
     End With
+
 End Sub
 
+
+
 ' ==============================================================================
+
 ' 8. CHART TRANSPARENCY & DECLUTTERING FORMATTER
+
 ' ==============================================================================
+
 Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
+
+    Dim ws As Worksheet
+
+    Dim shp As Shape
+
+    
+
     On Error Resume Next
+
+    Set ws = chtObj.Parent
+
+    
+
+    ' Clear placeholder text in underlying DockZone shape if present
+
+    For Each shp In ws.Shapes
+
+        If InStr(1, shp.Name, "DockZone", vbTextCompare) > 0 Then
+
+            If Abs(shp.Left - chtObj.Left) < 40 And Abs(shp.Top - chtObj.Top) < 40 Then
+
+                shp.TextFrame2.TextRange.Text = ""
+
+                shp.Fill.Solid
+
+                shp.Fill.ForeColor.RGB = PWC_WHITE
+
+                shp.Line.ForeColor.RGB = PWC_CARD_BORDER
+
+                shp.Line.DashStyle = msoLineSolid
+
+                shp.Line.Weight = 0.75
+
+            End If
+
+        End If
+
+    Next shp
+
+    
+
     With chtObj
+
         ' Remove external chart border and make background completely transparent
+
         .ShapeRange.Fill.Visible = msoFalse
+
         .ShapeRange.Line.Visible = msoFalse
+
         
+
         With .Chart
+
             .ChartArea.Format.Fill.Visible = msoFalse
+
             .ChartArea.Format.Line.Visible = msoFalse
+
             .PlotArea.Format.Fill.Visible = msoFalse
+
             .PlotArea.Format.Line.Visible = msoFalse
+
             
+
             ' Apply enterprise typography
+
             .ChartArea.Format.TextFrame2.TextRange.Font.Name = FONT_FAMILY
+
             
+
             ' Soften primary gridlines
+
             If .HasAxis(xlValue, xlPrimary) Then
+
                 With .Axes(xlValue, xlPrimary)
+
                     If .HasMajorGridlines Then
-                        .MajorGridlines.Format.Line.ForeColor.RGB = PWC_CARD_BORDER
-                        .MajorGridlines.Format.Line.Weight = 0.75
+
+                        .MajorGridlines.Format.Line.ForeColor.RGB = RGB(241, 245, 249) ' #F1F5F9 Soft Slate
+
+                        .MajorGridlines.Format.Line.Weight = 0.5
+
                     End If
+
                     .Format.Line.Visible = msoFalse
+
                     .TickLabels.Font.Name = FONT_FAMILY
-                    .TickLabels.Font.Size = 8.5
+
+                    .TickLabels.Font.Size = 8
+
                     .TickLabels.Font.Color = PWC_TEXT_MUTED
+
                 End With
+
             End If
+
             
-            ' Soften category axis
-            If .HasAxis(xlCategory, xlPrimary) Then
-                With .Axes(xlCategory, xlPrimary)
-                    .Format.Line.ForeColor.RGB = PWC_CARD_BORDER
+
+            ' Soften secondary value axis if present (combo charts)
+
+            If .HasAxis(xlValue, xlSecondary) Then
+
+                With .Axes(xlValue, xlSecondary)
+
+                    If .HasMajorGridlines Then
+
+                        .MajorGridlines.Format.Line.Visible = msoFalse
+
+                    End If
+
+                    .Format.Line.Visible = msoFalse
+
                     .TickLabels.Font.Name = FONT_FAMILY
-                    .TickLabels.Font.Size = 8.5
-                    .TickLabels.Font.Color = PWC_TEXT_MUTED
+
+                    .TickLabels.Font.Size = 8
+
+                    .TickLabels.Font.Color = PWC_TANGERINE
+
                 End With
+
             End If
+
+            
+
+            ' Soften category axis
+
+            If .HasAxis(xlCategory, xlPrimary) Then
+
+                With .Axes(xlCategory, xlPrimary)
+
+                    .Format.Line.ForeColor.RGB = PWC_CARD_BORDER
+
+                    .Format.Line.Weight = 0.75
+
+                    .TickLabels.Font.Name = FONT_FAMILY
+
+                    .TickLabels.Font.Size = 8
+
+                    .TickLabels.Font.Color = PWC_TEXT_MUTED
+
+                End With
+
+            End If
+
+            
+
+            ' Minimal Legend if multi-series
+
+            If .HasLegend Then
+
+                With .Legend
+
+                    .Position = xlLegendPositionTop
+
+                    .Format.Fill.Visible = msoFalse
+
+                    .Format.Line.Visible = msoFalse
+
+                    .Font.Name = FONT_FAMILY
+
+                    .Font.Size = 8
+
+                    .Font.Color = PWC_TEXT_MUTED
+
+                End With
+
+            End If
+
         End With
+
     End With
+
     On Error GoTo 0
+
 End Sub
+
+
+
+' ==============================================================================
+
+' 8B. MODERN CHART THEME APPLIER (PwC PALETTE & ROUNDED PROPORTIONS)
+
+' ==============================================================================
+
+Public Sub ApplyModernChartTheme(chtObj As ChartObject, ByVal chartRole As String)
+
+    Dim srs As Series
+
+    On Error Resume Next
+
+    
+
+    With chtObj.Chart
+
+        Select Case UCase(Trim(chartRole))
+
+            ' Visual 1.1: Intraday Demand Surge (Hourly Clustered Column)
+
+            Case "HOURLY_VOLUME", "CC_HOURLYVOLUME"
+
+                .ChartType = xlColumnClustered
+
+                .ChartGroups(1).GapWidth = 65
+
+                .ChartGroups(1).Overlap = 0
+
+                If .SeriesCollection.Count >= 1 Then
+
+                    Set srs = .SeriesCollection(1)
+
+                    srs.Format.Fill.Solid
+
+                    srs.Format.Fill.ForeColor.RGB = PWC_CHARCOAL  ' #1E293B
+
+                    srs.Format.Line.Visible = msoFalse
+
+                End If
+
+                If .SeriesCollection.Count >= 2 Then
+
+                    Set srs = .SeriesCollection(2)
+
+                    srs.Format.Fill.Solid
+
+                    srs.Format.Fill.ForeColor.RGB = RGB(5, 150, 105) ' #059669 Emerald
+
+                    srs.Format.Line.Visible = msoFalse
+
+                End If
+
+                
+
+            ' Visual 1.2: Inquiry Topic SLA Compliance (Horizontal Clustered Bar)
+
+            Case "TOPIC_BREAKDOWN", "CC_TOPICBREAKDOWN"
+
+                .ChartType = xlBarClustered
+
+                .ChartGroups(1).GapWidth = 55
+
+                If .Axes(xlCategory, xlPrimary) IsNot Nothing Then
+
+                    .Axes(xlCategory, xlPrimary).ReversePlotOrder = True
+
+                End If
+
+                If .SeriesCollection.Count >= 1 Then
+
+                    Set srs = .SeriesCollection(1)
+
+                    srs.Format.Fill.Solid
+
+                    srs.Format.Fill.ForeColor.RGB = PWC_TANGERINE  ' #D04A02
+
+                    srs.Format.Line.Visible = msoFalse
+
+                    srs.ApplyDataLabels
+
+                    With srs.DataLabels
+
+                        .Font.Name = FONT_FAMILY
+
+                        .Font.Size = 8
+
+                        .Font.Bold = True
+
+                        .Font.Color = PWC_DARK_SLATE
+
+                        .Position = xlLabelPositionOutsideEnd
+
+                    End With
+
+                End If
+
+                
+
+            ' Visual 1.3: Representative Efficiency Matrix (Combo Chart)
+
+            Case "AGENT_QUADRANT", "CC_AGENTQUADRANT"
+
+                If .SeriesCollection.Count >= 1 Then
+
+                    Set srs = .SeriesCollection(1)
+
+                    srs.ChartType = xlColumnClustered
+
+                    srs.AxisGroup = xlPrimary
+
+                    srs.Format.Fill.Solid
+
+                    srs.Format.Fill.ForeColor.RGB = RGB(59, 130, 246) ' #3B82F6 Blue
+
+                    srs.Format.Line.Visible = msoFalse
+
+                End If
+
+                If .SeriesCollection.Count >= 2 Then
+
+                    Set srs = .SeriesCollection(2)
+
+                    srs.ChartType = xlLineMarkers
+
+                    srs.AxisGroup = xlSecondary
+
+                    srs.Format.Line.ForeColor.RGB = PWC_TANGERINE
+
+                    srs.Format.Line.Weight = 2
+
+                    srs.MarkerStyle = xlMarkerStyleCircle
+
+                    srs.MarkerSize = 6
+
+                    srs.MarkerBackgroundColor = PWC_TANGERINE
+
+                    srs.MarkerForegroundColor = RGB(255, 255, 255)
+
+                    srs.ApplyDataLabels
+
+                    With srs.DataLabels
+
+                        .Font.Name = FONT_FAMILY
+
+                        .Font.Size = 7.5
+
+                        .Font.Bold = True
+
+                        .Font.Color = PWC_TANGERINE
+
+                        .Position = xlLabelPositionAbove
+
+                    End With
+
+                End If
+
+        End Select
+
+    End With
+
+    
+
+    DeclutterAndFormatChart chtObj
+
+    On Error GoTo 0
+
+End Sub
+
+
+
 
 ' ==============================================================================
 ' 9. DASHBOARD 1: CALL CENTER OPERATIONS COCKPIT

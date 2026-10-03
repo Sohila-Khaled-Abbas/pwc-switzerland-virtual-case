@@ -118,9 +118,11 @@ Public Sub FormatScorecardGrid(pt As PivotTable)
         .ShowTableStyleRowStripes = True
         .ShowTableStyleColumnStripes = False
         .TableStyle2 = "PivotStyleLight1"
+        .DisplayFieldCaptions = False  ' HIDE AUTOFILTER DROPDOWN ARROW FOR CLEAN WEB-APP LOOK!
         
         ' Format whole table font
         Set rngTable = .TableRange2
+        If rngTable Is Nothing Then Set rngTable = .TableRange1
         If Not rngTable Is Nothing Then
             With rngTable.Font
                 .Name = FONT_NAME
@@ -151,6 +153,29 @@ Public Sub FormatScorecardGrid(pt As PivotTable)
                     pf.NumberFormat = "0.00"
             End Select
         Next i
+        
+        ' Calibrate Column Widths & Row Heights on Worksheet for Exact Box Fit (~442pt total width)
+        Dim wsParent As Worksheet
+        Set wsParent = pt.Parent
+        Dim cStart As Long, cCount As Long
+        cStart = pt.TableRange1.Column
+        cCount = pt.TableRange1.Columns.Count
+        
+        wsParent.Columns(cStart).ColumnWidth = 12.5       ' Col C: Agent (~80pt)
+        wsParent.Columns(cStart + 1).ColumnWidth = 10.5   ' Col D: Calls Taken (~70pt)
+        wsParent.Columns(cStart + 2).ColumnWidth = 11.5   ' Col E: Answer Rate % (~74pt)
+        wsParent.Columns(cStart + 3).ColumnWidth = 10.5   ' Col F: FCR Rate % (~70pt)
+        wsParent.Columns(cStart + 4).ColumnWidth = 12.0   ' Col G: Avg Speed (s) (~78pt)
+        wsParent.Columns(cStart + 5).ColumnWidth = 10.5   ' Col H: Avg CSAT (~70pt)
+        
+        ' Row Heights: Header 24pt, Body rows 22.5pt
+        wsParent.Rows(pt.TableRange1.Row).RowHeight = 24
+        If Not pt.DataBodyRange Is Nothing Then
+            pt.DataBodyRange.RowHeight = 22.5
+            ' Explicitly enforce cell number formats across data columns (prevent percentage bug)
+            wsParent.Range(wsParent.Cells(pt.DataBodyRange.Row, cStart + 4), _
+                           wsParent.Cells(pt.DataBodyRange.Row + pt.DataBodyRange.Rows.Count - 1, cStart + 4)).NumberFormat = "0.0 ""s"""
+        End If
     End With
     On Error GoTo 0
 End Sub

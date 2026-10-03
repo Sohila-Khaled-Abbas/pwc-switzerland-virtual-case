@@ -377,150 +377,269 @@ For each of the 12 charts below, execute these 7 universal Excel GUI steps:
 * **Executive Purpose**: Ranks frontline performance across two orthogonal dimensions to identify Tier-1 Stars (Dan, Martha) versus agents needing coaching (Stewart, Jim).
 
 ###### Visual 1.4: Representative Quality & CSAT Audit (Right-Bottom)
-* **Container Name**: `CC_AgentScorecard` | **Badge**: `Matrix Table`
-* **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
-
-> [!IMPORTANT]
-> **Why Can't You Drag a PivotTable into this Box? (The Excel Layer Architecture)**
-> - In Excel, **Shapes** (like the container card `Container_CC_AgentScorecard` and the dashed drop zone `DockZone_CC_AgentScorecard`) live on the **Drawing Layer** (floating objects above the grid).
-> - In contrast, a **PivotTable** lives strictly inside **Worksheet Grid Cells** (specific row and column addresses, like `P28:T36`).
-> - Therefore, you cannot physically "drag and drop" or paste grid cells *inside* a floating shape! The solid white card will simply sit on top of and cover your grid cells.
+* **Container Name**: `CC_AgentScorecard` | **Badge**: `8 Agents Active` (or `Matrix Table`)
+* **Docking Zone Coordinates**: Left: `776 pt`, Top: `546 pt`, Width: `448 pt`, Height: `212 pt`
 
 ---
 
-###### How to Dock the Table Inside the Dotted Box (Live & Interactive)
+#### 🔍 Forensic Analysis: The 4 Visual Defects in the Legacy Scorecard & Why They Occur
 
-> [!TIP]
-> **No Need to Remove the Dotted Box!**
-> You do **not** have to delete the dotted box (`DockZone_CC_AgentScorecard`). In fact, keeping the dotted box creates a sleek, recessed card border framing the table like a modern SaaS dashboard widget!
-> 
-> The new dedicated module [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas) automates this whole process in 1 click:
-> 1. Preserves the dotted box and clears its watermark placeholder text.
-> 2. Formats the underlying PivotTable (`pt_Agent` on `Staging_Pivots`) with **HTML/CSS table styling** (Dark `#0F172A` header, crisp white bold text, alternating `#F8FAFC` zebra rows, and pill-style status badges).
-> 3. Docks the live table **INSIDE** the dotted box with clean 8pt inner margins.
-> 4. Remains **100% Live Interactive** with all dashboard slicers!
+If your Agent Scorecard currently looks like the legacy screenshot (misaligned margins, dashed border clashing, gray filter arrow, and `6533.1%` speed values), here is the exact forensic diagnosis:
+
+```
++---------------------------------------------------------------------------------------------------------+
+| [LEGACY DEFECT]                                     --> [MODERN SAAS WEB-APP FIX]                       |
++---------------------------------------------------------------------------------------------------------+
+| 1. Avg Speed displays 6533.1%                       --> Set Field Number Format to Custom: 0.0 "s"       |
+| 2. Agent header shows gray AutoFilter [v] arrow    --> Uncheck "Show field captions & filter drop downs"|
+| 3. Table scrapes bottom border & has uneven sides   --> Calibrate Staging_Pivots column widths & heights |
+| 4. Awkward dashed line surrounds the table          --> Convert DockZone to solid 0.75pt #E2E8F0 panel   |
++---------------------------------------------------------------------------------------------------------+
+```
+
+1. **The 6533.1% Percentage Speed Bug**: In Excel PivotTables, if a calculated measure or field is assigned the `Percentage` format instead of `Custom` or `Number`, Excel multiplies the scalar number by 100 ($65.33 \times 100 = 6533.1\%$). Average Speed is measured in **elapsed seconds**, not percentage completion!
+2. **The AutoFilter Dropdown Arrow**: By default, Excel PivotTables enable row field filter dropdown arrows on `Agent`. In a modern executive dashboard, an interactive dropdown inside a docked matrix looks like an unfinished raw spreadsheet rather than a polished web app widget.
+3. **The Box Fit & Aspect Ratio Mismatch**: `Container_CC_AgentScorecard` provides an interior content area of $448\text{ pt} \times 212\text{ pt}$. When `C3:H11` on `Staging_Pivots` is left at default column widths, its natural aspect ratio is too narrow ($397\text{ pt} \times 170\text{ pt}$), forcing Excel's Linked Picture scaler to stretch vertically, scraping the bottom border and leaving awkward blank gaps on the sides.
+4. **Dashed Blueprint Border vs. Solid Modern Card**: The original canvas generated `DockZone_CC_AgentScorecard` with a dashed outline (`msoLineDash`) as a developer drop zone. Leaving a dashed line behind a finished table creates an unpolished "box-in-a-box" wireframe look. Modern SaaS UI (Stripe, Linear, Datadog) uses crisp solid borders (`#E2E8F0`) with subtle drop shadows.
 
 ---
 
-##### ⚡ 100% Fully Automated 1-Click Docker via VBA (`modInteractiveScorecard.bas`)
+### 🛠️ Complete Step-by-Step Manual Excel GUI Guide: Pixel-Perfect Fit & Web App Styling
 
-The script now handles **everything end-to-end**—you do not even need to create the PivotTable manually beforehand!
+Follow these exact steps manually in your Excel GUI to transform the table into a pixel-perfect modern web app component:
 
-1. In Excel, press **`Alt + F11`** to open the Visual Basic Editor.
-2. In the menu bar, click **File** $\to$ **Import File...** (or press `Ctrl + M`) and select [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas).
-3. Press **`Ctrl + G`** to open the **Immediate Window** at the bottom.
-4. Choose between **Modular Step-by-Step** execution or **1-Click Full Automation**:
+```mermaid
+flowchart TD
+    S1["Step 1: Fix Speed Number Format
+(Custom: 0.0 's')"] --> S2["Step 2: Hide AutoFilter Dropdown
+(PivotTable Options -> Display)"]
+    S2 --> S3["Step 3: Calibrate Staging Cell Geometry
+(Exact Widths: ~442pt, Heights: 22.5pt)"]
+    S3 --> S4["Step 4: Modernize Container Box
+(Solid 0.75pt #E2E8F0 + Soft Shadow)"]
+    S4 --> S5["Step 5: Embed Vector SVG Icon
+(Insert icon_audit_matrix.svg)"]
+    S5 --> S6["Step 6: Dock Live Linked Picture
+(444pt x 204pt Centered Fit)"]
+    S6 --> S7["Step 7: Format Other 3 Visuals
+(Gradients, Clean Axes, Top Legends)"]
 
-##### Option A: 1-Click Full Automation (Recommended)
-Type this command in the Immediate Window and press **`Enter`**:
+    style S1 fill:#1E293B,stroke:#D04A02,stroke-width:2px,color:#fff
+    style S2 fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#fff
+    style S3 fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#fff
+    style S4 fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#fff
+    style S5 fill:#1E293B,stroke:#EC4899,stroke-width:2px,color:#fff
+    style S6 fill:#0F172A,stroke:#D04A02,stroke-width:3px,color:#fff
+    style S7 fill:#1E293B,stroke:#06B6D4,stroke-width:2px,color:#fff
+```
+
+---
+
+#### Step 1: Fix the `Avg Speed (s)` Number Format (Permanently in Field Settings)
+1. Switch to worksheet **`Staging_Pivots`** (or locate the `pt_Agent` PivotTable).
+2. Right-click any numeric cell in the **`Avg Speed (s)`** column (e.g. cell `G4`).
+3. Click **Number Format...** (⚠️ *Crucial*: Do **NOT** click *Format Cells...*. Selecting *Number Format...* updates the Data Model PivotField definition permanently across all slicer updates).
+4. In the **Category** list on the left, click **Custom**.
+5. In the **Type:** text box at the top, clear whatever is there and type:
+   ```excel
+   0.0 "s"
+   ```
+   *(Or enter `#,##0.0 "s"` if you prefer comma separators).*
+6. Click **OK**.
+7. **Verification**: Confirm that Becky now reads **`65.3 s`**, Dan reads **`67.3 s`**, and Joe reads **`71.0 s`**. The `6533.1%` bug is permanently resolved!
+
+---
+
+#### Step 2: Remove the AutoFilter Dropdown Arrow (`Agent [v]`)
+1. Right-click anywhere inside the `pt_Agent` PivotTable.
+2. Click **PivotTable Options...** at the bottom of the context menu.
+3. In the dialog box, click the **Display** tab.
+4. Under the **Display** section, **UNCHECK** the checkbox:
+   > 🔲 **Show field captions and filter drop downs**
+5. Click the **Totals & Filters** tab $	o$ ensure **Show grand totals for rows** and **Show grand totals for columns** are both **UNCHECKED**.
+6. Click **OK**.
+7. **Result**: The gray filter arrow button `[v]` disappears completely from the `Agent` header! The table header now displays crisp, clean bold text: **`Agent`**, matching native web application tables.
+
+---
+
+#### Step 3: Calibrate Column Widths & Row Heights on `Staging_Pivots` (For 1:1 Box Fit)
+To guarantee that the table fits the $448\text{ pt} \times 212\text{ pt}$ container without distortion or scraping, calibrate the source cells on `Staging_Pivots`:
+
+1. **Configure Exact Column Widths**:
+   - Right-click column **`C`** (`Agent`) $	o$ click **Column Width...** $	o$ set to **`12.5`** (~80 pt).
+   - Right-click column **`D`** (`Calls Taken`) $	o$ click **Column Width...** $	o$ set to **`10.5`** (~70 pt).
+   - Right-click column **`E`** (`Answer Rate %`) $	o$ click **Column Width...** $	o$ set to **`11.5`** (~74 pt).
+   - Right-click column **`F`** (`FCR Rate %`) $	o$ click **Column Width...** $	o$ set to **`10.5`** (~70 pt).
+   - Right-click column **`G`** (`Avg Speed (s)`) $	o$ click **Column Width...** $	o$ set to **`12.0`** (~78 pt).
+   - Right-click column **`H`** (`Avg CSAT`) $	o$ click **Column Width...** $	o$ set to **`10.5`** (~70 pt).
+   *Total Table Width*: Exactly **`442 pt`** (leaves balanced 3 pt left and right padding inside the 448 pt container).
+
+2. **Configure Exact Row Heights**:
+   - Right-click row **`3`** (Header Row) $	o$ click **Row Height...** $	o$ set to **`24 pt`**.
+   - Select rows **`4` through `11`** (the 8 Agent Rows) $	o$ right-click $	o$ click **Row Height...** $	o$ set to **`22.5 pt`**.
+   *Total Table Height*: $24\text{ pt} + (8 \times 22.5\text{ pt}) = \mathbf{204\text{ pt}}$ (leaves balanced 4 pt top and bottom padding inside the 212 pt container).
+
+3. **Apply Modern Web-App Cell Styles**:
+   - **Header Row (`C3:H3`)**:
+     - Background Fill: Solid Dark Slate `#0F172A` (RGB `15, 23, 42`).
+     - Font: **Segoe UI**, Size: **8.5 pt**, Font Style: **Bold**, Font Color: **Crisp White (`#FFFFFF`)**.
+     - Alignment: Vertical **Center**; Column C **Left**, Columns D-H **Right**.
+   - **Data Rows (`C4:H11`)**:
+     - Font: **Segoe UI**, Size: **8.5 pt**, Color: Dark Charcoal `#1E293B`.
+     - Alternating Row Fill: Odd rows `#FFFFFF` (Crisp White); Even rows `#F8FAFC` (Soft Slate).
+     - Column C (`Agent` Names): Font Style: **Bold**, Color: `#0F172A`, Alignment: **Left**.
+     - Horizontal Gridlines: Select `C3:H11` $	o$ Borders $	o$ **Inside Horizontal** $	o$ Line Style: **Continuous Thin**, Color: `#E2E8F0` (RGB `226, 232, 240`). Remove all vertical borders!
+
+---
+
+#### Step 4: Transform the Container Box (From Dashed Blueprint to Modern Solid Card)
+Switch to sheet **`03_CallCenter_Cockpit`**:
+
+1. **Outer Container Card (`Container_CC_AgentScorecard`)**:
+   - Select the card outline (`Left = 762 pt, Top = 510 pt, Width = 476 pt, Height = 270 pt`).
+   - In ribbon tab **Shape Format**:
+     - **Shape Fill**: Solid White (`#FFFFFF`).
+     - **Shape Outline**: Solid Line, Color: `#E2E8F0`, Weight: `1 pt`.
+     - **Shape Effects** $	o$ **Shadow** $	o$ Presets: **Outer Offset Bottom** (`msoShadow21`):
+       - *Color*: `#0F172A` | *Transparency*: **88%** | *Size*: **100%** | *Blur*: **10 pt** | *Distance*: **3.5 pt**.
+       - *Result*: Produces a high-end SaaS glassmorphic elevation effect.
+
+2. **Inner Docking Frame (`DockZone_CC_AgentScorecard`)**:
+   - Click the inner box inside the card.
+   - **Clear Watermark Text**: Click inside the text $	o$ press `Ctrl + A` $	o$ press `Delete` (leave shape empty).
+   - In ribbon tab **Shape Format**:
+     - **Shape Outline** $	o$ **Dashes**: Select **Solid** (⚠️ *Replace the legacy dashed line with a clean solid line!*).
+     - **Outline Color**: Soft Gray `#E2E8F0` (RGB `226, 232, 240`), Weight: **0.75 pt**.
+     - **Shape Fill**: Solid White (`#FFFFFF`).
+     - **Position & Geometry**: Set Left: **`776 pt`**, Top: **`546 pt`**, Width: **`448 pt`**, Height: **`212 pt`**.
+   - *Result*: The inner box becomes a subtle, modern recessed surface framing the table.
+
+---
+
+#### Step 5: Embed the Modern Vector SVG Icon in the Card Header
+1. On sheet **`03_CallCenter_Cockpit`**, click ribbon tab: **Insert** $	o$ **Pictures** $	o$ **This Device...**
+2. Navigate to: `assets/icons/icon_audit_matrix.svg`. Click **Insert**.
+3. Select the inserted SVG picture:
+   - In ribbon tab **Graphics Format**: Set Height = **`0.25 in`** (`18 pt`), Width = **`0.25 in`** (`18 pt`).
+   - In the Name Box (top-left, above cell A1), rename the shape to: **`Icon_CC_AgentScorecard`**.
+   - Position the icon at: Left: **`778 pt`**, Top: **`524 pt`**.
+4. Click on the header text shape `Header_CC_AgentScorecard`:
+   - Move its Left position to **`804 pt`** (so the text sits cleanly 8pt to the right of the icon).
+5. Click on the top-right badge `Badge_CC_AgentScorecard`:
+   - In ribbon tab **Shape Format** $	o$ Shape Fill: `#F1F5F9`, Shape Outline: `#E2E8F0`.
+   - Text: Edit to read: **`8 Agents Active`** (Font: Segoe UI 7.5 pt Bold, Color: `#475569`).
+
+---
+
+#### Step 6: Dock the Live Table as a Pixel-Perfect Linked Picture
+1. Switch to **`Staging_Pivots`**.
+2. Select the calibrated range: **`C3:H11`**.
+3. Press **`Ctrl + C`** (Copy).
+4. Switch to **`03_CallCenter_Cockpit`**.
+5. Click cell **`A1`**.
+6. On ribbon tab **Home** $	o$ click the small dropdown arrow below **Paste** $	o$ select the very last icon:
+   > 🔗 **Linked Picture** *(Clipboard with picture and chain link)*
+7. With the newly pasted picture selected:
+   - In the Name Box (top-left), rename it to: **`LiveScorecard_HTMLTable`**.
+   - In ribbon tab **Picture Format**:
+     - Check **Lock Aspect Ratio**.
+     - Set Width: **`6.17 in`** (**`444 pt`**), Height: **`2.83 in`** (**`204 pt`**).
+   - Drag the picture over `DockZone_CC_AgentScorecard`:
+     - Set Position: Left: **`778 pt`**, Top: **`550 pt`**.
+     - Right-click picture $	o$ **Bring to Front**.
+8. **Verify the Fit**:
+   - Notice that the table now sits with balanced 2 pt side padding and 4 pt top/bottom padding!
+   - Stewart's row has comfortable breathing room above the bottom border.
+   - The table header aligns with the card header.
+   - Click any Slicer (`Topic`, `Agent`, `Month`) $	o$ the table updates instantly with live data!
+
+---
+
+#### Step 7: Format the Other 3 Visuals for a Cohesive Web-App Experience
+
+To ensure all visuals match the executive web-app design system, format the remaining 3 PivotCharts on `03_CallCenter_Cockpit`:
+
+```
++---------------------------------------------------------------------------------------------------------+
+| Visual 1.1: CC_HourlyVolume                     | Visual 1.3: CC_AgentQuadrant                          |
+| Clustered Column: #1E293B & #059669             | Combo: Blue Columns (#3B82F6) + Tangerine Line (#D04A02)|
++-------------------------------------------------+-------------------------------------------------------+
+| Visual 1.2: CC_TopicBreakdown                   | Visual 1.4: CC_AgentScorecard                         |
+| Horizontal Bar: #D04A02 | Categories Reversed   | Docked Live HTML Matrix | 0.0 "s" Speed Verified      |
++---------------------------------------------------------------------------------------------------------+
+```
+
+##### Visual 1.1: Intraday Demand Surge & Queue Triage (`CC_HourlyVolume`)
+1. **Insert Header SVG Icon**: Insert `assets/icons/icon_hourly_surge.svg` at Left: `286 pt`, Top: `240 pt` (18x18 pt). Shift header text to Left: `312 pt`.
+2. **Chart Type**: 2-D Clustered Column (`Call_Hour` on Axis; `Total Calls` and `Answered Calls` in Values).
+3. **Format Series**:
+   - Click Series 1 (`Total Calls`) $	o$ Fill: Solid Dark Slate `#1E293B`, Border: No line.
+   - Click Series 2 (`Answered Calls`) $	o$ Fill: Solid Emerald `#059669`, Border: No line.
+   - Right-click bars $	o$ **Format Data Series...** $	o$ set **Series Overlap = 0%**, **Gap Width = 65%**.
+4. **Transparent Decluttering**:
+   - Chart Area & Plot Area: Fill = **No fill**, Border = **No line**.
+   - Horizontal Gridlines: Solid Line, Color: `#F1F5F9`, Width: `0.5 pt`.
+   - Legend: Move to **Top**, Font: Segoe UI 8 pt `#64748B`, No fill, No border.
+   - Select `DockZone_CC_HourlyVolume` $	o$ clear watermark text, set outline to solid `#E2E8F0` or hide.
+
+##### Visual 1.2: Inquiry Topic SLA Compliance & Speed (`CC_TopicBreakdown`)
+1. **Insert Header SVG Icon**: Insert `assets/icons/icon_topic_sla.svg` at Left: `286 pt`, Top: `524 pt` (18x18 pt). Shift header text to Left: `312 pt`.
+2. **Chart Type**: 2-D Clustered Bar (Horizontal).
+3. **Reverse Category Order**:
+   - Right-click vertical topic axis $	o$ **Format Axis...** $	o$ check **"Categories in reverse order"**.
+   - *Result*: Technical Support (largest volume) appears at the top.
+4. **Format Series**:
+   - Bar Fill: Solid Tangerine `#D04A02`, Border: No line.
+   - Gap Width: **55%**.
+   - Right-click bars $	o$ **Add Data Labels** $	o$ Label Position: **Outside End**, Font: Segoe UI 8 pt Bold `#0F172A`.
+5. **Transparent Decluttering**: Chart Area Fill = No fill, Border = No line. Clear `DockZone_CC_TopicBreakdown`.
+
+##### Visual 1.3: Representative Efficiency Matrix (`CC_AgentQuadrant`)
+1. **Insert Header SVG Icon**: Insert `assets/icons/icon_agent_quadrant.svg` at Left: `778 pt`, Top: `240 pt` (18x18 pt). Shift header text to Left: `804 pt`.
+2. **Chart Type**: **Combo Chart**:
+   - Series 1 (`FCR Rate %`): **Clustered Column** on **Primary Axis** $	o$ Fill: `#3B82F6` (Executive Blue), No border.
+   - Series 2 (`Avg CSAT`): **Line with Markers** on **Secondary Axis** $	o$ Line: `#D04A02` 2 pt; Marker: Circle 6 pt `#D04A02` with white 1.5 pt border.
+3. **Axis Scaling**:
+   - Primary Vertical Axis: Right-click $	o$ Format Axis $	o$ Minimum = `0.70` (70%), Maximum = `1.00` (100%).
+   - Secondary Vertical Axis: Right-click $	o$ Format Axis $	o$ Minimum = `2.50`, Maximum = `4.00`.
+4. **Data Labels**: Right-click secondary line $	o$ Add Data Labels $	o$ Above markers displaying CSAT score (Dan: 3.45, Martha: 3.47).
+5. **Transparent Decluttering**: Chart Area Fill = No fill, Border = No line. Clear `DockZone_CC_AgentQuadrant`.
+
+---
+
+### ⚡ Fast-Track Option: 1-Click Complete Execution via VBA
+
+If you ever wish to execute all of the above steps programmatically in 0.1 seconds, use the upgraded automation modules:
+
+1. Press **`Alt + F11`** to open the VBA Editor.
+2. In the menu bar, import:
+   - [`vba/modInteractiveScorecard.bas`](../vba/modInteractiveScorecard.bas)
+   - [`vba/modPivotTableFormatting.bas`](../vba/modPivotTableFormatting.bas)
+   - [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas)
+3. Press **`Ctrl + G`** to open the Immediate Window and run:
 
 ```vba
+' 1. Rebuild & dock scorecard with pixel-perfect fit & AutoFilter hidden
 Call modInteractiveScorecard.BuildAndDockInteractiveScorecard
+
+' 2. Apply modern Web-App theme to the other 3 charts
+Call modDashboardUIUX.ApplyModernChartTheme(ActiveSheet.ChartObjects("CC_HourlyVolume"), "HOURLY_VOLUME")
+Call modDashboardUIUX.ApplyModernChartTheme(ActiveSheet.ChartObjects("CC_TopicBreakdown"), "TOPIC_BREAKDOWN")
+Call modDashboardUIUX.ApplyModernChartTheme(ActiveSheet.ChartObjects("CC_AgentQuadrant"), "AGENT_QUADRANT")
 ```
 
-##### Option B: Step-by-Step Modular Control
-If you want to create and inspect the PivotTable **before** applying styles and docking:
-
-1. **Step 1 — Create PivotTable Only**:
-   ```vba
-   Call modInteractiveScorecard.Step1_CreateScorecardPivotTable
-   ```
-   *Creates `pt_Agent` on `Staging_Pivots` from the VertiPaq Data Model with all 5 DAX measures, rows, and slicer wires, and navigates to the table so you can review it.*
-
-2. **Step 2 — Apply Modern HTML/CSS Styling**:
-   ```vba
-   Call modInteractiveScorecard.Step2_FormatScorecardHTML
-   ```
-   *Applies `#0F172A` Navy Slate header, white bold text, alternating `#FFFFFF`/`#F8FAFC` zebra rows, and pill status badges.*
-
-3. **Step 3 — Dock Live Table into Dotted Box**:
-   ```vba
-   Call modInteractiveScorecard.Step3_DockScorecardToDashboard
-   ```
-   *Self-heals the docking zone, clears placeholder text, and docks the live table inside `DockZone_CC_AgentScorecard` with 8pt inner margins.*
-
 ---
 
-**Self-Healing Architecture**:
-- **Automatic DockZone Detection**: If `DockZone_CC_AgentScorecard` was deleted, moved, or misnamed (e.g., duplicated from quadrant), the macro automatically detects the inner shape inside `Container_CC_AgentScorecard`, renames it, or reconstructs the dotted rounded frame dynamically.
-- **100% Slicer Interactivity**: The docked table reacts instantaneously to all dashboard slicers (`Month`, `Topic`, `Agent`).
+### 🌐 Standalone Executive Web Dashboard Companion (`HTML/SVG`)
 
+For client presentations and web demonstrations, an interactive, fully functional SaaS dashboard web application has been authored in:
+[`dashboards/interactive_call_center_dashboard.html`](../dashboards/interactive_call_center_dashboard.html)
 
----
-
-##### 🌐 Standalone HTML5 Report Exporter
-In the same module, you can also run:
-```vba
-Call modInteractiveScorecard.ExportScorecardToHTMLFile
-```
-This reads your live VertiPaq Data Model metrics and outputs a responsive HTML5 page (`agent_scorecard.html`) with full modern CSS styling that you can open in any browser or embed anywhere!
-
----
-
-##### 🖱️ Manual Excel GUI Method (Keeping the Dotted Box)
-If you prefer doing it manually in the Excel interface:
-1. **Clear Text in Dotted Box**: Click on the dotted box $\to$ click the text $\to$ press `Ctrl + A` $\to$ press `Delete`. Set its Shape Fill to Solid White (`#FFFFFF`). *Do NOT delete the shape itself!*
-2. **Copy the PivotTable**: Go to `Staging_Pivots`, select cells `C3:H11` (the `pt_Agent` table), and press `Ctrl + C`.
-3. **Paste as Linked Picture**: Switch to `03_CallCenter_Cockpit` $\to$ **Home** tab $\to$ click arrow under **Paste** $\to$ click **Linked Picture** (bottom-right icon).
-4. **Position Inside the Dotted Box**: Drag the linked picture directly over the dotted box, resize it slightly so it sits with a small margin inside the dashed border.
-
----
-
-* **PivotTable Layout**:
-  - **Rows**: `DimAgent[Agent]` (Dan, Martha, Becky, Diane, Greg, Jim, Joe, Stewart)
-  - **Values**:
-    1. `_Measures[Total Calls]` $\to$ Header: `Calls Taken` | Format: `#,##0`
-    2. `_Measures[Answered Calls %]` (or `[Answer Rate %]`) $\to$ Header: `Answer Rate %` | Format: `0.0%`
-    3. `_Measures[Resolution Rate %]` $\to$ Header: `FCR Rate %` | Format: `0.0%`
-    4. `_Measures[Average Speed of Answer (s)]` $\to$ Header: `Avg Speed (s)` | Format: `0.0 "s"`
-    5. `_Measures[Average CSAT]` $\to$ Header: `Avg CSAT` | Format: `0.00`
-  - **Grand Totals**: Set **Off for Rows and Columns** (averaging percentages/CSAT in a grand total row is statistically invalid).
-
-
----
-
-###### 4 Theme-Compliant Executive Conditional Formatting Options
-
-Rather than generic rainbow spreadsheets, choose one of these four curated enterprise presentation styles:
-
-| Theme | Visual Philosophy | Formatting Details by Column | Best Suited For |
-| :--- | :--- | :--- | :--- |
-| **Theme 1: Executive SLA Exception Matrix**<br>*(Recommended Default)* | **Discreet SaaS Status Badges**<br>Highlights only operational breaches and top achievements; leaves normal performers neutral. | • `Calls Taken`: Soft Slate Data Bar (`#CBD5E1`).<br>• `Answer Rate %`: `< 80.0%` $\to$ Soft Red Badge (`#FEE2E2` fill, `#991B1B` bold text); `$\ge$ 83.0%` $\to$ Soft Green Badge (`#DCFCE7` / `#166534`).<br>• `FCR Rate %`: `< 89.0%` $\to$ Soft Amber Badge (`#FEF3C7` / `#92400E`); `$\ge$ 91.0%` $\to$ Soft Green.<br>• `Avg Speed (s)` *(Inverted!)*: `> 70.0s` $\to$ Soft Amber Warning (Stewart at 70.8s); `$\le$ 66.0s` $\to$ Soft Green (Becky at 65.3s).<br>• `Avg CSAT`: `< 3.35` $\to$ Soft Red; `$\ge$ 3.45` $\to$ Soft Green Star (Dan & Martha). | Executive operations reviews where immediate exception triage is needed without visual noise. |
-| **Theme 2: Dual-Engine Micro Data Bars** | **Normalized Metric Bars**<br>Visualizes relative performance ratios within a tight numerical range. | • `Calls Taken`: Gradient Slate Bar (`#1E293B`).<br>• `Answer Rate %`: Emerald Bar (`#059669`) scaled from **70% to 100%** (so 78% vs 84% variance is clearly visible).<br>• `FCR Rate %`: Executive Blue Bar (`#1E40AF`) scaled from **80% to 100%**.<br>• `Avg Speed (s)`: Amber Bar (`#D97706`) scaled from **60s to 75s**.<br>• `Avg CSAT`: PwC Tangerine Bar (`#D04A02`) scaled from **3.00 to 3.60**. | Performance pacing dashboards where rapid visual scanning of relative volumes is preferred. |
-| **Theme 3: PwC 3-Tier Soft Color Scales** | **Executive Heatmap**<br>Continuous pastel gradient fills across all cells. | • `Calls Taken`: Muted Data Bar.<br>• `Answer Rate %`, `FCR %`, `Avg CSAT`: 3-Color Pastel Scale (Min: `#FEE2E2` Soft Red $\to$ Mid: `#FEF3C7` Soft Yellow $\to$ Max: `#DCFCE7` Soft Green).<br>• `Avg Speed (s)`: **Inverted 3-Color Scale** (Min / Low seconds: Soft Green $\to$ Max / High seconds: Soft Red). | Deep-dive audit grids and root-cause exploratory analysis. |
-| **Theme 4: Top/Bottom Milestone Badges** | **Ultra-Clean Editorial Minimalist**<br>Only tags the single #1 Star and single #1 Coaching Need per metric. | • `Calls Taken`: Muted Data Bar.<br>• `Answer Rate`: Top 1 (`Jim: 84.3%` in Green); Bottom 1 (`Stewart: 78.4%` in Red).<br>• `FCR Rate`: Top 1 (`Martha: 91.4%` in Green); Bottom 1 (`Stewart: 88.5%` in Red).<br>• `Avg Speed (s)`: Fastest 1 (`Becky: 65.3s` in Green); Slowest 1 (`Stewart: 70.8s` in Amber).<br>• `Avg CSAT`: Top 1 (`Dan: 3.48` in Green); Bottom 1 (`Stewart: 3.32` in Red). | Formal Board briefings and high-level C-suite presentations. |
-
----
-
-###### ⚡ 1-Click Automated Formatting via VBA (`modPivotTableFormatting.bas`)
-
-A dedicated module [`vba/modPivotTableFormatting.bas`](../vba/modPivotTableFormatting.bas) has been provided and pre-imported into `PWC_Switzerland_Virtual_Case.xlsm`.
-
-To format and style your PivotTable instantly:
-1. Open the VBA Immediate Window by pressing `Ctrl + G` inside Excel.
-2. Run your preferred theme command:
-
-```vba
-' Theme 1: Executive SLA Exception Matrix (Recommended Default)
-Call modPivotTableFormatting.StyleAgentScorecardPivotTable("SLA_EXCEPTIONS")
-
-' Theme 2: Dual-Engine Micro Data Bars
-Call modPivotTableFormatting.StyleAgentScorecardPivotTable("DATA_BARS")
-
-' Theme 3: Continuous Pastel Heatmap Scales
-Call modPivotTableFormatting.StyleAgentScorecardPivotTable("COLOR_SCALES")
-
-' Theme 4: Top/Bottom Milestone Badges
-Call modPivotTableFormatting.StyleAgentScorecardPivotTable("TOP_BOTTOM")
-```
-
-**What the automation handles in 0.1 seconds**:
-- Applies **Tabular Layout** and disables column/row grand totals.
-- Configures **Segoe UI 8.5 pt** typography and sets **PivotStyleLight1**.
-- Formats headers to professional captions (`Calls Taken`, `Answer Rate %`, `FCR Rate %`, `Avg Speed (s)`, `Avg CSAT`).
-- Enforces proper number formats (`#,##0`, `0.0%`, `0.0 "s"`, `0.00`).
-- Clears conflicting rules and builds the chosen conditional formatting rules programmatically!
-
+**Features Included**:
+- **Pure Modern Web UI**: Responsive CSS Grid / Bento Grid with glassmorphism (`backdrop-filter: blur(16px)`), linear gradient accents, and soft multi-layer box shadows.
+- **Full SVG Icon Suite**: Integrated Lucide-style vector paths for all actions, KPIs, and card headers.
+- **Interactive Slicer Chips**: Click on months (`All Q1`, `January`, `February`, `March`) or topics to see simulated real-time filtering.
+- **Pixel-Perfect Data Table**: Demonstrates the exact target styling: `#0F172A` dark header, alternating `#F8FAFC` zebra rows, verified `65.3 s` speed formatting, and green/amber/gold status pill badges!
 
 ---
 
@@ -536,68 +655,194 @@ Call modPivotTableFormatting.StyleAgentScorecardPivotTable("TOP_BOTTOM")
 +---------------------------------------------------------------------------------------------------+
 ```
 
-###### Visual 2.1: Churn Rate % by Commitment Contract (Middle-Top)
-* **Container Name**: `CH_ContractRisk` | **Badge**: `Column Chart`
+---
+
+### 🛠️ Complete Step-by-Step Manual Excel GUI Guide: Customer Retention Visuals & Slicers
+
+Follow these detailed manual instructions to build all 4 visuals and wire the 3 global slicers for Customer Retention:
+
+```mermaid
+flowchart TD
+    CR1["Step 1: Staging PivotTables
+(Build pt_CH_Contract, pt_CH_Tenure, pt_CH_Payment, pt_CH_Service)"] --> CR2["Step 2: Build & Format Visual 2.1
+(Combo Chart: Customers & Churn %)"]
+    CR2 --> CR3["Step 3: Build & Format Visual 2.2
+(Tenure Attrition Curve)"]
+    CR3 --> CR4["Step 4: Build & Format Visual 2.3
+(Horizontal Payment Friction Bar)"]
+    CR4 --> CR5["Step 5: Build & Format Visual 2.4
+(Internet Service Protection Matrix)"]
+    CR5 --> CR6["Step 6: Insert & Wire 3 Slicers
+(Report Connections across all 4 Pivots)"]
+
+    style CR1 fill:#1E293B,stroke:#D04A02,stroke-width:2px,color:#fff
+    style CR2 fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#fff
+    style CR3 fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#fff
+    style CR4 fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#fff
+    style CR5 fill:#1E293B,stroke:#EC4899,stroke-width:2px,color:#fff
+    style CR6 fill:#0F172A,stroke:#D04A02,stroke-width:3px,color:#fff
+```
+
+#### Step 2.1: Visual 2.1 - Churn Rate % by Commitment Contract (`CH_ContractRisk`)
 * **Docking Zone Coordinates**: Left: `284 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `DimContract` & `Fact_Churn`
-  - **Axis (Categories)**: `DimContract[Contract]` (Month-to-month, One year, Two year)
-  - **Values**:
-    1. `_Measures[Total Customers]` (Volume)
-    2. `_Measures[Churn Rate %]` (Attrition %)
-* **Chart Type**: **Combo Chart**:
-  - `Total Customers`: **Clustered Column** (Primary Axis) $\to$ Fill: Solid `#94A3B8` (Soft Slate).
-  - `Churn Rate %`: **Line with Markers** (Secondary Axis) $\to$ Line: Solid `#DC2626` (Red Alert), 2.25pt; Marker: Circle, 6pt `#DC2626`.
-* **Axis Scaling**: Right-click Secondary Axis $\to$ Format Axis $\to$ Maximum = `0.50` (50%), Number Format = `0.0%`.
-* **Data Labels**: Right-click Red Line $\to$ Add Data Labels $\to$ Above markers: **Month-to-Month: 42.7%**, One Year: 11.3%, Two Year: 2.8%.
-* **Executive Purpose**: Proves to the CMO/CFO that 88.55% of all subscriber churn stems from Month-to-Month contracts.
+* **Purpose**: Proves to the CMO/CFO that 88.55% of all subscriber churn stems from Month-to-Month contracts.
 
-###### Visual 2.2: Tenure Attrition Curve & Early Risk Window (Middle-Bottom)
-* **Container Name**: `CH_TenureCohort` | **Badge**: `Area / Line Chart`
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to worksheet **`Staging_Pivots`** $	o$ click cell **`J3`**.
+   - On the ribbon, click **Insert** $	o$ **PivotTable** $	o$ choose **From Data Model** (or Use this workbook's Data Model).
+   - In the Destination field, confirm `'Staging_Pivots'!$J$3` $	o$ click **OK**.
+   - In the **PivotTable Analyze** tab, rename the PivotTable to: **`pt_CH_Contract`**.
+2. **Assign Dimension & Measures**:
+   - From table `DimContract`: Drag **`Contract`** into **Rows**.
+   - From table `_Measures`: Drag **`Total Customers`** into **Values**.
+   - From table `_Measures`: Drag **`Churn Rate %`** into **Values**.
+3. **Format Measure Number Formats**:
+   - Right-click any cell under `Total Customers` in column K $	o$ **Number Format...** $	o$ **Number** $	o$ Use 1000 Separator (`,`), 0 decimal places (`#,##0`).
+   - Right-click any cell under `Churn Rate %` in column L $	o$ **Number Format...** $	o$ **Percentage** $	o$ 1 decimal place (`0.0%`).
+4. **Insert the Combo Chart**:
+   - Click inside `pt_CH_Contract` $	o$ click ribbon tab **Insert** $	o$ **Combo Chart** $	o$ **Create Custom Combo Chart...**
+   - In the dialog:
+     - Set `Total Customers` to **Clustered Column** (Primary Axis $	o$ leave checkbox unselected).
+     - Set `Churn Rate %` to **Line with Markers** $	o$ **CHECK** the **Secondary Axis** checkbox.
+     - Click **OK**.
+5. **Declutter & Style**:
+   - Cut the chart (`Ctrl + X`), switch to sheet **`04_CustomerRetention_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename the chart in the Name Box to: **`CH_ContractRisk`**.
+   - Right-click any gray field button $	o$ click **"Hide All Field Buttons on Chart"**.
+   - Delete chart title and horizontal gridlines.
+   - Set Chart Area and Plot Area: **Shape Fill = No Fill**, **Shape Outline = No Outline**.
+   - Format Series:
+     - Clustered Columns (`Total Customers`): Fill = Solid `#94A3B8` (Soft Slate Gray), Gap Width = `65%`.
+     - Secondary Line (`Churn Rate %`): Line = Solid `#DC2626` (Red Alert, 2.25 pt). Markers = Circle 6 pt `#DC2626` with white 1.5 pt outline.
+   - Right-click Secondary Axis $	o$ **Format Axis...** $	o$ set Maximum = `0.50` (50%), Number Format = `0.0%`.
+   - Right-click the Red Line $	o$ **Add Data Labels** $	o$ Position: **Above** (Month-to-Month: **42.7%**, One Year: **11.3%**, Two Year: **2.8%**).
+6. **Docking**:
+   - In ribbon tab **Chart Format**, set **Height = 2.92 in (`210 pt`)**, **Width = 6.22 in (`448 pt`)**.
+   - Align exactly over `DockZone_CH_ContractRisk` (Left: `284 pt`, Top: `274 pt`).
+
+---
+
+#### Step 2.2: Visual 2.2 - Tenure Attrition Curve & Early Risk Window (`CH_TenureCohort`)
 * **Docking Zone Coordinates**: Left: `284 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `Fact_Churn`
-  - **Axis (Categories)**: `Fact_Churn[Tenure_Cohort]` (0 - 12 Months, 13 - 24 Months, 25 - 48 Months, 49 - 72 Months)
-  - **Values**: 
-    1. `_Measures[Churn Rate %]`
-    2. `_Measures[Total Revenue at Risk]` (or `[At-Risk MRR]`)
-* **Chart Type**: **2-D Clustered Column** or **Line with Markers**
-* **Series Formatting**:
-  - Cohort `0 - 12 Months`: Fill = Solid `#DC2626` (Crimson Alert: 47.4% churn rate).
-  - Cohorts `13+ Months`: Fill = Solid `#64748B` (Muted Slate).
-  - Gap Width = `65%`.
-  - Add Data Labels showing Churn Rate % over each cohort bar.
-* **Executive Purpose**: Visualizes the steep drop in churn probability as customers cross the critical 12-month tenure threshold.
+* **Purpose**: Visualizes the steep drop in churn probability as customers cross the critical 12-month tenure threshold.
 
-###### Visual 2.3: Payment Method Risk Diagnostics (Right-Top)
-* **Container Name**: `CH_PaymentFriction` | **Badge**: `Clustered Bar`
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`J18`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_CH_Tenure`**.
+2. **Assign Dimension & Measures**:
+   - From table `Fact_Churn`: Drag **`Tenure_Cohort`** into **Rows** (0 - 12 Months, 13 - 24 Months, 25 - 48 Months, 49 - 72 Months).
+   - From table `_Measures`: Drag **`Churn Rate %`** into **Values**.
+3. **Format Measure Number Format**:
+   - Right-click the value column $	o$ **Number Format...** $	o$ **Percentage** (`0.0%`).
+4. **Insert the PivotChart**:
+   - Click inside `pt_CH_Tenure` $	o$ **Insert** $	o$ **2-D Clustered Column**.
+   - Cut (`Ctrl + X`), switch to **`04_CustomerRetention_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`CH_TenureCohort`**.
+5. **Declutter & Style**:
+   - Hide all field buttons, delete chart title and legend.
+   - Set Chart Area and Plot Area fill and borders to None.
+   - Format Series:
+     - Right-click columns $	o$ **Format Data Series...** $	o$ Gap Width = `55%`.
+     - Double-click the first bar (`0 - 12 Months`) $	o$ Fill: Solid `#DC2626` (Crimson Alert: **47.4%** churn).
+     - Select other bars $	o$ Fill: Solid `#64748B` (Muted Slate: ~25% down to ~7%).
+   - Right-click bars $	o$ **Add Data Labels** $	o$ Position: **Outside End**, Font: Segoe UI 8.5 pt Bold `#0F172A`.
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_CH_TenureCohort` (Left: `284 pt`, Top: `558 pt`).
+
+---
+
+#### Step 2.3: Visual 2.3 - Payment Method Risk Diagnostics (`CH_PaymentFriction`)
 * **Docking Zone Coordinates**: Left: `776 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `Fact_Churn`
-  - **Axis (Categories)**: `Fact_Churn[PaymentMethod]` (Electronic check, Mailed check, Bank transfer, Credit card)
-  - **Values**: `_Measures[Churn Rate %]` (or `[Total Revenue at Risk]`)
-* **Chart Type**: **Horizontal 2-D Clustered Bar**
-* **Series Formatting**:
-  - Right-click axis $\to$ sort descending so Electronic Check is on top.
-  - Bar Fill: Highlight Electronic Check in `#DC2626` (45.3% Churn / $76.5K Lost MRR); color automated payment methods (Bank Transfer, Credit Card) in `#059669` (Emerald ~15% Churn).
-  - Data Labels: Outside End formatted as `0.0%`.
-* **Executive Purpose**: Directly proves the thesis that non-automated payment friction drives disproportionate revenue loss.
+* **Purpose**: Proves that non-automated payment friction (Electronic Check at 45.3% churn) drives disproportionate revenue loss.
 
-###### Visual 2.4: Internet Service & Add-On Protection Matrix (Right-Bottom)
-* **Container Name**: `CH_ServiceMatrix` | **Badge**: `Matrix Table`
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`R3`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_CH_Payment`**.
+2. **Assign Dimension & Measures**:
+   - From table `Fact_Churn`: Drag **`PaymentMethod`** into **Rows**.
+   - From table `_Measures`: Drag **`Churn Rate %`** into **Values**.
+3. **Sort Descending**:
+   - Click the small arrow on the PaymentMethod column header (or right-click Electronic check) $	o$ **Sort** $	o$ **More Sort Options...** $	o$ select **Descending (Z to A) by Churn Rate %**.
+   - *Result*: Electronic check (45.3%) appears at the top of the table.
+4. **Insert the Horizontal Bar Chart**:
+   - Click inside `pt_CH_Payment` $	o$ **Insert** $	o$ **2-D Clustered Bar** (Horizontal).
+   - Cut (`Ctrl + X`), switch to **`04_CustomerRetention_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`CH_PaymentFriction`**.
+5. **Declutter & Style**:
+   - Hide field buttons, remove chart title, legend, and vertical gridlines.
+   - Right-click vertical category axis $	o$ **Format Axis...** $	o$ check **"Categories in reverse order"** (so Electronic check is at the top).
+   - Format Bars:
+     - Double-click the Electronic Check bar $	o$ Fill: Solid `#DC2626` (Red Alert).
+     - Format the remaining bars $	o$ Fill: Solid `#059669` (Emerald Green for automated Bank Transfer and Credit Card).
+   - Add Data Labels: Outside End, formatted as `0.0%`.
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_CH_PaymentFriction` (Left: `776 pt`, Top: `274 pt`).
+
+---
+
+#### Step 2.4: Visual 2.4 - Internet Service & Add-On Protection Matrix (`CH_ServiceMatrix`)
 * **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `Fact_Churn`
-  - **Axis (Categories)**: `Fact_Churn[InternetService]` (Fiber optic, DSL, No)
-  - **Legend (Series)**: `Fact_Churn[Churn]` (No, Yes)
-  - **Values**: `_Measures[Total Customers]`
-* **Chart Type**: **100% Stacked Column**
-* **Series Formatting**:
-  - Series `Yes` (Churned): Fill = Solid `#DC2626` (Crimson Alert).
-  - Series `No` (Retained): Fill = Solid `#059669` (Emerald Green).
-  - Gap Width = `60%`.
-  - Add Data Labels showing % share inside the bar segments.
-* **Executive Purpose**: Exposes Fiber Optic's alarming **41.89% churn rate** compared to DSL's **18.96%**, steering the strategic recommendation toward bundling Tech Support and Online Security.
+* **Purpose**: Exposes Fiber Optic's alarming 41.9% churn rate compared to DSL's 19.0%, justifying Tech Support bundling.
+
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`R18`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_CH_Service`**.
+2. **Assign Dimension & Measures**:
+   - From table `Fact_Churn`: Drag **`InternetService`** into **Rows** (DSL, Fiber optic, No).
+   - From table `Fact_Churn`: Drag **`Churn`** into **Columns** (No, Yes).
+   - From table `_Measures`: Drag **`Total Customers`** into **Values**.
+3. **Turn Off Grand Totals**:
+   - On ribbon tab **Design** $	o$ click **Grand Totals** $	o$ select **Off for Rows and Columns**.
+4. **Insert 100% Stacked Column Chart**:
+   - Click inside `pt_CH_Service` $	o$ **Insert** $	o$ **100% Stacked Column**.
+   - Cut (`Ctrl + X`), switch to **`04_CustomerRetention_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`CH_ServiceMatrix`**.
+5. **Declutter & Style**:
+   - Hide field buttons, remove chart title.
+   - Move Legend to **Top**, Font: Segoe UI 8 pt `#64748B`.
+   - Format Series:
+     - Series `Yes` (Churned): Fill = Solid `#DC2626` (Crimson Alert).
+     - Series `No` (Retained): Fill = Solid `#059669` (Emerald Green).
+     - Gap Width = `60%`.
+   - Right-click series segments $	o$ **Add Data Labels** $	o$ Position: **Center** (shows % share directly inside the bars).
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_CH_ServiceMatrix` (Left: `776 pt`, Top: `558 pt`).
+
+---
+
+#### Step 2.5: Inserting Slicers & Wiring Report Connections (Retention Cockpit)
+
+To provide interactive executive filtering:
+1. **Insert the 3 Slicers**:
+   - Click any retention PivotTable (e.g. `pt_CH_Contract`) $	o$ ribbon tab **PivotTable Analyze** $	o$ **Insert Slicer**.
+   - In the dialog:
+     - From `DimContract`: Check **`Contract`**.
+     - From `Fact_Churn`: Check **`PaymentMethod`**.
+     - From `Fact_Churn`: Check **`InternetService`**.
+     - Click **OK**.
+2. **Cut and Paste to Cockpit**:
+   - Select the 3 slicers $	o$ Cut (`Ctrl + X`) $	o$ switch to **`04_CustomerRetention_Cockpit`** $	o$ Paste (`Ctrl + V`).
+3. **Position and Snap into Slots**:
+   - **Slot 1 (Contract)**: Left: `36 pt`, Top: `280 pt`, Width: `216 pt`, Height: `145 pt`. Columns = `1`.
+   - **Slot 2 (PaymentMethod)**: Left: `36 pt`, Top: `436 pt`, Width: `216 pt`, Height: `145 pt`. Columns = `1`.
+   - **Slot 3 (InternetService)**: Left: `36 pt`, Top: `592 pt`, Width: `216 pt`, Height: `135 pt`. Columns = `1`.
+4. **Wire Report Connections (CRITICAL STEP)**:
+   - Right-click Slicer 1 (`Contract`) $	o$ click **Report Connections...**
+   - Check the boxes for:
+     - `pt_CH_Contract`
+     - `pt_CH_Tenure`
+     - `pt_CH_Payment`
+     - `pt_CH_Service`
+   - Click **OK**.
+   - **Repeat for Slicer 2 (`PaymentMethod`) and Slicer 3 (`InternetService`)**.
+   - *Verification*: Click "Month-to-month" in the Contract slicer. All 4 charts and the BAN metric cards update synchronously in real time!
 
 ---
 
@@ -613,167 +858,173 @@ Call modPivotTableFormatting.StyleAgentScorecardPivotTable("TOP_BOTTOM")
 +---------------------------------------------------------------------------------------------------+
 ```
 
-###### Visual 3.1: Workforce Hierarchy & Broken Rung Funnel (Middle-Top)
-* **Container Name**: `DI_PipelineFunnel` | **Badge**: `Funnel / Bar`
+---
+
+### 🛠️ Complete Step-by-Step Manual Excel GUI Guide: Diversity & Inclusion Visuals & Slicers
+
+Follow these detailed manual instructions to build all 4 visuals and wire the 3 global slicers for Diversity & Inclusion:
+
+```mermaid
+flowchart TD
+    DI1["Step 1: Staging PivotTables
+(Build pt_DI_Funnel, pt_DI_Parity, pt_DI_Velocity, pt_DI_Audit)"] --> DI2["Step 2: Build & Format Visual 3.1
+(Workforce Broken-Rung 100% Bar)"]
+    DI2 --> DI3["Step 3: Build & Format Visual 3.2
+(Department Gender Parity Matrix)"]
+    DI3 --> DI4["Step 4: Build & Format Visual 3.3
+(Promotion Velocity Comparison)"]
+    DI4 --> DI5["Step 5: Build & Format Visual 3.4
+(Performance vs Promotion Equity)"]
+    DI5 --> DI6["Step 6: Insert & Wire 3 Slicers
+(Department, Job Level, Age Group)"]
+
+    style DI1 fill:#1E293B,stroke:#BE185D,stroke-width:2px,color:#fff
+    style DI2 fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#fff
+    style DI3 fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#fff
+    style DI4 fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#fff
+    style DI5 fill:#1E293B,stroke:#D04A02,stroke-width:2px,color:#fff
+    style DI6 fill:#0F172A,stroke:#BE185D,stroke-width:3px,color:#fff
+```
+
+#### Step 3.1: Visual 3.1 - Workforce Hierarchy & Broken Rung Funnel (`DI_PipelineFunnel`)
 * **Docking Zone Coordinates**: Left: `284 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `Dim_CareerLadder` & `Fact_Employees`
-  - **Axis (Categories)**: `Dim_CareerLadder[Base_Job_Level]` (Ordered: Executive, Director, Senior Manager, Manager, Senior Officer, Junior Officer)
-  - **Legend (Series)**: `Fact_Employees[Gender]` (Female, Male)
-  - **Values**: `_Measures[Total Employees]`
-* **Chart Type**: **100% Stacked Horizontal Bar**
-* **Series Formatting**:
-  - Series `Female`: Fill = Solid `#BE185D` (PwC Plum / Rose).
-  - Series `Male`: Fill = Solid `#334155` (Navy Slate).
-  - Reverse Category Order: Ensure Level 1 (Executive) is at the top and Level 6 (Junior Officer) is at the bottom.
-  - Data Labels: Center of each segment, formatted to show **% of Row Total** (Level 6: **51.8% F** $\to$ Level 4: **34.3% F** $\to$ Level 1: **20.0% F**).
-* **Executive Purpose**: Serves as the primary governance visual proving the "broken rung" cliff between Manager and Senior Manager.
+* **Purpose**: Primary governance visual proving the "broken rung" cliff between Manager (34.3% F) and Executive (20.0% F).
 
-###### Visual 3.2: Departmental Representation & Target Gaps (Middle-Bottom)
-* **Container Name**: `DI_DeptParity` | **Badge**: `Clustered Column`
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`Z3`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_DI_Funnel`**.
+2. **Assign Dimension & Measures**:
+   - From table `Dim_CareerLadder`: Drag **`Base_Job_Level`** into **Rows** (Executive, Director, Senior Manager, Manager, Senior Associate, Associate).
+   - From table `Fact_Employees`: Drag **`Gender`** into **Columns** (Female, Male).
+   - From table `_Measures`: Drag **`Total Employees`** into **Values**.
+3. **Turn Off Grand Totals**: Design $	o$ Grand Totals $	o$ Off for Rows and Columns.
+4. **Insert 100% Stacked Horizontal Bar Chart**:
+   - Click inside `pt_DI_Funnel` $	o$ **Insert** $	o$ **100% Stacked Bar** (Horizontal).
+   - Cut (`Ctrl + X`), switch to **`05_DiversityInclusion_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`DI_PipelineFunnel`**.
+5. **Declutter & Style**:
+   - Hide field buttons, delete chart title.
+   - Right-click vertical job level axis $	o$ **Format Axis...** $	o$ check **"Categories in reverse order"** (so Level 1: Executive sits at top, Level 6: Associate at bottom).
+   - Move Legend to **Top**, Font: Segoe UI 8 pt `#64748B`.
+   - Format Series:
+     - Series `Female`: Fill = Solid `#BE185D` (PwC Plum/Rose).
+     - Series `Male`: Fill = Solid `#334155` (Navy Slate).
+   - Add Data Labels: Center of each segment, formatted to show % of Row Total (Level 6: **51.8% F**, Level 4: **34.3% F**, Level 1: **20.0% F**).
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_DI_PipelineFunnel` (Left: `284 pt`, Top: `274 pt`).
+
+---
+
+#### Step 3.2: Visual 3.2 - Departmental Representation & Target Gaps (`DI_DeptParity`)
 * **Docking Zone Coordinates**: Left: `284 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `DimDepartment` & `Fact_Employees`
-  - **Axis (Categories)**: `DimDepartment[Department]` (Operations, Sales & Marketing, Internal Services, HR, Strategy)
-  - **Values**: `_Measures[Female Headcount Share %]` (or `[Female Representation %]`)
-* **Chart Type**: **2-D Horizontal Clustered Bar** (or Clustered Column)
-* **Series Formatting**:
-  - Bar Fill: Solid `#D04A02` (PwC Tangerine).
-  - Axis Scale: Minimum = `0.0`, Maximum = `1.0` (100%), Major Unit = `0.2` (20%).
-  - Target Reference Line: Insert a vertical dashed reference line shape at 50% (`0.50`) to highlight corporate parity.
-  - Data Labels: Outside End, formatted as `0.0%` (e.g. HR: 70.6%, Operations: 49.3%, Strategy: 18.2%).
-* **Executive Purpose**: Isolates organizational clusters with severe gender underrepresentation (Strategy at 18.2% vs HR at 70.6%).
+* **Purpose**: Isolates clusters with severe gender underrepresentation (Strategy at 18.2% vs HR at 70.6%).
 
-###### Visual 3.3: Promotion Velocity & Time in Grade (Right-Top)
-* **Container Name**: `DI_PromoVelocity` | **Badge**: `Bar Chart`
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`Z18`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_DI_Parity`**.
+2. **Assign Dimension & Measures**:
+   - From table `DimDepartment`: Drag **`Department`** into **Rows**.
+   - From table `_Measures`: Drag **`Female Representation %`** into **Values**.
+3. **Format Measure Number Format**:
+   - Right-click value column $	o$ **Number Format...** $	o$ **Percentage** (`0.0%`).
+4. **Insert the Horizontal Bar Chart**:
+   - Click inside `pt_DI_Parity` $	o$ **Insert** $	o$ **2-D Clustered Bar** (Horizontal).
+   - Cut (`Ctrl + X`), switch to **`05_DiversityInclusion_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`DI_DeptParity`**.
+5. **Declutter & Style**:
+   - Hide field buttons, remove chart title and legend.
+   - Format Series: Bar Fill = Solid `#D04A02` (PwC Tangerine), Gap Width = `60%`.
+   - Reverse category order on vertical axis.
+   - Horizontal Axis Scale: Minimum = `0.0`, Maximum = `1.0` (100%), Major Unit = `0.2` (20%).
+   - Add Data Labels: Outside End, formatted as `0.0%` (HR: **70.6%**, Operations: **49.3%**, Strategy: **18.2%**).
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_DI_DeptParity` (Left: `284 pt`, Top: `558 pt`).
+
+---
+
+#### Step 3.3: Visual 3.3 - Promotion Velocity & Glass Ceiling (`DI_PromoVelocity`)
 * **Docking Zone Coordinates**: Left: `776 pt`, Top: `274 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `Fact_Employees`
-  - **Axis (Categories)**: `Fact_Employees[Job_Level_Baseline]` (or `[Job_Level]`)
-  - **Values**:
-    1. `_Measures[Female Promotion Rate %]`
-    2. `_Measures[Male Promotion Rate %]`
-* **Chart Type**: **2-D Clustered Column**
-* **Series Formatting**:
-  - Series `Female Promotion Rate`: Fill = Solid `#BE185D` (Rose).
-  - Series `Male Promotion Rate`: Fill = Solid `#334155` (Navy Slate).
-  - Series Overlap: `0%`, Gap Width: `80%`.
-  - Add Data Labels showing promotion rates across hierarchical levels.
-* **Executive Purpose**: Demonstrates that while entry-level promotions are equitable (~11%), senior tier promotions favor male candidates by 2.1x.
+* **Purpose**: Proves that while entry-level promotions are equitable, senior-tier promotions favor male candidates by 2.1x.
 
-###### Visual 3.4: Performance Appraisal vs Promotion Equity Paradox (Right-Bottom)
-* **Container Name**: `DI_PerformanceAudit` | **Badge**: `Matrix Table`
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`AH3`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_DI_Velocity`**.
+2. **Assign Dimension & Measures**:
+   - From table `Fact_Employees`: Drag **`Job_Level_Baseline`** into **Rows**.
+   - From table `_Measures`: Drag **`Female Promotion Rate %`** into **Values**.
+   - From table `_Measures`: Drag **`Male Promotion Rate %`** into **Values**.
+3. **Format Measure Number Formats**: Set both to **Percentage** (`0.0%`).
+4. **Insert 2-D Clustered Column Chart**:
+   - Click inside `pt_DI_Velocity` $	o$ **Insert** $	o$ **2-D Clustered Column**.
+   - Cut (`Ctrl + X`), switch to **`05_DiversityInclusion_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`DI_PromoVelocity`**.
+5. **Declutter & Style**:
+   - Hide field buttons, remove chart title.
+   - Move Legend to **Top**, Font: Segoe UI 8 pt `#64748B`.
+   - Format Series:
+     - Series `Female Promotion Rate`: Fill = Solid `#BE185D` (Rose).
+     - Series `Male Promotion Rate`: Fill = Solid `#334155` (Navy Slate).
+     - Series Overlap = `0%`, Gap Width = `80%`.
+   - Add Data Labels over columns showing promotion rates.
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_DI_PromoVelocity` (Left: `776 pt`, Top: `274 pt`).
+
+---
+
+#### Step 3.4: Visual 3.4 - Performance Appraisal vs Promotion Equity Paradox (`DI_PerformanceAudit`)
 * **Docking Zone Coordinates**: Left: `776 pt`, Top: `558 pt`, Width: `448 pt`, Height: `210 pt`
-* **PivotChart Configuration**:
-  - **Source Table**: `Fact_Employees`
-  - **Axis (Categories)**: `Fact_Employees[FY20_Rating]` (Ratings 1 to 4)
-  - **Legend (Series)**: `Fact_Employees[Gender]`
-  - **Values**: `_Measures[Promoted FY21 Count]` (or `_Measures[Overall Promotion Rate %]`)
-* **Chart Type**: **2-D Clustered Column**
-* **Series Formatting**:
-  - Rating 3 & 4 Columns: Highlight with bold saturation to emphasize that high-performing women receive promotions at significantly lower rates than men with identical ratings.
-  - Axis Labels: Format as "Rating 1 (Unsatisfactory)", "Rating 2 (Competent)", "Rating 3 (Superior)", "Rating 4 (Exceptional)".
-* **Executive Purpose**: Refutes the hypothesis that promotion disparities are caused by performance rating differentials (Mean Female Appraisal: 2.42 vs Male: 2.41).
+* **Purpose**: Refutes the hypothesis that promotion disparities stem from rating differences (Mean Female: 2.42 vs Male: 2.41).
+
+##### Manual GUI Build Instructions:
+1. **Create the PivotTable**:
+   - Go to **`Staging_Pivots`** $	o$ click cell **`AH18`**.
+   - Click **Insert** $	o$ **PivotTable** $	o$ From Data Model $	o$ click **OK**.
+   - Rename PivotTable to: **`pt_DI_Audit`**.
+2. **Assign Dimension & Measures**:
+   - From table `Fact_Employees`: Drag **`FY20_Rating`** into **Rows** (Ratings 1 to 4).
+   - From table `Fact_Employees`: Drag **`Gender`** into **Columns** (Female, Male).
+   - From table `_Measures`: Drag **`Promoted FY21 Count`** into **Values**.
+3. **Turn Off Grand Totals**: Design $	o$ Grand Totals $	o$ Off for Rows and Columns.
+4. **Insert 2-D Clustered Column Chart**:
+   - Click inside `pt_DI_Audit` $	o$ **Insert** $	o$ **2-D Clustered Column**.
+   - Cut (`Ctrl + X`), switch to **`05_DiversityInclusion_Cockpit`**, and paste (`Ctrl + V`).
+   - Rename to: **`DI_PerformanceAudit`**.
+5. **Declutter & Style**:
+   - Hide field buttons, remove chart title.
+   - Move Legend to **Top**, Font: Segoe UI 8 pt `#64748B`.
+   - Format Series: Female in `#BE185D`, Male in `#334155`.
+   - Add Data Labels: Outside End displaying promoted headcounts.
+6. **Docking**:
+   - Set Height = `210 pt`, Width = `448 pt`. Align over `DockZone_DI_PerformanceAudit` (Left: `776 pt`, Top: `558 pt`).
 
 ---
 
-#### Step 6.5: Applying Transparent Chart Decluttering
+#### Step 3.5: Inserting Slicers & Wiring Report Connections (D&I Cockpit)
 
-To eliminate Excel's default "boxy spreadsheet" appearance and achieve the seamless look of a modern SaaS executive dashboard:
-
-##### Manual Decluttering Checklist (GUI)
-1. **Remove Exterior Borders**: Select Chart $\to$ **Format** tab $\to$ **Shape Outline = No Outline**.
-2. **Remove Outer Fill**: Select Chart $\to$ **Format** tab $\to$ **Shape Fill = No Fill**.
-3. **Remove Plot Area Fill & Border**: Click inside the chart grid $\to$ **Format Plot Area** $\to$ **Shape Fill = No Fill**, **Shape Outline = No Outline**.
-4. **Hide Field Buttons**: Right-click any gray field button $\to$ click **"Hide All Field Buttons on Chart"**.
-5. **Delete Chart Title**: Select the chart title textbox $\to$ press `Delete`.
-6. **Mute Gridlines**: Select the horizontal lines $\to$ **Format Gridlines** $\to$ Line: Solid, Color: `#E2E8F0`, Width: `0.75 pt`.
-7. **Refine Axis Typography**: Select the axis text $\to$ **Home** tab $\to$ Font: `Segoe UI`, Size: `8.5 pt`, Color: `#64748B`.
-
-##### Automated Decluttering Macro (One-Click)
-If you have multiple charts on the active sheet, open the VBA Immediate Window (`Ctrl + G`) and paste this one-liner to format all charts instantly:
-```vba
-For Each co In ActiveSheet.ChartObjects: Call modDashboardUIUX.DeclutterAndFormatChart(co): Next co
-```
-
----
-
-#### Step 6.6: Wiring Global Interactive Slicers into the Filter Drawer
-
-Each cockpit features a dedicated **Left Global Filter Drawer** (`Panel_<name>`, `216 pt` wide) containing 3 pre-formed docking slots with dashed outlines.
-
-```
-+-------------------------------------------------------+
-| [ Slicer Slot 1: Primary Dimension ]                  |
-| Left: 36 pt, Top: 280 pt, Width: 216 pt, Height: 145 pt|
-+-------------------------------------------------------+
-| [ Slicer Slot 2: Secondary Dimension ]                |
-| Left: 36 pt, Top: 436 pt, Width: 216 pt, Height: 145 pt|
-+-------------------------------------------------------+
-| [ Slicer Slot 3: Demographic / Channel ]              |
-| Left: 36 pt, Top: 592 pt, Width: 216 pt, Height: 135 pt|
-+-------------------------------------------------------+
-```
-
-##### 1. Inserting Slicers from the VertiPaq Data Model
-1. Go to `Staging_Pivots` (or select any PivotTable on your sheet).
-2. Click ribbon tab: **PivotTable Analyze** $\to$ **Insert Slicer**.
-3. In the Insert Slicers window, switch to the **Data Model** tab.
-4. Check the 3 required fields for the specific cockpit:
-
-| Dashboard Cockpit | Slot 1 (Top: 280 pt) | Slot 2 (Top: 436 pt) | Slot 3 (Top: 592 pt) |
-| :--- | :--- | :--- | :--- |
-| **03_CallCenter_Cockpit** | `DimDate[Month_Name]` | `DimTopic[Topic]` | `DimAgent[Agent]` |
-| **04_CustomerRetention_Cockpit** | `DimContract[Contract]` | `Fact_Churn[PaymentMethod]` | `Fact_Churn[InternetService]` |
-| **05_DiversityInclusion_Cockpit** | `DimDepartment[Department]` | `Fact_Employees[Job_Level_Baseline]` | `Fact_Employees[Age_Group]` |
-
-5. Click **OK**. Cut the 3 slicers (`Ctrl + X`) and paste them (`Ctrl + V`) onto the respective cockpit sheet.
-
-##### 2. Sizing & Snapping Slicers into the Designated Slots
-Select each slicer and set its exact geometry in the **Slicer** ribbon tab:
-* **Slot 1 Slicer**:
-  - Dimensions: **Height = 2.01 in** (`145 pt`), **Width = 3.00 in** (`216 pt`).
-  - Position: Drag directly over `[ Slicer Slot 1 ]` (Left: `36 pt`, Top: `280 pt`).
-  - Columns: Set **Columns = 1** (or 2 for compact categories).
-* **Slot 2 Slicer**:
-  - Dimensions: **Height = 2.01 in** (`145 pt`), **Width = 3.00 in** (`216 pt`).
-  - Position: Drag directly over `[ Slicer Slot 2 ]` (Left: `36 pt`, Top: `436 pt`).
-* **Slot 3 Slicer**:
-  - Dimensions: **Height = 1.88 in** (`135 pt`), **Width = 3.00 in** (`216 pt`).
-  - Position: Drag directly over `[ Slicer Slot 3 ]` (Left: `36 pt`, Top: `592 pt`).
-
-##### 3. Connecting Slicers to ALL Dashboard PivotTables (Report Connections)
-To ensure that selecting a slicer item updates all 4 visual containers simultaneously:
-1. Right-click the Slicer $\to$ click **Report Connections...** (or select Slicer $\to$ ribbon tab **Slicer** $\to$ **Report Connections**).
-2. The dialog lists every PivotTable in the workbook.
-3. **Check the box for all PivotTables created for that specific dashboard**.
-4. Click **OK**.
-5. Repeat for all 3 slicers on the sheet.
-
-##### 4. Applying PwC Brand Enterprise Slicer Styling
-Transform standard blue Excel slicers into branded PwC executive controls:
-1. Select any Slicer $\to$ go to the **Slicer** ribbon tab.
-2. In the Slicer Styles gallery, right-click any built-in style $\to$ click **Duplicate...**
-3. Name the new style: `PwC_Executive_Tangerine`.
-4. In the dialog, format these key elements:
-   - **Whole Slicer**: Font = `Segoe UI`, Size = `8.5 pt`, Color = `#1E293B`. Border = None. Fill = None.
-   - **Header**: Font = `Segoe UI`, Size = `9 pt`, Bold = True, Color = `#0F172A`. Fill = None.
-   - **Selected Item with Data**: Fill = Solid `#D04A02` (PwC Tangerine), Font = White Bold.
-   - **Unselected Item with Data**: Fill = Solid `#F1F5F9` (Light Slate), Font = `#334155` Regular.
-   - **Hovered Selected Item**: Fill = Solid `#B93D00` (Deep Tangerine), Font = White Bold.
-   - **Hovered Unselected Item**: Fill = Solid `#E2E8F0` (Border Gray), Font = `#0F172A`.
-5. Click **OK**, then apply `PwC_Executive_Tangerine` to all 9 slicers across your 3 cockpits.
-
-##### 5. Enabling Slicer Interactivity on CUBE KPI Cards
-Because the 5 top BAN metric cards are powered by live `CUBEVALUE` formulas in staging row 65, they can also dynamically respond to slicer selections!
-To connect slicers to a CUBE card:
-1. Note the Name of your slicers (right-click Slicer $\to$ **Slicer Settings...** $\to$ view **"Name to use in formulas"**, e.g. `Slicer_Month_Name`, `Slicer_Topic`, `Slicer_Agent`).
-2. Select the staging cell in row 65 (e.g. `AA65` for Total Calls).
-3. Append the slicer parameters to the formula:
-   ```excel
-   =CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]", Slicer_Month_Name, Slicer_Topic, Slicer_Agent)
-   ```
-4. Now, both the 4 PivotCharts AND the 5 top BAN KPI cards update in synchrony with every filter click!
+1. **Insert the 3 Slicers**:
+   - Click `pt_DI_Funnel` $	o$ **PivotTable Analyze** $	o$ **Insert Slicer**.
+   - Check:
+     - `DimDepartment[Department]`
+     - `Fact_Employees[Job_Level_Baseline]`
+     - `Fact_Employees[Age_Group]`
+     - Click **OK**.
+2. **Cut and Paste to Cockpit**:
+   - Cut the 3 slicers $	o$ switch to **`05_DiversityInclusion_Cockpit`** $	o$ Paste.
+3. **Position and Snap into Slots**:
+   - **Slot 1 (Department)**: Left: `36 pt`, Top: `280 pt`, Width: `216 pt`, Height: `145 pt`.
+   - **Slot 2 (Job Level)**: Left: `36 pt`, Top: `436 pt`, Width: `216 pt`, Height: `145 pt`.
+   - **Slot 3 (Age Group)**: Left: `36 pt`, Top: `592 pt`, Width: `216 pt`, Height: `135 pt`.
+4. **Wire Report Connections (CRITICAL STEP)**:
+   - Right-click Slicer 1 (`Department`) $	o$ **Report Connections...**
+   - Check: `pt_DI_Funnel`, `pt_DI_Parity`, `pt_DI_Velocity`, `pt_DI_Audit` $	o$ click **OK**.
+   - Repeat for Slicer 2 (`Job_Level_Baseline`) and Slicer 3 (`Age_Group`).
+   - *Verification*: Select "Operations". All 4 D&I visuals filter synchronously!
 
 
 ---

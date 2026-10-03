@@ -2,42 +2,53 @@ Attribute VB_Name = "modNavigation"
 Option Explicit
 
 ' ==============================================================================
-' PwC Switzerland Digital Accelerator — View Navigation Controller
-' Delivers instantaneous, flicker-free transitions between reporting views
+' PwC Switzerland Digital Accelerator - View Navigation Controller
+' Delivers instantaneous, flicker-free transitions between executive cockpits
 ' ==============================================================================
 
-Public Sub NavigateToDashboard()
-    On Error GoTo ErrorHandler
-    modAppState.FreezeAppState
-    
-    Sheets("Dashboard").Visible = xlSheetVisible
-    Sheets("Dashboard").Activate
-    ActiveWindow.ScrollRow = 1
-    ActiveWindow.ScrollColumn = 1
-    Range("D5").Select
-    
-    modAppState.RestoreAppState
-    Exit Sub
-
-ErrorHandler:
-    modAppState.RestoreAppState
-    MsgBox "Navigation Error: " & Err.Description, vbExclamation, "PwC Navigation"
+Public Sub NavigateToHomePortal()
+    NavigateToSheet "00_Home_Portal"
 End Sub
 
-Public Sub NavigateToAgentDetail()
+Public Sub NavigateToCallCenter()
+    NavigateToSheet "03_CallCenter_Cockpit"
+End Sub
+
+Public Sub NavigateToRetention()
+    NavigateToSheet "04_CustomerRetention_Cockpit"
+End Sub
+
+Public Sub NavigateToDiversity()
+    NavigateToSheet "05_DiversityInclusion_Cockpit"
+End Sub
+
+Public Sub NavigateToDomains()
+    NavigateToSheet "01_Business_Domains"
+End Sub
+
+Public Sub NavigateToCatalog()
+    NavigateToSheet "02_Metadata_&_KPI_Catalog"
+End Sub
+
+Private Sub NavigateToSheet(ByVal targetSheetName As String)
     On Error GoTo ErrorHandler
-    modAppState.FreezeAppState
+    Dim ws As Worksheet
     
-    Sheets("Agent_Detail").Visible = xlSheetVisible
-    Sheets("Agent_Detail").Activate
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+    
+    Set ws = ThisWorkbook.Worksheets(targetSheetName)
+    ws.Visible = xlSheetVisible
+    ws.Activate
     ActiveWindow.ScrollRow = 1
     ActiveWindow.ScrollColumn = 1
-    Range("D5").Select
+    ws.Range("A1").Select
     
-    modAppState.RestoreAppState
+    Application.EnableEvents = True
+    Application.ScreenUpdating = True
     Exit Sub
-
 ErrorHandler:
-    modAppState.RestoreAppState
-    MsgBox "Navigation Error: " & Err.Description, vbExclamation, "PwC Navigation"
+    Application.EnableEvents = True
+    Application.ScreenUpdating = True
+    MsgBox "Navigation Error: Unable to locate sheet '" & targetSheetName & "'." & vbCrLf & Err.Description, vbExclamation, "PwC Navigation"
 End Sub
