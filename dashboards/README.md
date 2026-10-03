@@ -56,25 +56,45 @@ graph TD
 
 ---
 
-## 🎛️ Unified Global Slicers & Cross-Filtering Architecture
+## 🎛️ Unified Global Navigation & Data Model Slicer Architecture
 
-All three dashboards share a synchronized dimensional filter ribbon driven by the VertiPaq tabular model:
+### 1. Persistent 6-Tab Global Top Navigation
+All executive sheets incorporate an identical, zero-flicker top navigation bar (`vba/modNavigation.bas`) allowing seamless domain switching:
+* **Active Sheet**: Highlighted in **PwC Tangerine (`#D04A02`)** with bold white typography.
+* **Inactive Sheets**: High-contrast **Slate Navy (`#1E293B`)** with subtle hover styling.
+* **Dual Interactivity**: Native worksheet hyperlinks (`#'SheetName'!A1`) combined with VBA navigation routines (`modNavigation.NavigateTo...`).
+
+### 2. 9 Native VertiPaq Data Model Slicers
+Each cockpit features a dedicated **Left Global Filter Drawer** housing 3 pre-styled native Excel Slicers instantiated directly from `ThisWorkbookDataModel` (`SlicerStyleDark2`):
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Executive as Board Member / Ops Director
-    participant Ribbon as Conformed Slicer Ribbon
-    participant VertiPaq as VertiPaq Tabular Engine
-    participant Visuals as Visual Card / Matrix Grid
+    participant Slicer as Native VertiPaq Slicer
+    participant VertiPaq as In-Memory Tabular Model
+    participant Staging as Staging_Pivots (8 PTs)
+    participant Visuals as Native PivotCharts & CUBE BANs
 
-    Executive->>Ribbon: Selects Date Range (e.g. Jan 2021) or Department (Operations)
-    Ribbon->>VertiPaq: Propagates Filter Context across Conformed Dimensions
-    VertiPaq->>VertiPaq: Evaluates DAX Context Transition & CALCULATE() Filters
-    VertiPaq->>Visuals: Renders Re-Aggregated Values in < 15 milliseconds
-    Visuals-->>Executive: Dynamic Visual Update with Sub-Second Latency
+    Executive->>Slicer: Clicks Slicer Item (e.g., Topic, Month, Contract)
+    Slicer->>VertiPaq: Pushes Filter Context into Columnar Data Store
+    VertiPaq->>Staging: Re-evaluates Explicit DAX Measures & Context Transitions
+    Staging->>Visuals: Updates Native PivotCharts in < 15ms
+    VertiPaq-->>Visuals: Re-indexes Staged CUBEVALUE BAN Metrics
+    Visuals-->>Executive: Synchronized Real-Time Visual Refresh
 ```
 
-1. **Date Slicer**: Dynamic Q1 2021 timeline slider (Jan, Feb, Mar) with Day-of-Week toggle.
-2. **Business Unit / Department Slicer**: Filters across Operations, Finance, Strategy, HR, Sales & Marketing.
-3. **Agent / Service Slicer**: Multi-select dropdown with instant search and clear-all reset macro.
+* **Call Center (`03_CallCenter_Cockpit`)**:
+  - `Month`: `DimDate[Month_Name]`
+  - `Topic`: `DimTopic[Topic]`
+  - `Agent`: `DimAgent[Agent]`
+* **Customer Retention (`04_CustomerRetention_Cockpit`)**:
+  - `Contract`: `DimContract[Contract]`
+  - `Payment Method`: `Fact_Churn[PaymentMethod]`
+  - `Internet Service`: `Fact_Churn[InternetService]`
+* **Diversity & Inclusion (`05_DiversityInclusion_Cockpit`)**:
+  - `Department`: `DimDepartment[Department]`
+  - `Job Level`: `Dim_CareerLadder[Base_Job_Level]`
+  - `Age Group`: `Fact_Employees[Age_Group]`
+
+* **Single-Click Reset**: The `Reset Filters` action button executes `modFilterController.ClearAllFilters`, looping through all 9 `SlicerCaches` to restore full view instantaneously.

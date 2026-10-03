@@ -33,7 +33,10 @@ timeline
 ### 2. Customer Churn & Retention Analytics
 * **Total Subscriber Base**: 7,043 accounts evaluated.
 * **Churned Account Count**: **1,869 customers terminated** (Account Churn Rate: **26.54%**).
-* **Financial Impact**: **$139,130.85 Monthly Recurring Revenue (MRR) lost** (Financial Churn Rate: **30.50%**).
+* **Financial Impact & Revenue Triad**:
+  * **Monthly Revenue at Risk (MRR)**: **$139,130.85 lost monthly run-rate** (Financial Churn Rate: **30.50%** of total monthly billing).
+  * **Annualized Recurring Leakage (ARR)**: **$1,669,570.20 (~$1.67 Million)** annualized recurring revenue at risk across active churners.
+  * **Cumulative Historical Lifetime Charges**: **$2,862,926.75 (~$2.86 Million)** total lifetime revenue billed to departed subscribers prior to churn.
 * **Contract Elasticity**: **88.55% of all churn** is concentrated in Month-to-Month contracts (1,655 out of 1,869 churners).
 * **Network Infrastructure Bottleneck**: Fiber optic users experience an alarming **41.89% churn rate** driven by technical service ticket spikes.
 

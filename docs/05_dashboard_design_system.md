@@ -65,9 +65,27 @@ graph TD
 
 ---
 
-## 🎛️ Interactive Slicer Architecture & Synchronization
+## 🎛️ Interactive Navigation & Slicer System Architecture
 
-All interactive controls in Excel and Power BI utilize unified slicer connections:
-1. **Conformed Date Slicer**: Linked to `DimDate[Month_Name]` and `DimDate[Day_Name]`, dynamically filtering `Fact_Calls` across the 90-day Q1 window.
-2. **Agent Multi-Select**: Linked to `DimAgent[Agent]` with automated **"Select All" / "Clear Filters"** buttons powered by VBA macro [`modFilterController.bas`](../vba/modFilterController.bas).
-3. **Department Dropdown**: Linked to `DimDepartment[Department]`, dynamically cascading through `Fact_Employees` and auxiliary census tables.
+### 1. Global Persistent 6-Tab Top Navigation (`vba/modNavigation.bas`)
+Across all 6 worksheets (`00_Home_Portal`, `01_Business_Domains`, `02_Metadata_&_KPI_Catalog`, `03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, `05_DiversityInclusion_Cockpit`), an enterprise-grade top navigation bar provides instant visual orientation:
+* **Active Sheet**: Highlighted in vibrant **PwC Tangerine (`#D04A02`)** with bold white typography (`#FFFFFF`).
+* **Inactive Sheets**: High-contrast **Slate Navy (`#1E293B`)** with muted text (`#94A3B8`).
+* **Dual Interactivity**: Hardwired Excel worksheet hyperlinks (`#'SheetName'!A1`) for zero-latency clicks, backed by VBA subroutines (`modNavigation.NavigateTo...`).
+
+### 2. The 9 Native VertiPaq Data Model Slicers
+All cockpits utilize native Excel Slicers instantiated directly from `ThisWorkbookDataModel` and styled in `SlicerStyleDark2` inside the **Left Filter Drawer** (`Width = 206 pt`, `Left = 36 pt`):
+
+| Cockpit Sheet | Slicer Slot 1 (Top: 280 pt) | Slicer Slot 2 (Top: 436 pt) | Slicer Slot 3 (Top: 592 pt) | Connected PivotTables |
+| :--- | :--- | :--- | :--- | :--- |
+| **`03_CallCenter_Cockpit`** | `DimDate[Month_Name]` | `DimTopic[Topic]` | `DimAgent[Agent]` | `pt_Agent`, `PivotChartTable3`, `PivotChartTable6`, `PivotChartTable8` |
+| **`04_CustomerRetention_Cockpit`** | `DimContract[Contract]` | `Fact_Churn[PaymentMethod]` | `Fact_Churn[InternetService]` | `pt_CH_Contract`, `pt_CH_Tenure`, `pt_CH_Payment`, `pt_CH_Service` |
+| **`05_DiversityInclusion_Cockpit`** | `DimDepartment[Department]` | `Dim_CareerLadder[Base_Job_Level]` | `Fact_Employees[Age_Group]` | `pt_DI_Funnel`, `pt_DI_Parity`, `pt_DI_Promo`, `pt_DI_Rating` |
+
+### 3. Filter Reset & State Management
+* The **`Reset Filters`** button on each header bar is wired to `modFilterController.ClearAllFilters`.
+* When clicked, VBA loops through all 9 `SlicerCaches` and executes `.ClearManualFilter()`, instantaneously resetting the entire analytical model to 100% portfolio visibility.
+
+### 4. Single-Source-of-Truth Dynamic CUBEVALUE KPI Architecture
+* All 15 BAN metric callouts are formula-linked (`.DrawingObject.Formula`) to off-canvas `CUBEVALUE` cells in row 65 (`AA65:AE65`).
+* Technical staging rows `60:75` are hidden cleanly (`Hidden = True`), guaranteeing zero visual noise while preserving reactive recalculation upon slicer clicks.

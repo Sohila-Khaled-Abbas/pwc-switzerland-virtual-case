@@ -42,19 +42,30 @@ Rather than treating each consulting task as an isolated exercise, this platform
 
 The platform elevates conventional Excel deliverables into a **state-of-the-art Web Application (SaaS) experience**, offering both an in-workbook executive interface and a standalone interactive web companion:
 
-1. **Executive Home Portal (`00_Home_Portal`)**:
+1. **Persistent 6-Tab Global Top Navigation (`vba/modNavigation.bas`)**:
+   * Deployed uniformly across all 6 worksheets (`00_Home_Portal`, `01_Business_Domains`, `02_Metadata_&_KPI_Catalog`, `03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, `05_DiversityInclusion_Cockpit`).
+   * Active sheet dynamically highlighted in vibrant **PwC Tangerine (`#D04A02`)** with bold white text; inactive tabs styled in **Slate Navy (`#1E293B`)**.
+   * Dual-action binding: Native Excel worksheet hyperlinks (`#'SheetName'!A1`) for instant switching, backed by VBA callback handlers (`modNavigation.NavigateTo...`).
+   * Global action controls: `Toggle Dark Mode`, `[LIVE] VERTIPAQ` health indicator, and `Export PDF` executive briefing button.
+
+2. **Executive Home Portal (`00_Home_Portal`)**:
    * **Official PwC Branding**: Embeds the official color logo (`assets/PwC_logo_rgb_colour_pos.png`) into an elevated white card header, replacing static text boxes.
    * **Cross-Enterprise Ticker**: 4 floating cards with circular colored badges and vector SVG icons (`assets/icons/web/`) summarizing Telephony SLA, ARR Preservation, Executive Parity, and Model Fidelity.
    * **Interactive Cockpit Launchers**: 3 large SaaS cards with domain tags, live metrics, and single-click navigation buttons.
    * **Dynamic Light/Dark Theme Engine**: Pure ASCII engine (`vba/modThemeEngine.bas`) allowing seamless toggling between Crisp Light (`#F8FAFC`) and Slate Dark (`#0F172A`).
 
-2. **Cockpit Visual Modernization (`03_CallCenter_Cockpit`)**:
-   * **Dark Slate Global Slicer Drawer (`#182234`)**: Structured filter slots, white headers with orange funnel icon, orange `Reset Filters` action button, and an executive quote pill: *“Delivering value through insights. — PwC”*.
-   * **Circular KPI Badges**: 5 BAN scorecards adorned with colored circular badges, vector SVG icons, and trend indicators (`▲ 12.4% vs PY`).
-   * **Modern Gradient Chart Styling**: Warm two-color gradient stops (`#EA580C` to `#FF8C42`), smooth bezier curves (`srs.Smooth = True`) with white circular markers, and zero chart borders.
-   * **Docked Interactive Agent Scorecard**: Pixel-perfect linked picture table with enforced `0.0 "s"` speed format, hidden filter dropdowns, and calibrated container fit.
+3. **9 Native VertiPaq Data Model Slicers Across All 3 Cockpits**:
+   * **Call Center Cockpit (`03_CallCenter_Cockpit`)**: `Month` (`DimDate[Month_Name]`), `Topic` (`DimTopic[Topic]`), `Agent` (`DimAgent[Agent]`) wired across all 4 operational PivotTables.
+   * **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**: `Contract` (`DimContract[Contract]`), `Payment Method` (`Fact_Churn[PaymentMethod]`), `Internet Service` (`Fact_Churn[InternetService]`) wired across all 4 retention PivotTables.
+   * **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**: `Department` (`DimDepartment[Department]`), `Job Level` (`Dim_CareerLadder[Base_Job_Level]`), `Age Group` (`Fact_Employees[Age_Group]`) wired across all 4 workforce PivotTables.
+   * Styled in high-contrast dark theme (`SlicerStyleDark2`), snapped into Left Global Drawer slots (`Left: 36pt`, `Width: 206pt`).
 
-3. **High-Fidelity Web Application Companion (`dashboards/call_center_website_dashboard.html`)**:
+4. **Single-Source-of-Truth Dynamic CUBEVALUE KPI Architecture**:
+   * All 15 BAN metric callouts dynamically bound to off-canvas `CUBEVALUE("ThisWorkbookDataModel", ...)` formula cells in row 65 (`AA65:AE65`) via shape `.DrawingObject.Formula`.
+   * Technical helper rows (`60:75`) hidden cleanly (`ws.Rows("60:75").Hidden = True`) to maintain pristine presentation canvas.
+   * Filter-aware: Metrics update in real-time when slicers are toggled without destroying card titles or benchmark subtext.
+
+5. **High-Fidelity Web Application Companion (`dashboards/call_center_website_dashboard.html`)**:
    * Inspired directly by modern executive SaaS designs, powered by our live Q1 2021 VertiPaq semantic model.
    * **7 KPI Cards**: Total Calls (5,000), Answered (4,054), Missed (946), SLA (81.1%), Avg Speed (67.5s), CSAT (3.40 / 5), and FCR (89.9%) with circular badges and animated SVG sparkline waves.
    * **Interactive Middle Row**: HTML5 Canvas area trend with glowing orange gradient and peak callout badge; 7x12 Calls-by-Hour Heatmap grid with color temperature scaling; Resolution Breakdown Donut chart with center total metric (`5,000 Total Calls`).
@@ -117,11 +128,15 @@ Evaluating agents purely on call count rewards rushed conversations and penalize
 * **Martha (Quality & Empathy Star)**: Longest average talk time (03:48), but commands the highest CSAT rating (**3.47 / 5.00**). Deployed to high-friction technical escalations.
 * **Joe (Coaching Candidate)**: Lowest CSAT (3.33) and longest answer speed (70.99s). Paired with Martha in a peer mentorship program.
 
-### 3. Customer Churn Elasticity ($139K At-Risk MRR)
+### 3. Customer Churn Elasticity & Revenue Reconciliation ($139.1K MRR | $1.67M ARR | $2.86M Lifetime)
 
-* **88.55% of all customer churn** is concentrated in Month-to-Month contracts (1,655 out of 1,869 churners).
-* Customers subscribing to **Fiber Optic Internet** experience a staggering **41.89% churn rate** due to early installation and technical friction.
-* **Financial Recovery Model**: Converting 500 Month-to-Month Fiber subscribers to 1-Year agreements locks in **$32,450.00 in protected monthly MRR**.
+* **Semantic Revenue Metric Standardization**:
+  * **$139,130.85 Monthly Revenue at Risk (MRR)**: Realized monthly recurring revenue lost from 1,869 churned customer accounts (`CALCULATE(SUM(Fact_Churn[MonthlyCharges]), Fact_Churn[Churn] = "Yes")`).
+  * **$1,669,570.20 Annualized Run-Rate (ARR)**: Annualized recurring revenue leakage ($139,130.85 $\times$ 12 months) confronting corporate leadership.
+  * **$2,862,926.75 Cumulative Historical Lifetime Charges**: Total cumulative historical billing recorded from churned subscribers prior to termination (`CALCULATE(SUM(Fact_Churn[TotalCharges]), Fact_Churn[Churn] = "Yes")`).
+* **Contract Vulnerability**: **88.55% of all customer churn** is concentrated in Month-to-Month contracts (1,655 out of 1,869 churners).
+* **Network Infrastructure Friction**: Customers subscribing to **Fiber Optic Internet** experience an alarming **41.89% churn rate** due to early installation and technical service friction.
+* **Financial Recovery Model**: Converting 500 Month-to-Month Fiber subscribers to 1-Year agreements locks in **$32,450.00 in protected monthly MRR ($389.4K ARR)**.
 
 ### 4. Diversity & Inclusion: The "Broken Rung" at Executive Grades
 
@@ -228,7 +243,8 @@ pwc-switzerland-virtual-case/
 │   ├── 06_business_insights_and_playbook.md# Strategic recommendations & ROI models
 │   ├── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & best practices
 │   ├── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer & catalog
-│   └── 09_excel_dashboard_publishing_and_distribution_guide.md # Browser view, SharePoint & Power BI
+│   ├── 09_excel_dashboard_publishing_and_distribution_guide.md # Browser view, SharePoint & Power BI
+│   └── FIXED_WORKBOOK_CHANGELOG.md        # Comprehensive forensic audit & technical fix changelog
 │
 ├── power_query/
 │   ├── 01_staging_queries.m               # Parameterized staging connections
@@ -258,6 +274,7 @@ pwc-switzerland-virtual-case/
 ├── CONTRIBUTING.md                        # Dimensional modeling & DAX style guide
 ├── LICENSE                                # MIT Open-Source License
 ├── PWC_Switzerland_Virtual_Case.xlsm      # Master production workbook (VertiPaq Model & VBA Suite)
+├── PWC_Switzerland_Virtual_Case_FIXED.xlsm# Synchronized, verified production deliverable
 └── README.md                              # Master architectural documentation index
 ```
 

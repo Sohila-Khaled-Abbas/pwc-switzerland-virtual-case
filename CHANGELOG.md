@@ -4,6 +4,48 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [2.7.0] - 2026-10-03
+
+### 🚀 Enterprise Production Release & Slicer Architecture
+
+- **Persistent 6-Tab Global Top Navigation Suite (`vba/modNavigation.bas`)**:
+  - Implemented an identical, enterprise-grade 6-tab navigation bar across all 6 worksheets (`00_Home_Portal`, `01_Business_Domains`, `02_Metadata_&_KPI_Catalog`, `03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, `05_DiversityInclusion_Cockpit`).
+  - Active sheet dynamically highlighted in vibrant PwC Tangerine (`#D04A02`) with bold white typography; inactive tabs rendered in Slate Navy (`#1E293B`).
+  - Dual-action binding: Native worksheet hyperlinks (`#'SheetName'!A1`) for instantaneous switching, backed by VBA callback routines (`modNavigation.NavigateTo...`).
+  - Global header controls preserved: `Toggle Dark Mode`, `[LIVE] VERTIPAQ` health status pill, and `Export PDF` executive briefing action button.
+
+- **9 Native VertiPaq Data Model Slicers Across All 3 Cockpits**:
+  - Replaced legacy visual placeholder shapes with 9 authentic native Excel Slicers instantiated directly from the VertiPaq tabular model (`ThisWorkbookDataModel`):
+    - **Call Center Cockpit (`03_CallCenter_Cockpit`)**: `Month` (`[DimDate].[Month_Name]`), `Topic` (`[DimTopic].[Topic]`), `Agent` (`[DimAgent].[Agent]`), connected across all 4 Call Center analytical PivotTables (`pt_Agent`, `PivotChartTable3`, `PivotChartTable6`, `PivotChartTable8`).
+    - **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**: `Contract` (`[DimContract].[Contract]`), `Payment Method` (`[Fact_Churn].[PaymentMethod]`), `Internet Service` (`[Fact_Churn].[InternetService]`), connected across all 4 Retention PivotTables (`pt_CH_Contract`, `pt_CH_Tenure`, `pt_CH_Payment`, `pt_CH_Service`).
+    - **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**: `Department` (`[DimDepartment].[Department]`), `Job Level` (`[Dim_CareerLadder].[Base_Job_Level]`), `Age Group` (`[Fact_Employees].[Age_Group]`), connected across all 4 D&I PivotTables (`pt_DI_Funnel`, `pt_DI_Parity`, `pt_DI_Promo`, `pt_DI_Rating`).
+  - Slicers styled in dark theme (`SlicerStyleDark2`), snapped into Left Drawer slots (`Left: 36pt`, `Width: 206pt`), with multi-pivot report connections verified.
+
+- **8 Non-Overlapping Analytical Staging PivotTables & Native PivotCharts**:
+  - Restored 8 clean, non-overlapping VertiPaq PivotTables on `Staging_Pivots`.
+  - Re-established native PivotChart links on `04_CustomerRetention_Cockpit` and `05_DiversityInclusion_Cockpit`, restoring full dynamic responsiveness when slicer selections are toggled.
+  - Docked into the standard 2x2 container grid (`Left: 284.0 / 776.0`, `Top: 274.0 / 558.0`, `Width: 448.0`, `Height: 210.0`) with 100% transparent decluttered styling.
+
+- **Customer Retention Revenue Semantic Reconciliation**:
+  - Reconciled the 3 distinct financial figures across the model, DAX catalog, tickers, and documentation:
+    - **$139,130.85 Monthly Revenue at Risk (MRR)**: Monthly recurring revenue lost from 1,869 churned subscribers (`CALCULATE(SUM(Fact_Churn[MonthlyCharges]), Fact_Churn[Churn] = "Yes")`).
+    - **$1,669,570.20 Annualized Run-Rate (ARR)**: Annualized recurring revenue leakage ($139.1K $\times$ 12 months).
+    - **$2,862,926.75 Cumulative Historical Lifetime Charges**: Cumulative lifetime billing recorded from churned subscribers prior to termination (`CALCULATE(SUM(Fact_Churn[TotalCharges]), Fact_Churn[Churn] = "Yes")`).
+  - Eliminated legacy ambiguity between monthly recurring run-rate loss and cumulative lifetime billing.
+
+- **Single-Source-of-Truth Dynamic CUBEVALUE KPI Architecture**:
+  - Bound all 15 BAN metric callouts to staged `CUBEVALUE("ThisWorkbookDataModel", ...)` formula cells in row 65 (`AA65:AE65`) via shape `.DrawingObject.Formula`.
+  - Hidden technical helper rows (`60:75`) on all 3 cockpits to maintain an executive presentation canvas.
+  - Slicer filtering propagates seamlessly without wiping card titles or SLA subtext.
+
+- **Zero-Defect Quality Assurance & Process Lock Resolution**:
+  - Diagnosed and resolved the desktop "File in Use" lock: Terminated orphaned headless background `EXCEL.EXE` processes, wiped temporary lock files, and unblocked file security attributes.
+  - Standardized viewport geometry: Uniform 80% zoom level, cursor parked at `A1`, and initial view set to `00_Home_Portal`.
+  - Automated audit verified 0 formula errors (`#REF!`, `#VALUE!`, `#DIV/0!`), 13 VertiPaq tables, and 81 active DAX measures.
+  - Synchronized `PWC_Switzerland_Virtual_Case.xlsm` with the QA-passed build (`PWC_Switzerland_Virtual_Case_FIXED.xlsm`).
+
+---
+
 ## [2.6.0] - 2026-10-02
 
 ### 🚀 Added & Automated

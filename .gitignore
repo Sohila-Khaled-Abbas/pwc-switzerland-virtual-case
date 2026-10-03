@@ -6,6 +6,8 @@
 *.tmp
 *.bak
 *_backup.xlsm
+*_BACKUP*.xlsm
+*.pdf
 
 # OS Metadata
 .DS_Store
