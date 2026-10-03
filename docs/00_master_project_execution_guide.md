@@ -9,7 +9,7 @@
 
 ## 🧭 The End-to-End Project Execution Pipeline
 
-The project follows an 8-phase enterprise lifecycle. Executing the phases in this strict chronological order prevents data model refactoring, circular dependencies, and VertiPaq corruption:
+The project follows a 9-phase enterprise lifecycle. Executing the phases in this strict chronological order prevents data model refactoring, circular dependencies, and VertiPaq corruption:
 
 ```mermaid
 flowchart TD
@@ -20,6 +20,7 @@ flowchart TD
     P5 --> P6["Phase 6: Interactive Dashboard Design & Canvas Assembly"]
     P6 --> P7["Phase 7: VBA Application Suite Integration"]
     P7 --> P8["Phase 8: Hardening, Security & Executive Publishing"]
+    P8 --> P9["Phase 9: Python Orchestration & Advanced Visual Overhaul"]
 
     style P1 fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#fff
     style P2 fill:#1E293B,stroke:#F59E0B,stroke-width:2px,color:#fff
@@ -29,6 +30,7 @@ flowchart TD
     style P6 fill:#1E293B,stroke:#EC4899,stroke-width:2px,color:#fff
     style P7 fill:#1E293B,stroke:#06B6D4,stroke-width:2px,color:#fff
     style P8 fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#fff
+    style P9 fill:#0F172A,stroke:#D04A02,stroke-width:3px,color:#fff
 ```
 
 ---
@@ -1146,3 +1148,22 @@ For stakeholders requiring a native browser experience, the companion web dashbo
    - Allows instant toggling between `Live Q1 2021 VertiPaq Model (5,000 calls)` and `Annual Enterprise Scale (85,420 calls)`.
    - Seamless Light and Dark mode switching with CSS custom properties and smooth transitions.
 
+---
+
+### Phase 9: Python Orchestration & Advanced Visual Overhaul
+*Reference Script*: `scripts/modernize_all_pages.py`
+
+1. **Automated Layout & UI Standardization**:
+   - The Python script uses `win32com.client` to hook into the live Excel instance and perfectly calculate shape overlaps, z-orders, and UI rendering logic.
+   - It iterates through all Cockpits (00, 01, 02, 03, 04, 05) and dynamically re-injects the Web-App Top Navigation Bar with mathematically centered zero-collision SVG assets.
+   - It purges old legacy VBA macro artifacts and prevents button duplications when scaling.
+2. **Dynamic Theming Engine Injection**:
+   - The script modifies `modThemeEngine.bas` directly to ensure KPI textual values (`Value_CC_TotalDemand`, etc.) are actively monitored. 
+   - When the user toggles Dark Mode, it programmatically overrides the `TextFrame2` font color to high-contrast white `#FFFFFF`, correcting legacy contrast bugs.
+3. **Advanced Visual Charting Injections**:
+   - Standard bar and column charts are automatically destroyed and re-constructed via Python using native Excel constants for premium SaaS designs:
+     - `xlArea` (Area Charts) applied to Tenure Cohorts for continuous trendlines.
+     - `xlDoughnut` (-4120) applied to Payment Friction metrics to illustrate proportionality natively.
+     - `xlRadarMarkers` (-4105) injected for Department Parity grids, pushing the boundaries of Excel visualizations beyond basic columns.
+4. **Zero-Overlap Governance Guarantee**:
+   - The orchestration enforces precise row heights (e.g., `RowHeight = 90`) in metadata sheets (`02_Metadata_&_KPI_Catalog`) so the injected SaaS hero banners naturally float above Excel Data Tables without clipping or masking the data underneath.
