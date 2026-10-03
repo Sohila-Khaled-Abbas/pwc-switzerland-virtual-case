@@ -83,7 +83,7 @@ Public Sub ApplyTheme(ByVal isDark As Boolean)
     SetStoredTheme IIf(isDark, "DARK", "LIGHT")
     
     ' Dashboard sheets to apply theme to
-    targetSheets = Array("00_Home_Portal", "03_CallCenter_Cockpit", "04_CustomerRetention_Cockpit", "05_DiversityInclusion_Cockpit")
+    targetSheets = Array("00_Home_Portal", "01_Business_Domains", "02_Metadata_&_KPI_Catalog", "03_CallCenter_Cockpit", "04_CustomerRetention_Cockpit", "05_DiversityInclusion_Cockpit")
     
     For i = LBound(targetSheets) To UBound(targetSheets)
         sheetName = CStr(targetSheets(i))

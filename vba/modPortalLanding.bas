@@ -79,9 +79,10 @@ Public Sub BuildExecutivePortal()
         ' Move to first position
         ws.Move Before:=ThisWorkbook.Worksheets(1)
         ' Clear previous shapes on portal
-        For Each shp In ws.Shapes
-            shp.Delete
-        Next shp
+        Dim sIdx As Long
+        For sIdx = ws.Shapes.Count To 1 Step -1
+            ws.Shapes(sIdx).Delete
+        Next sIdx
     End If
     
     ' 2. Canvas Setup: Clean Gridless Surface
@@ -186,6 +187,8 @@ Private Sub CreateTopHeader(ByVal ws As Worksheet)
     statusPill.Line.ForeColor.RGB = COLOR_BORDER
     statusPill.Line.Weight = 0.75
     With statusPill.TextFrame2
+        .VerticalAnchor = msoAnchorMiddle
+        .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
         .TextRange.Text = "[ACTIVE] VertiPaq Tabular Engine"
         .TextRange.Font.Name = "Segoe UI"
         .TextRange.Font.Size = 8
@@ -204,6 +207,8 @@ Private Sub CreateTopHeader(ByVal ws As Worksheet)
     btnTheme.Line.Weight = 1
     btnTheme.OnAction = "modThemeEngine.ToggleDashboardTheme"
     With btnTheme.TextFrame2
+        .VerticalAnchor = msoAnchorMiddle
+        .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
         .TextRange.Text = "DARK / LIGHT THEME"
         .TextRange.Font.Name = "Segoe UI"
         .TextRange.Font.Size = 8
@@ -221,6 +226,8 @@ Private Sub CreateTopHeader(ByVal ws As Worksheet)
     btnPDF.Line.Visible = msoFalse
     btnPDF.OnAction = "modExportPDF.ExportActiveDashboardPDF"
     With btnPDF.TextFrame2
+        .VerticalAnchor = msoAnchorMiddle
+        .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
         .TextRange.Text = "EXPORT BRIEFING (PDF)"
         .TextRange.Font.Name = "Segoe UI"
         .TextRange.Font.Size = 8
@@ -258,6 +265,8 @@ Private Sub CreateHeroSection(ByVal ws As Worksheet)
     heroBadge.Fill.ForeColor.RGB = RGB(255, 110, 38)
     heroBadge.Line.Visible = msoFalse
     With heroBadge.TextFrame2
+        .VerticalAnchor = msoAnchorMiddle
+        .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
         .TextRange.Text = "PwC DIGITAL ACCELERATOR"
         .TextRange.Font.Name = "Segoe UI"
         .TextRange.Font.Size = 7.5
@@ -462,6 +471,8 @@ Private Sub CreateCockpitLauncherCards(ByVal ws As Worksheet)
         pill.Line.ForeColor.RGB = COLOR_BORDER
         pill.Line.Weight = 0.75
         With pill.TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
             .TextRange.Text = tags(i)
             .TextRange.Font.Name = "Segoe UI"
             .TextRange.Font.Size = 7.5
@@ -511,6 +522,8 @@ Private Sub CreateCockpitLauncherCards(ByVal ws As Worksheet)
         mBox.Line.ForeColor.RGB = COLOR_BORDER
         mBox.Line.Weight = 0.75
         With mBox.TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
             .TextRange.Text = metrics(i)
             .TextRange.Font.Name = "Segoe UI"
             .TextRange.Font.Size = 8
@@ -528,6 +541,8 @@ Private Sub CreateCockpitLauncherCards(ByVal ws As Worksheet)
         btnCTA.Fill.ForeColor.RGB = COLOR_DARK_NAVY
         btnCTA.Line.Visible = msoFalse
         With btnCTA.TextFrame2
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
             .TextRange.Text = btnLabels(i)
             .TextRange.Font.Name = "Segoe UI"
             .TextRange.Font.Size = 9.5
@@ -591,6 +606,8 @@ Private Sub CreateGovernanceDrawer(ByVal ws As Worksheet)
     btnGov1.Line.ForeColor.RGB = COLOR_BORDER
     btnGov1.Line.Weight = 1
     With btnGov1.TextFrame2
+        .VerticalAnchor = msoAnchorMiddle
+        .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
         .TextRange.Text = "01 Business Domains"
         .TextRange.Font.Name = "Segoe UI"
         .TextRange.Font.Size = 8.5
@@ -609,6 +626,8 @@ Private Sub CreateGovernanceDrawer(ByVal ws As Worksheet)
     btnGov2.Line.ForeColor.RGB = COLOR_BORDER
     btnGov2.Line.Weight = 1
     With btnGov2.TextFrame2
+        .VerticalAnchor = msoAnchorMiddle
+        .MarginTop = 0: .MarginBottom = 0: .MarginLeft = 0: .MarginRight = 0
         .TextRange.Text = "02 Metadata & KPI Catalog"
         .TextRange.Font.Name = "Segoe UI"
         .TextRange.Font.Size = 8.5
