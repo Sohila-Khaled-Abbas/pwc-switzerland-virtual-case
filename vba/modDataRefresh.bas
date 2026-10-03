@@ -3,52 +3,52 @@ Option Explicit
 
 ' ==============================================================================
 ' PwC Switzerland Digital Accelerator — Synchronous Data Refresh Layer
-' Refreshes background connections and analytical PivotCaches in sequence
+' Refreshes analytical PivotTables and CUBE calculations in sequence
 ' Connected to modAppState, modDashboardUIUX, and modFilterController
 ' ==============================================================================
 
 Public Sub RefreshPipelineSynchronously()
     Dim startTime As Double
-    Dim conn As WorkbookConnection
-    Dim pc As PivotCache
     Dim ws As Worksheet
+    Dim pt As PivotTable
+    Dim wsActive As Worksheet
+    Dim shStatus As Shape
     
     On Error GoTo ErrorHandler
     
     startTime = Timer
     modAppState.FreezeAppState
-    Application.StatusBar = "Refreshing VertiPaq Data Model & ETL Pipeline..."
+    Application.StatusBar = "Refreshing VertiPaq Tabular Engine & Analytical Pivots..."
     
-    ' 1. Refresh background model connections synchronously
-    For Each conn In ThisWorkbook.Connections
-        If conn.Type = xlConnectionTypeOLEDB Or conn.Type = xlConnectionTypeODBC Or conn.Type = xlConnectionTypeMODEL Then
+    ' 1. Refresh all PivotTables across all worksheets
+    For Each ws In ThisWorkbook.Worksheets
+        For Each pt In ws.PivotTables
             On Error Resume Next
-            conn.OLEDBConnection.BackgroundQuery = False
-            conn.Refresh
+            pt.Update
             On Error GoTo ErrorHandler
-        End If
-    Next conn
+        Next pt
+    Next ws
     
-    ' 2. Refresh downstream analytical PivotCaches
-    Application.StatusBar = "Updating analytical PivotCaches..."
-    For Each pc In ThisWorkbook.PivotCaches
-        On Error Resume Next
-        pc.Refresh
-        On Error GoTo ErrorHandler
-    Next pc
+    ' 2. Recalculate all CUBEVALUE and dashboard formulas
+    Application.StatusBar = "Recalculating CUBE metrics..."
+    Application.CalculateFull
     
     ' 3. Update Status Indicator in Active Dashboard
     On Error Resume Next
-    Set ws = ActiveSheet
-    If ws.Shapes("Nav_StatusPill") IsNot Nothing Then
-        ws.Shapes("Nav_StatusPill").TextFrame2.TextRange.Text = "[LIVE] REFRESHED: " & Format(Now, "HH:MM")
+    Set wsActive = ActiveSheet
+    If Not wsActive Is Nothing Then
+        Set shStatus = wsActive.Shapes("Nav_StatusPill")
+        If Not shStatus Is Nothing Then
+            shStatus.TextFrame2.TextRange.Text = "[LIVE] REFRESHED: " & Format(Now, "HH:MM")
+        End If
     End If
     On Error GoTo ErrorHandler
     
     modAppState.RestoreAppState
+    Application.StatusBar = "Analytical engine successfully refreshed."
     
     If Application.UserControl Then
-        MsgBox "Data Model and PivotCaches successfully refreshed in " & Round(Timer - startTime, 2) & " seconds!", _
+        MsgBox "Data Model PivotTables and KPI metrics successfully refreshed in " & Round(Timer - startTime, 2) & " seconds!", _
                vbInformation, "PwC Data Refresh"
     End If
     Exit Sub

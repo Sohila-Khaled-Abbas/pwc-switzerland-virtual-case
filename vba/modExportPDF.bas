@@ -7,6 +7,10 @@ Option Explicit
 ' Connected to modAppState and modDashboardUIUX
 ' ==============================================================================
 
+Public Sub ExportActiveDashboardPDF()
+    ExportExecutiveReport
+End Sub
+
 Public Sub ExportExecutiveReport()
     Dim ws As Worksheet
     Dim exportPath As String
