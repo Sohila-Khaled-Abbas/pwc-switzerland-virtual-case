@@ -1031,6 +1031,204 @@ flowchart TD
 
 ---
 
+
+---
+
+## 🎛️ Master Step-by-Step Guide: Adding, Positioning & Wiring Slicers on Every Cockpit Page
+
+> [!IMPORTANT]
+> **The Golden Architecture for Slicers in Enterprise Excel**:
+> In our modernized Web-App layout, every dashboard cockpit features a dedicated **Left Global Filter Drawer** (`Width = 230 pt`, `Height = 554 pt`, `Left = 24 pt`) containing **3 pre-styled docking slots**:
+> - **Slot 1 (Primary Dimension)**: `Top = 280 pt`, `Height = 145 pt`, `Left = 36 pt`, `Width = 216 pt`
+> - **Slot 2 (Secondary Dimension)**: `Top = 436 pt`, `Height = 145 pt`, `Left = 36 pt`, `Width = 216 pt`
+> - **Slot 3 (Tertiary Dimension)**: `Top = 592 pt`, `Height = 135 pt`, `Left = 36 pt`, `Width = 216 pt`
+>
+> Follow the exact step-by-step guide below for each page to guarantee that clicking a slicer **filters all 4 visuals and BAN KPI cards synchronously** without overlapping any containers.
+
+```mermaid
+flowchart TD
+    S1["1. Select Source PivotTable
+(On Staging_Pivots or Canvas)"] --> S2["2. Insert Slicer from Data Model
+(Insert -> Slicer -> Check Dimension)"]
+    S2 --> S3["3. Cut & Paste to Cockpit
+(Ctrl + X -> Target Sheet -> Ctrl + V)"]
+    S3 --> S4["4. Snap into Slot Geometry
+(Set Width: 2.15 in, Height: 1.80 in, 1 Column)"]
+    S4 --> S5["5. Wire Report Connections (CRITICAL!)
+(Right-Click Slicer -> Check ALL 4 Page Pivots)"]
+    S5 --> S6["6. Apply PwC Dark Slate Theme
+(Slicer Ribbon -> Dark Style / Zero Border)"]
+
+    style S1 fill:#1E293B,stroke:#3B82F6,stroke-width:2px,color:#fff
+    style S2 fill:#1E293B,stroke:#F59E0B,stroke-width:2px,color:#fff
+    style S3 fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#fff
+    style S4 fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#fff
+    style S5 fill:#0F172A,stroke:#D04A02,stroke-width:3px,color:#fff
+    style S6 fill:#1E293B,stroke:#06B6D4,stroke-width:2px,color:#fff
+```
+
+---
+
+### 📋 Page 1: Call Center Cockpit (`03_CallCenter_Cockpit`)
+
+#### Required Slicers for Call Center:
+| Slot | Dimension Table | Field to Check | Slicer Display Name | Purpose |
+| :---: | :--- | :--- | :--- | :--- |
+| **Slot 1** | `DimDate` | **`Month`** (or `Date`) | **Period / Month** | Triage demand across Jan, Feb, Mar 2021 |
+| **Slot 2** | `DimTopic` | **`Topic`** | **Inquiry Topic** | Filter by Streaming, Tech Support, Billing, Payment, Admin |
+| **Slot 3** | `DimAgent` | **`Agent`** | **Agent Representative** | Drill down into individual frontline performance |
+
+#### Step-by-Step Instructions:
+1. **Navigate to `Staging_Pivots`**:
+   - Click any cell inside the Call Center staging PivotTable (e.g. `pt_HourlyVolume` at `A3` or `pt_Agent` at `C3`).
+2. **Insert the 3 Slicers**:
+   - Go to the ribbon: click **Insert** $\to$ **Slicer** (or **PivotTable Analyze** $\to$ **Insert Slicer**).
+   - In the *Insert Slicers* dialog, click the **Data Model** / **Active** tab.
+   - Expand and check:
+     - `DimDate` $\to$ check **`Month`** (or `Date`)
+     - `DimTopic` $\to$ check **`Topic`**
+     - `DimAgent` $\to$ check **`Agent`**
+   - Click **OK**.
+3. **Move Slicers to the Dashboard Canvas**:
+   - Select all 3 slicers by holding `Ctrl` and clicking each.
+   - Press **`Ctrl + X`** (Cut).
+   - Switch to worksheet **`03_CallCenter_Cockpit`** and press **`Ctrl + V`** (Paste).
+4. **Position & Fit into the Left Filter Drawer Slots**:
+   - **Slot 1 (Month Slicer)**:
+     - Drag over `Slot1_CC_Slicers`.
+     - In ribbon tab **Slicer**: set **Height = `1.85 in` (`135 pt`)**, **Width = `2.15 in` (`155 pt`)**, **Columns = `1`**.
+     - Coordinates: **Left = `36 pt`**, **Top = `280 pt`**.
+   - **Slot 2 (Topic Slicer)**:
+     - Drag over `Slot2_CC_Slicers`.
+     - In ribbon tab **Slicer**: set **Height = `1.85 in` (`135 pt`)**, **Width = `2.15 in` (`155 pt`)**, **Columns = `1`**.
+     - Coordinates: **Left = `36 pt`**, **Top = `436 pt`**.
+   - **Slot 3 (Agent Slicer)**:
+     - Drag over `Slot3_CC_Slicers`.
+     - In ribbon tab **Slicer**: set **Height = `1.85 in` (`135 pt`)**, **Width = `2.15 in` (`155 pt`)**, **Columns = `1`**.
+     - Coordinates: **Left = `36 pt`**, **Top = `592 pt`**.
+5. **Wire Report Connections (CRITICAL STEP)**:
+   - Right-click the **`Month`** slicer $\to$ click **Report Connections...**.
+   - In the popup list, **CHECK ALL 4 PivotTables** belonging to Call Center:
+     - ☑️ `pt_HourlyVolume`
+     - ☑️ `pt_TopicBreakdown`
+     - ☑️ `pt_AgentQuadrant`
+     - ☑️ `pt_Agent` (Scorecard)
+   - Click **OK**.
+   - **Repeat this exact step** for both **`Topic`** and **`Agent`** slicers!
+6. **Style with PwC Dark Theme**:
+   - Select the slicers $\to$ ribbon tab **Slicer** $\to$ open the Slicer Styles gallery.
+   - Choose **Dark Style 1** or **Dark Style 2** (Charcoal background with white text and orange selection accents).
+   - Right-click slicer header $\to$ **Slicer Settings...** $\to$ check **"Hide items with no data"** $\to$ click **OK**.
+
+---
+
+### 📋 Page 2: Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)
+
+#### Required Slicers for Customer Retention:
+| Slot | Dimension Table | Field to Check | Slicer Display Name | Purpose |
+| :---: | :--- | :--- | :--- | :--- |
+| **Slot 1** | `DimContract` | **`Contract`** | **Contract Type** | Filter Month-to-Month vs One-Year vs Two-Year |
+| **Slot 2** | `Fact_Churn` | **`InternetService`** | **Internet Service** | Segment Fiber Optic, DSL, and No Internet customers |
+| **Slot 3** | `Fact_Churn` | **`PaymentMethod`** | **Payment Method** | Isolate high-friction payment channels (e.g. Electronic check) |
+
+#### Step-by-Step Instructions:
+1. **Navigate to `Staging_Pivots`**:
+   - Click any cell inside the Churn staging PivotTables (e.g. `pt_CH_Contract` at `J3`).
+2. **Insert the 3 Slicers**:
+   - Click **Insert** $\to$ **Slicer**.
+   - In the dialog, check:
+     - `DimContract` $\to$ check **`Contract`**
+     - `Fact_Churn` $\to$ check **`InternetService`**
+     - `Fact_Churn` $\to$ check **`PaymentMethod`**
+   - Click **OK**.
+3. **Move Slicers to Cockpit Canvas**:
+   - Select all 3 slicers (`Ctrl + Click`) $\to$ press **`Ctrl + X`** (Cut).
+   - Switch to **`04_CustomerRetention_Cockpit`** $\to$ press **`Ctrl + V`** (Paste).
+4. **Position & Fit into the Left Filter Drawer Slots**:
+   - **Slot 1 (Contract)**:
+     - Align over `Slot1_CH_Slicers`: **Left = `36 pt`**, **Top = `280 pt`**, **Width = `2.15 in` (`155 pt`)**, **Height = `1.85 in` (`135 pt`)**, Columns = `1`.
+   - **Slot 2 (InternetService)**:
+     - Align over `Slot2_CH_Slicers`: **Left = `36 pt`**, **Top = `436 pt`**, **Width = `2.15 in` (`155 pt`)**, **Height = `1.85 in` (`135 pt`)**, Columns = `1`.
+   - **Slot 3 (PaymentMethod)**:
+     - Align over `Slot3_CH_Slicers`: **Left = `36 pt`**, **Top = `592 pt`**, **Width = `2.15 in` (`155 pt`)**, **Height = `1.85 in` (`135 pt`)**, Columns = `1`.
+5. **Wire Report Connections (CRITICAL STEP)**:
+   - Right-click the **`Contract`** slicer $\to$ click **Report Connections...**.
+   - Check all 4 Customer Retention PivotTables:
+     - ☑️ `pt_CH_Contract`
+     - ☑️ `pt_CH_Tenure`
+     - ☑️ `pt_CH_Payment`
+     - ☑️ `pt_CH_Service`
+   - Click **OK**.
+   - **Repeat this exact step** for **`InternetService`** and **`PaymentMethod`** slicers.
+6. **Verification**:
+   - Click **"Month-to-month"** in the Contract slicer.
+   - Instantly verify that the Tenure Area chart, Payment Friction Doughnut chart, and Contract Risk Column chart all update in real time!
+
+---
+
+### 📋 Page 3: Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)
+
+#### Required Slicers for Diversity & Inclusion:
+| Slot | Dimension Table | Field to Check | Slicer Display Name | Purpose |
+| :---: | :--- | :--- | :--- | :--- |
+| **Slot 1** | `DimDepartment` | **`Department`** | **Department** | Filter HR, Finance, Sales, IT, Legal, Operations |
+| **Slot 2** | `Dim_CareerLadder` | **`Base_Job_Level`** | **Job Level / Grade** | Drill down into Executive down to Associate |
+| **Slot 3** | `Fact_Employees` | **`Age_Group`** | **Age Cohort** | Evaluate generational promotion and diversity parity |
+
+#### Step-by-Step Instructions:
+1. **Navigate to `Staging_Pivots`**:
+   - Click any cell inside the D&I staging PivotTables (e.g. `pt_DI_Funnel` at `Z3`).
+2. **Insert the 3 Slicers**:
+   - Click **Insert** $\to$ **Slicer**.
+   - In the dialog, check:
+     - `DimDepartment` $\to$ check **`Department`**
+     - `Dim_CareerLadder` $\to$ check **`Base_Job_Level`** (or `Job_Level_Baseline`)
+     - `Fact_Employees` $\to$ check **`Age_Group`**
+   - Click **OK**.
+3. **Move Slicers to Cockpit Canvas**:
+   - Select the 3 slicers (`Ctrl + Click`) $\to$ press **`Ctrl + X`** (Cut).
+   - Switch to **`05_DiversityInclusion_Cockpit`** $\to$ press **`Ctrl + V`** (Paste).
+4. **Position & Fit into the Left Filter Drawer Slots**:
+   - **Slot 1 (Department)**:
+     - Align over `Slot1_DI_Slicers`: **Left = `36 pt`**, **Top = `280 pt`**, **Width = `2.15 in` (`155 pt`)**, **Height = `1.85 in` (`135 pt`)**, Columns = `1`.
+   - **Slot 2 (Job Level)**:
+     - Align over `Slot2_DI_Slicers`: **Left = `36 pt`**, **Top = `436 pt`**, **Width = `2.15 in` (`155 pt`)**, **Height = `1.85 in` (`135 pt`)**, Columns = `1`.
+   - **Slot 3 (Age Group)**:
+     - Align over `Slot3_DI_Slicers`: **Left = `36 pt`**, **Top = `592 pt`**, **Width = `2.15 in` (`155 pt`)**, **Height = `1.85 in` (`135 pt`)**, Columns = `1`.
+5. **Wire Report Connections (CRITICAL STEP)**:
+   - Right-click the **`Department`** slicer $\to$ click **Report Connections...**.
+   - Check all 4 Diversity & Inclusion PivotTables:
+     - ☑️ `pt_DI_Funnel`
+     - ☑️ `pt_DI_Parity`
+     - ☑️ `pt_DI_Velocity`
+     - ☑️ `pt_DI_Audit`
+   - Click **OK**.
+   - **Repeat this exact step** for **`Base_Job_Level`** and **`Age_Group`** slicers.
+6. **Verification**:
+   - Click **"Operations"** in the Department slicer.
+   - Verify that the Broken Rung funnel (Visual 3.1) and Department Parity Radar chart (Visual 3.2) immediately reflect the Operations workforce!
+
+---
+
+### 💡 Pro-Tips for Slicer Governance & Troubleshooting
+
+1. **How to Connect Slicers to the Top BAN KPI Cards**:
+   - Our BAN KPI cards use Excel `CUBEVALUE` formulas in row 65 (e.g. `AA65:AE65`).
+   - If you want the KPI numbers to filter whenever you click a slicer, simply append the slicer's code name to the formula:
+     ```excel
+     =CUBEVALUE("ThisWorkbookDataModel", "[Measures].[Total Calls]", Slicer_Month, Slicer_Topic, Slicer_Agent)
+     ```
+   - *Note*: If you leave the formulas without slicer arguments, the top BAN cards will show the **Global Total**, which provides an executive benchmark while the 4 charts drill into subsets! Both patterns are standard in tier-1 consulting.
+2. **Instant Filter Reset Integration**:
+   - The top header bar includes an SVG action button labeled **`Reset Filters`**.
+   - This button is programmatically wired to `modFilterController.ClearAllFilters`.
+   - Whenever an executive clicks **Reset Filters**, VBA loops through every active slicer cache in the workbook (`wb.SlicerCaches`) and executes `.ClearManualFilter()`, restoring all cockpits to 100% full view with a single click!
+3. **Locking Slicer Size & Position**:
+   - To prevent slicers from moving when rows or columns are resized:
+     - Right-click slicer $\to$ **Size and Properties...** $\to$ expand **Properties** $\to$ select radio button: **"Don't move or size with cells"**.
+
+---
+
 ### Phase 7: VBA Application Suite Integration
 *Reference Modules*: [`vba/modAppState.bas`](../vba/modAppState.bas), [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas), [`vba/modFilterController.bas`](../vba/modFilterController.bas), [`vba/modNavigation.bas`](../vba/modNavigation.bas), [`vba/modExportPDF.bas`](../vba/modExportPDF.bas)
 
