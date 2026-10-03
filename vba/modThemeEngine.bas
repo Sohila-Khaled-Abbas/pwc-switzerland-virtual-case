@@ -188,7 +188,7 @@ Private Sub ApplyThemeToSheet(ByVal ws As Worksheet, ByVal isDark As Boolean)
             End If
             
         ' BAN KPI Value Text
-        ElseIf InStr(1, shp.Name, "BAN_", vbTextCompare) > 0 Or InStr(1, shp.Name, "KPI_Val", vbTextCompare) > 0 Then
+        ElseIf InStr(1, shp.Name, "BAN_", vbTextCompare) > 0 Or InStr(1, shp.Name, "KPI_Val", vbTextCompare) > 0 Or InStr(1, shp.Name, "Value_", vbTextCompare) > 0 Then
             If shp.TextFrame2.HasText Then
                 shp.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = IIf(isDark, DARK_ACCENT, LIGHT_ACCENT)
             End If
@@ -201,6 +201,9 @@ Private Sub ApplyThemeToSheet(ByVal ws As Worksheet, ByVal isDark As Boolean)
             If shp.TextFrame2.HasText Then
                 shp.TextFrame2.TextRange.Text = IIf(isDark, "LIGHT MODE", "DARK MODE")
                 shp.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = IIf(isDark, RGB(255, 255, 255), RGB(15, 23, 42))
+                shp.TextFrame2.VerticalAnchor = msoAnchorMiddle
+                shp.TextFrame2.MarginTop = 0
+                shp.TextFrame2.MarginBottom = 0
             End If
         End If
     Next shp

@@ -241,6 +241,8 @@ def modernize_all():
 
             # Remove previous domain cards/hero safely
             delete_shapes_matching(ws1, ["Hero_Domains", "Card_Domain_", "Icon_Domain_", "Btn_Launch_Dom_"])
+            ws1.Rows("6:100").ClearContents()
+            ws1.Rows("6:100").ClearFormats()
 
             # Hero Banner
             h_bg = ws1.Shapes.AddShape(5, 20.0, 80.0, 1220.0, 72.0)
@@ -504,55 +506,10 @@ def modernize_all():
                 continue
 
             # A. Fix Top Navbar (ZERO COLLISION)
-            delete_shapes_matching(ws, ["btn_HomePortal", "btn_ThemeToggle", "Nav_StatusPill", "Nav_IconLive"])
-
-            nav_top = 16.0
-            nav_btn_h = 28.0
-
-            # 1. Home Portal Button (Left: 890, Width: 95)
-            btn_home = ws.Shapes.AddShape(5, 890.0, nav_top + 12.0, 95.0, nav_btn_h)
-            btn_home.Name = "btn_HomePortal"
-            btn_home.Fill.Solid()
-            btn_home.Fill.ForeColor.RGB = rgb(241, 245, 249)
-            btn_home.Line.ForeColor.RGB = rgb(203, 213, 225)
-            btn_home.Line.Weight = 0.75
-            format_text_center(btn_home, "Home Portal", font_size=8.0, bold=True, color_rgb=rgb(30, 41, 59))
-            ws.Hyperlinks.Add(Anchor=btn_home, Address="", SubAddress="'00_Home_Portal'!A1", ScreenTip="Return to Executive Portal")
-
-            # 2. Theme Toggle Button (Left: 995, Width: 95)
-            btn_theme = ws.Shapes.AddShape(5, 995.0, nav_top + 12.0, 95.0, nav_btn_h)
-            btn_theme.Name = "btn_ThemeToggle"
-            btn_theme.Fill.Solid()
-            btn_theme.Fill.ForeColor.RGB = rgb(15, 23, 42)
-            btn_theme.Line.ForeColor.RGB = rgb(234, 88, 12)
-            btn_theme.Line.Weight = 1.0
-            btn_theme.OnAction = "modThemeEngine.ToggleDashboardTheme"
-            format_text_center(btn_theme, "DARK MODE", font_size=8.0, bold=True, color_rgb=rgb(255, 255, 255))
-
-            # 3. Live VertiPaq Status Pill (Left: 1100, Width: 126)
-            shp_live = ws.Shapes.AddShape(5, 1100.0, nav_top + 12.0, 126.0, nav_btn_h)
-            shp_live.Name = "Nav_StatusPill"
-            shp_live.Fill.Solid()
-            shp_live.Fill.ForeColor.RGB = rgb(236, 253, 245)
-            shp_live.Line.ForeColor.RGB = rgb(167, 243, 208)
-            shp_live.Line.Weight = 0.75
-            shp_live.TextFrame2.VerticalAnchor = 3
-            shp_live.TextFrame2.MarginTop = 0
-            shp_live.TextFrame2.MarginBottom = 0
-            shp_live.TextFrame2.MarginLeft = 14
-            shp_live.TextFrame2.MarginRight = 0
-            shp_live.TextFrame2.TextRange.Text = "LIVE VERTIPAQ"
-            shp_live.TextFrame2.TextRange.Font.Name = "Segoe UI"
-            shp_live.TextFrame2.TextRange.Font.Size = 8.0
-            shp_live.TextFrame2.TextRange.Font.Bold = True
-            shp_live.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = rgb(5, 150, 105)
-            shp_live.TextFrame2.TextRange.ParagraphFormat.Alignment = 2
-
-            live_icon_path = os.path.join(ICONS_DIR, "activity_green.svg")
-            if os.path.exists(live_icon_path):
-                shp_ico = ws.Shapes.AddPicture(live_icon_path, False, True, 1108.0, nav_top + 19.0, 14.0, 14.0)
-                shp_ico.Name = "Nav_IconLive"
-
+            # The VBA macro BuildWebTopNavBar already adds the header bar.
+            # We will use build_top_nav to consistently add the Web App style Top Navbar
+            build_top_nav(ws, cfg['title'], cfg['breadcrumb'], status_text="LIVE VERTIPAQ", status_icon="activity_green.svg")
+            
             print(f"Top Navbar styled with zero collision on {sheet_name}.")
 
             # B. Decorate KPI Cards with Circular Badges & Vector SVG Icons
@@ -721,17 +678,17 @@ def modernize_all():
                 },
                 {
                     "name": "CH_TenureCohort",
-                    "type": 4,  # xlLineMarkers
+                    "type": 1,  # xlArea
                     "left": 284.0, "top": 558.0, "width": 448.0, "height": 210.0,
                     "x": ["0 - 12 Mos", "13 - 24 Mos", "25 - 48 Mos", "49 - 72 Mos"],
-                    "s1": {"name": "Churn Rate %", "vals": [0.477, 0.287, 0.198, 0.095], "color": rgb(234, 88, 12), "type": 4}
+                    "s1": {"name": "Churn Rate %", "vals": [0.477, 0.287, 0.198, 0.095], "color": rgb(234, 88, 12), "type": 1}
                 },
                 {
                     "name": "CH_PaymentFriction",
-                    "type": 57,  # xlBarClustered
+                    "type": -4120,  # xlDoughnut
                     "left": 776.0, "top": 274.0, "width": 448.0, "height": 210.0,
                     "x": ["Electronic check", "Mailed check", "Bank transfer", "Credit card"],
-                    "s1": {"name": "Churn Rate %", "vals": [0.453, 0.191, 0.167, 0.152], "color": rgb(37, 99, 235), "type": 57}
+                    "s1": {"name": "Churn Rate %", "vals": [0.453, 0.191, 0.167, 0.152], "color": rgb(37, 99, 235), "type": -4120}
                 },
                 {
                     "name": "CH_ServiceMatrix",

@@ -332,7 +332,7 @@ Private Sub PopulateCatalogSheet(ws As Worksheet)
         .VerticalAlignment = xlCenter
     End With
     ws.Rows(5).RowHeight = 22
-    ws.Rows(6).RowHeight = 10 ' Spacer row
+    ws.Rows(6).RowHeight = 90 ' Spacer row to clear SaaS hero banner
     
     ' ==========================================================================
     ' SECTION 1: DATA MODEL ASSETS & METADATA INVENTORY (12 TABLES)
