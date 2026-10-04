@@ -1,4 +1,8 @@
-Attribute VB_Name = "modPwC_Unified_Master"
+import os
+
+out_path = r'vba\modPwC_Unified_Master.bas'
+
+code = '''Attribute VB_Name = "modPwC_Unified_Master"
 Option Explicit
 
 ' ==============================================================================
@@ -186,19 +190,19 @@ Public Function ResolveAssetPath(ByVal subFolderAndFile As String) As String
         Exit Function
     End If
     
-    candidatePath = wbPath & "\" & subFolderAndFile
+    candidatePath = wbPath & "\\" & subFolderAndFile
     If Dir(candidatePath) <> "" Then
         ResolveAssetPath = candidatePath
         Exit Function
     End If
     
-    candidatePath = wbPath & "\assets\" & Mid(subFolderAndFile, InStrRev(subFolderAndFile, "\") + 1)
+    candidatePath = wbPath & "\\assets\\" & Mid(subFolderAndFile, InStrRev(subFolderAndFile, "\\") + 1)
     If Dir(candidatePath) <> "" Then
         ResolveAssetPath = candidatePath
         Exit Function
     End If
     
-    candidatePath = wbPath & "\assets\icons\" & Mid(subFolderAndFile, InStrRev(subFolderAndFile, "\") + 1)
+    candidatePath = wbPath & "\\assets\\icons\\" & Mid(subFolderAndFile, InStrRev(subFolderAndFile, "\\") + 1)
     If Dir(candidatePath) <> "" Then
         ResolveAssetPath = candidatePath
         Exit Function
@@ -445,7 +449,7 @@ Public Sub ExportActiveDashboardPDF()
     End If
     
     baseName = ws.Name & "_ExecutiveBriefing_" & Format(Now, "YYYYMMDD_HHNN") & ".pdf"
-    exportPath = ThisWorkbook.Path & "\" & baseName
+    exportPath = ThisWorkbook.Path & "\\" & baseName
     
     With ws.PageSetup
         .Orientation = xlLandscape
@@ -2490,3 +2494,9 @@ MasterErrHandler:
         MsgBox "Platform initialization completed.", vbInformation, "PwC Digital Accelerator"
     End If
 End Sub
+'''
+
+with open(out_path, 'w', encoding='ascii') as f:
+    f.write(code)
+
+print(f"Successfully generated {out_path} with {len(code.splitlines())} lines.")

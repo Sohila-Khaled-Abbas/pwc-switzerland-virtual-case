@@ -4,6 +4,37 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [3.1.0] - 2026-10-04
+
+### 🚀 Fully Automated Visuals Generation & Runtime Defect Resolutions
+
+- **Automated Real Visuals & Chart Generation (`vba/modPwC_Unified_Master.bas`)**:
+  - Replaced static placeholder docking zones with fully automated Excel Chart generation across all 3 analytical cockpits:
+    - **Call Center Cockpit (`03_CallCenter_Cockpit`)**: Smooth line/area trend chart (`cht_TrendDaily`), hourly call arrival column chart (`cht_HourlyArrival`), 3-color resolution breakdown donut chart (`cht_Resolution`) with center total callout badge (`5,000 Total Calls`), live docked `pt_Agent` scorecard, dual-axis AHT vs volume combo chart (`cht_AHTVolume`), horizontal complaint Pareto bar chart (`cht_ComplaintPareto`), and sentiment status pills + regional SLA summary table.
+    - **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**: Contract risk column chart (`cht_ContractRisk`), tenure cohort column chart (`cht_TenureCohort`), payment method horizontal bar chart (`cht_PaymentFriction`), and internet service column chart (`cht_ServiceMatrix`).
+    - **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**: 100% stacked career progression funnel (`cht_DIFunnel`), department parity stacked bar chart (`cht_DIDeptParity`), promotion velocity comparison (`cht_DIPromoVelocity`), and appraisal rating distribution (`cht_DIPerformance`).
+  - Implemented `PopulateAnalyticalStagingData` staging clean tabular ranges on `Staging_Pivots` in non-overlapping columns while keeping the live `pt_Agent` Power Pivot table at `C3:H11` completely intact.
+  - Implemented `DeclutterAndFormatChart` to transparentize chart/plot areas, wipe dock zone placeholder text, apply clean Segoe UI typography, and bring visuals to front.
+
+- **Resolution of "Ambiguous Name Detected" Compile Conflicts**:
+  - Fully qualified all shape `.OnAction` macro assignments with explicit module prefixes: `"'[WorkbookName]'!modPwC_Unified_Master.[SubName]"` (e.g. `ToggleDashboardTheme`, `RefreshPipelineSynchronously`, `ClearAllFilters`, `ExportActiveDashboardPDF`).
+  - Added `RemoveLegacyModules` routine to programmatically purge the 11 legacy individual `.bas` modules upon execution if VBA Project Trust is enabled.
+
+- **Viewport Normalization & Header Banner Cut-off Fix**:
+  - Discovered and resolved freeze-pane issue on `02_Metadata_&_KPI_Catalog` where a split pane at `topLeftCell=D8` scrolled columns A–C off-screen.
+  - Deployed `ResetSheetViewport` across all sheets, enforcing `.FreezePanes = False`, `.Split = False`, `.ScrollRow = 1`, `.ScrollColumn = 1`, and `.Zoom = 80`. All header navigation bars now render perfectly from column A.
+
+- **100% Pure 7-Bit ASCII Encoding & Character Corruption Fix**:
+  - Completely purged all UTF-8 multibyte characters from the `.bas` source code (0 bytes > 127).
+  - Resolved `â€œ Delivering value through insights. â€` / `â€" PwC` by utilizing `ChrW(8220)`, `ChrW(8221)`, and `ChrW(8212)` at runtime.
+  - Resolved BAN trend arrow character encoding across non-Unicode locales via `ChrW(9650)` (▲) and `ChrW(9660)` (▼).
+
+- **Brand Token Color Calibration**:
+  - Corrected `PWC_ORANGE` constant from `133288` (dark blood red) to `150224` (authentic PwC Tangerine `#D04A02` = RGB 208, 74, 2).
+  - Corrected `PWC_DRAWER_BG` constant to `3416600` (authentic Dark Slate `#182234` = RGB 24, 34, 52).
+
+---
+
 ## [3.0.0] - 2026-10-04
 
 ### 💎 Consolidated Master VBA Engine, Reference UI/UX Alignment & Artifact Clean-up
