@@ -101,8 +101,33 @@ Public Function ResolveAssetPath(ByVal fileName As String) As String
     Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook
     basePath = wb.Path
     
+    ' Check if referencing PwC brand logo
+    If InStr(1, fileName, "logo", vbTextCompare) > 0 Then
+        p = basePath & "\assets\PwC_logo_rgb_colour_pos.png": If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+        p = basePath & "\..\assets\PwC_logo_rgb_colour_pos.png": If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+        p = "d:\courses\Data Analysis 26-27\7-Introducation to Data Fields (Excel)\11_Demos_and_Workbooks\10_Projects_and_Demos\PWC\assets\PwC_logo_rgb_colour_pos.png"
+        If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    End If
+    
+    ' 1. Check relative subfolders in active workbook directory
     p = basePath & "\assets\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = basePath & "\assets\icons\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = basePath & "\assets\icons\web\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = basePath & "\assets\diagrams\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    
+    ' 2. Check parent directory relative paths
     p = basePath & "\..\assets\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = basePath & "\..\assets\icons\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = basePath & "\..\assets\icons\web\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    
+    ' 3. Check absolute project workspace paths
+    Dim absBase As String
+    absBase = "d:\courses\Data Analysis 26-27\7-Introducation to Data Fields (Excel)\11_Demos_and_Workbooks\10_Projects_and_Demos\PWC\assets\"
+    p = absBase & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = absBase & "icons\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    p = absBase & "icons\web\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
+    
+    ' 4. Direct file name
     p = basePath & "\" & fileName: If Dir(p) <> "" Then ResolveAssetPath = p: Exit Function
     ResolveAssetPath = ""
 End Function
@@ -190,7 +215,9 @@ Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
     
     ' PwC Logo
     Dim logoPath As String
-    logoPath = ResolveAssetPath("pwc_logo.png")
+    SafeDeleteShape ws, "Nav_PwC_Logo_Pic"
+    logoPath = ResolveAssetPath("PwC_logo_rgb_colour_pos.png")
+    If Len(logoPath) = 0 Then logoPath = ResolveAssetPath("pwc_logo.png")
     If Len(logoPath) > 0 Then
         Set shpLogoPic = ws.Shapes.AddPicture(logoPath, msoFalse, msoTrue, CANVAS_LEFT + 14, 23, 72, 34)
         If Not shpLogoPic Is Nothing Then
@@ -1189,6 +1216,15 @@ Public Sub BuildCallCenterCanvas(Optional ByVal populateInitialData As Boolean =
     Call PopulateAnalyticalStagingData(wsStaging)
     Call BuildCallCenterVisuals(ws, wsStaging)
     Call AutomateAndLinkKPICards(ws, "CC")
+    
+    Dim wsStgPivotsCC As Worksheet, ptScorecardCC As PivotTable
+    Set wsStgPivotsCC = wb.Worksheets("Staging_Pivots")
+    If Not wsStgPivotsCC Is Nothing Then
+        On Error Resume Next
+        Set ptScorecardCC = wsStgPivotsCC.PivotTables("pt_Agent")
+    End If
+    If Not ptScorecardCC Is Nothing Then Call modFilterController.DeployCallCenterSlicers(ws, ptScorecardCC)
+    
     Call ResetSheetViewport(ws)
 End Sub
 
@@ -1266,6 +1302,15 @@ Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Bo
     Set wsStaging = EnsureStagingSheet()
     Call PopulateAnalyticalStagingData(wsStaging)
     Call BuildRetentionVisuals(ws, wsStaging)
+    
+    Dim wsStgPivotsCR As Worksheet, ptScorecardCR As PivotTable
+    Set wsStgPivotsCR = wb.Worksheets("Staging_Pivots")
+    If Not wsStgPivotsCR Is Nothing Then
+        On Error Resume Next
+        Set ptScorecardCR = wsStgPivotsCR.PivotTables("pt_Agent")
+    End If
+    If Not ptScorecardCR Is Nothing Then Call modFilterController.DeployRetentionSlicers(ws, ptScorecardCR)
+    
     Call ResetSheetViewport(ws)
 End Sub
 
@@ -1343,6 +1388,15 @@ Public Sub BuildDiversityInclusionCanvas(Optional ByVal populateInitialData As B
     Set wsStaging = EnsureStagingSheet()
     Call PopulateAnalyticalStagingData(wsStaging)
     Call BuildDiversityVisuals(ws, wsStaging)
+    
+    Dim wsStgPivotsDI As Worksheet, ptScorecardDI As PivotTable
+    Set wsStgPivotsDI = wb.Worksheets("Staging_Pivots")
+    If Not wsStgPivotsDI Is Nothing Then
+        On Error Resume Next
+        Set ptScorecardDI = wsStgPivotsDI.PivotTables("pt_Agent")
+    End If
+    If Not ptScorecardDI Is Nothing Then Call modFilterController.DeployDiversitySlicers(ws, ptScorecardDI)
+    
     Call ResetSheetViewport(ws)
 End Sub
 

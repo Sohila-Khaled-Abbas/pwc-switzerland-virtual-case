@@ -65,10 +65,21 @@ Public Sub RunUnifiedPwCPlatform()
     modDashboardUIUX.BuildDiversityInclusionCanvas True
     On Error GoTo MasterErrHandler
     
-    ' Step 6: Style PivotTables & Dock Interactive Scorecards
-    currentStep = "Applying Scorecard & Pivot Table Themes"
+    ' Step 6: Provision Scorecard PivotTable, Apply Theme & Deploy Slicers
+    currentStep = "Provisioning Scorecard PivotTable & Applying Style"
     On Error Resume Next
+    Dim wsStgPivots As Worksheet
+    Set wsStgPivots = wb.Worksheets("Staging_Pivots")
+    If wsStgPivots Is Nothing Then
+        Set wsStgPivots = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
+        wsStgPivots.Name = "Staging_Pivots"
+        wsStgPivots.Visible = xlSheetHidden
+    End If
+    modInteractiveScorecard.EnsureOrBuildAgentPivotTable wsStgPivots
     modPivotTableFormatting.StyleAgentScorecardPivotTable "SLA_EXCEPTIONS"
+    
+    currentStep = "Deploying Real Interactive Slicers Across All Cockpits"
+    modFilterController.DeployAllCockpitSlicers
     On Error GoTo MasterErrHandler
     
     ' Step 7: Normalize Viewports (FreezePanes = False, Scroll = A1, Zoom = 80%)

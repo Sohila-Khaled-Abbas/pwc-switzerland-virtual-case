@@ -62,43 +62,45 @@ Public Sub StyleAgentScorecardPivotTable(Optional ByVal themeChoice As String = 
     
     ' Look for the Scorecard PivotTable
     If ws.PivotTables.Count = 0 Then
-        ' Check if PivotTable is on Staging_Pivots
+        ' Check if PivotTable is on Staging_Pivots or 03_Staging_Data
         Dim wsStaging As Worksheet
         Set wsStaging = ActiveWorkbook.Worksheets("Staging_Pivots")
+        If wsStaging Is Nothing Then Set wsStaging = ActiveWorkbook.Worksheets("03_Staging_Data")
+        If wsStaging Is Nothing Then
+            Set wsStaging = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+            wsStaging.Name = "Staging_Pivots"
+            wsStaging.Visible = xlSheetHidden
+        End If
+        
         If Not wsStaging Is Nothing Then
             If wsStaging.PivotTables.Count > 0 Then
-                Set pt = wsStaging.PivotTables(wsStaging.PivotTables.Count)
+                Set pt = wsStaging.PivotTables("pt_Agent")
+                If pt Is Nothing Then Set pt = wsStaging.PivotTables(wsStaging.PivotTables.Count)
+            End If
+            If pt Is Nothing Then
+                On Error Resume Next
+                Set pt = modInteractiveScorecard.EnsureOrBuildAgentPivotTable(wsStaging)
+                On Error GoTo 0
             End If
         End If
     Else
         ' Take the last or designated PivotTable
         Set pt = ws.PivotTables(ws.PivotTables.Count)
     End If
-    On Error GoTo 0
     
     If pt Is Nothing Then
-        MsgBox "No PivotTable found on '" & ws.Name & "' or 'Staging_Pivots'." & vbCrLf & _
-               "Please create your Agent Scorecard PivotTable first, then run this routine.", _
-               vbExclamation, "PwC Scorecard Formatter"
+        ' Gracefully exit if Data Model or PivotTable is not yet initialized
         Exit Sub
     End If
     
     ' Execute formatting with AppState protection
     On Error Resume Next
     modAppState.FreezeAppState
-    On Error GoTo 0
     
     FormatScorecardGrid pt
     ApplyScorecardConditionalFormatting pt, UCase(Trim(themeChoice))
     
-    On Error Resume Next
     modAppState.RestoreAppState
-    On Error GoTo 0
-    
-    If Application.UserControl Then
-        MsgBox "Agent Scorecard PivotTable successfully formatted with Theme: " & themeChoice & "!", _
-               vbInformation, "PwC Scorecard Formatter"
-    End If
 End Sub
 
 ' ==============================================================================

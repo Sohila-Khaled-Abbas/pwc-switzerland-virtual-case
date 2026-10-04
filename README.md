@@ -3,6 +3,7 @@
 <img src="assets/PwC_logo_rgb_colour_pos.png" alt="PwC Logo" width="190" />
 
 # 🏆 PwC Switzerland Virtual Case Experience
+
 ### Enterprise Business Intelligence, Ralph Kimball Galaxy Semantic Model & Executive Analytics Application
 
 <p align="center">
@@ -66,10 +67,6 @@ The platform elevates conventional Excel deliverables into a **state-of-the-art 
    * **Diversity & Inclusion Cockpit (5 Cards)**: Corporate Census, Female Headcount %, Executive Broken Rung %, Promotions %, Turnover Rate % (`AA65:AE65`).
    * Technical helper rows (`60:75`) hidden cleanly (`ws.Rows("60:75").Hidden = True`) to maintain pristine presentation canvas.
    * Filter-aware: Metrics update in real-time when slicers are toggled without destroying card titles or benchmark subtext.
-
-<p align="center">
-  <img src="assets/screenshots/callcenter_dashboard_saas.png" alt="PwC Call Center Analytics Dashboard (Executive SaaS UI/UX Architecture)" width="100%" />
-</p>
 
 5. **High-Fidelity Web Application Companion (`dashboards/call_center_website_dashboard.html`)**:
    * Inspired directly by modern executive SaaS designs, powered by our live Q1 2021 VertiPaq semantic model.
@@ -190,13 +187,15 @@ pwc-switzerland-virtual-case/
 The platform delivers an ultra-modern SaaS web application experience directly inside Microsoft Excel, accompanied by a standalone HTML5/CSS3 executive portal companion.
 
 ```
+
 +---------------------------------------------------------------------------------------------------------+
 | [PORTAL HOMEPAGE] 00_Home_Portal                        | [DYNAMIC THEME ENGINE] modThemeEngine.bas     |
-| * Hero Banner with Glowing Accent & Enterprise Status   | * Real-time 1-Click Toggle: Light & Dark Mode |
-| * 4 Cross-Enterprise Performance BAN Metric Cards       | * Deep Slate Navy (#0B0F19) vs Slate 50 (#F8FAFC) |
-| * 3 Interactive 3D SaaS Cockpit Launcher Cards          | * Adapts Canvas, Containers, Badges & Charts  |
-| * One-Click Direct Navigation & Governance Access       | * Persistent Custom Document Property State   |
+| *Hero Banner with Glowing Accent & Enterprise Status   |* Real-time 1-Click Toggle: Light & Dark Mode |
+| *4 Cross-Enterprise Performance BAN Metric Cards       |* Deep Slate Navy (#0B0F19) vs Slate 50 (#F8FAFC) |
+| *3 Interactive 3D SaaS Cockpit Launcher Cards          |* Adapts Canvas, Containers, Badges & Charts  |
+| *One-Click Direct Navigation & Governance Access       |* Persistent Custom Document Property State   |
 +---------------------------------------------------------------------------------------------------------+
+
 ```
 
 ### Key UI/UX Innovations:
@@ -315,16 +314,17 @@ pwc-switzerland-virtual-case/
 ### 3. Executing the Unified Master VBA Suite (`modPwC_Unified_Master.bas`)
 
 To assemble or refresh the entire executive application in a single click:
+
 1. In Excel, press `Alt + F11` to open the Visual Basic Editor.
 2. Click **File** $\to$ **Import File...** $\to$ select [`vba/modPwC_Unified_Master.bas`](vba/modPwC_Unified_Master.bas).
 3. In the Code Window, place your cursor inside `Public Sub RunCompletePwCPlatform()` and press **`F5`**.
 4. The master orchestrator executes all stages sequentially:
-   - Provisions Governance Sheets (`01_Business_Domains`, `02_Metadata_&_KPI_Catalog`)
-   - Builds Executive Home Portal (`00_Home_Portal`) with embedded logo and launcher cards
-   - Assembles all 3 Web-App Canvases (`03_CallCenter`, `04_Retention`, `05_D&I`) with modern rounded square navbars, centered text, and 7 BAN cards on Call Center
-   - Builds and docks the live interactive Agent Scorecard with strict `0.0 "s"` formatting
-   - Refreshes the VertiPaq tabular model & PivotCaches
-   - Clears all slicers and returns focus to `00_Home_Portal`!
+   * Provisions Governance Sheets (`01_Business_Domains`, `02_Metadata_&_KPI_Catalog`)
+   * Builds Executive Home Portal (`00_Home_Portal`) with embedded logo and launcher cards
+   * Assembles all 3 Web-App Canvases (`03_CallCenter`, `04_Retention`, `05_D&I`) with modern rounded square navbars, centered text, and 7 BAN cards on Call Center
+   * Builds and docks the live interactive Agent Scorecard with strict `0.0 "s"` formatting
+   * Refreshes the VertiPaq tabular model & PivotCaches
+   * Clears all slicers and returns focus to `00_Home_Portal`!
 
 ---
 
