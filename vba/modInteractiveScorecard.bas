@@ -347,7 +347,9 @@ Public Sub Step1_CreateScorecardPivotTable()
                    vbInformation, "PwC Scorecard Builder - Step 1"
         End If
     Else
-        MsgBox "Failed to provision PivotTable. Please check Data Model connection.", vbCritical, "PwC Scorecard Builder"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Failed to provision PivotTable. Please check Data Model connection.", vbCritical, "PwC Scorecard Builder"
+        End If
     End If
 End Sub
 
@@ -374,8 +376,10 @@ Public Sub Step2_FormatScorecardHTML()
     End If
     
     If pt Is Nothing Then
-        MsgBox "PivotTable 'pt_Agent' not found on 'Staging_Pivots'!" & vbCrLf & _
-               "Please run Step1_CreateScorecardPivotTable first.", vbExclamation, "PwC Scorecard Styler"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "PivotTable 'pt_Agent' not found on 'Staging_Pivots'!" & vbCrLf & _
+                   "Please run Step1_CreateScorecardPivotTable first.", vbExclamation, "PwC Scorecard Styler"
+        End If
         Exit Sub
     End If
     
@@ -422,7 +426,9 @@ Public Sub Step3_DockScorecardToDashboard()
     On Error GoTo 0
     
     If wsDash Is Nothing Then
-        MsgBox "Dashboard sheet '03_CallCenter_Cockpit' not found!", vbCritical, "PwC Scorecard Docker"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Dashboard sheet '03_CallCenter_Cockpit' not found!", vbCritical, "PwC Scorecard Docker"
+        End If
         Exit Sub
     End If
     
@@ -431,14 +437,18 @@ Public Sub Step3_DockScorecardToDashboard()
     End If
     
     If pt Is Nothing Then
-        MsgBox "PivotTable 'pt_Agent' not found on 'Staging_Pivots'!", vbCritical, "PwC Scorecard Docker"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "PivotTable 'pt_Agent' not found on 'Staging_Pivots'!", vbCritical, "PwC Scorecard Docker"
+        End If
         Exit Sub
     End If
     
     ' Locate or rebuild the docking zone (self-healing)
     Set shpDockZone = GetOrRebuildScorecardDockZone(wsDash)
     If shpDockZone Is Nothing Then
-        MsgBox "Unable to locate or create docking zone on dashboard!", vbCritical, "PwC Scorecard Docker"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Unable to locate or create docking zone on dashboard!", vbCritical, "PwC Scorecard Docker"
+        End If
         Exit Sub
     End If
     
@@ -538,7 +548,9 @@ Public Sub BuildAndDockInteractiveScorecard()
     On Error GoTo 0
     
     If wsDash Is Nothing Then
-        MsgBox "Dashboard sheet '03_CallCenter_Cockpit' not found!", vbCritical, "PwC Scorecard Docker"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Dashboard sheet '03_CallCenter_Cockpit' not found!", vbCritical, "PwC Scorecard Docker"
+        End If
         Exit Sub
     End If
     
@@ -558,7 +570,9 @@ Public Sub BuildAndDockInteractiveScorecard()
     ' 2. Locate or Rebuild the Docking Zone on Dashboard (Self-Healing)
     Set shpDockZone = GetOrRebuildScorecardDockZone(wsDash)
     If shpDockZone Is Nothing Then
-        MsgBox "Unable to locate or create docking zone on dashboard!", vbCritical, "PwC Scorecard Docker"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Unable to locate or create docking zone on dashboard!", vbCritical, "PwC Scorecard Docker"
+        End If
         Exit Sub
     End If
     
@@ -900,7 +914,9 @@ Public Sub ExportScorecardToHTMLFile()
     On Error GoTo 0
     
     If pt Is Nothing Then
-        MsgBox "PivotTable not found!", vbCritical
+        If Application.Visible And Application.UserControl Then
+            MsgBox "PivotTable not found!", vbCritical
+        End If
         Exit Sub
     End If
     

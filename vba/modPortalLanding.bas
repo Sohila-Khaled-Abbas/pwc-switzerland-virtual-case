@@ -119,8 +119,9 @@ Public Sub BuildExecutivePortal()
 ErrorHandler:
     Application.DisplayAlerts = True
     Application.EnableEvents = True
-    Application.ScreenUpdating = True
-    MsgBox "BuildExecutivePortal Error: " & Err.Description, vbCritical, "PwC Portal Builder"
+    If Application.Visible And Application.UserControl Then
+        MsgBox "BuildExecutivePortal Error: " & Err.Description, vbCritical, "PwC Portal Builder"
+    End If
 End Sub
 
 ' ==============================================================================

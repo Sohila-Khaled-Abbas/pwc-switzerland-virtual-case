@@ -47,7 +47,7 @@ Public Sub RefreshPipelineSynchronously()
     modAppState.RestoreAppState
     Application.StatusBar = "Analytical engine successfully refreshed."
     
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         MsgBox "Data Model PivotTables and KPI metrics successfully refreshed in " & Round(Timer - startTime, 2) & " seconds!", _
                vbInformation, "PwC Data Refresh"
     End If
@@ -55,7 +55,15 @@ Public Sub RefreshPipelineSynchronously()
 
 ErrorHandler:
     modAppState.RestoreAppState
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         MsgBox "Refresh Failed: " & Err.Description, vbCritical, "PwC Data Refresh Error"
     End If
+End Sub
+
+Public Sub RefreshAllDataModelPivots()
+    RefreshPipelineSynchronously
+End Sub
+
+Public Sub RefreshData()
+    RefreshPipelineSynchronously
 End Sub

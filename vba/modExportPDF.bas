@@ -50,7 +50,7 @@ Public Sub ExportExecutiveReport()
         
     modAppState.RestoreAppState
     
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         MsgBox "Executive PDF Report successfully generated for '" & ws.Name & "'!" & vbCrLf & vbCrLf & _
                "File saved at:" & vbCrLf & fileName, vbInformation, "PwC PDF Publisher"
     End If
@@ -58,7 +58,11 @@ Public Sub ExportExecutiveReport()
 
 ErrorHandler:
     modAppState.RestoreAppState
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         MsgBox "Export Failed: " & Err.Description, vbCritical, "PwC PDF Publisher Error"
     End If
+End Sub
+
+Public Sub ExportActiveCockpitToPDF()
+    ExportExecutiveReport
 End Sub

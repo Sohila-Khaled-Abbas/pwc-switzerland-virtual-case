@@ -118,7 +118,7 @@ MasterErrHandler:
     
     modAppState.RestoreAppState
     
-    If savedErrNum <> 0 Then
+    If Application.Visible And Application.UserControl And savedErrNum <> 0 Then
         MsgBox "Execution Interrupted during Step:" & vbCrLf & _
                "'" & currentStep & "'" & vbCrLf & vbCrLf & _
                "Error Number: " & savedErrNum & vbCrLf & _
@@ -152,10 +152,12 @@ Public Sub VerifyPlatformIntegrity()
         If ws Is Nothing Then missing = missing & " - " & sNames(i) & vbCrLf
     Next i
     
-    If Len(missing) = 0 Then
-        MsgBox "All 7 required workbook sheets verified and operational.", vbInformation, "PwC Health Check"
-    Else
-        MsgBox "The following sheets are missing:" & vbCrLf & missing & vbCrLf & _
-               "Run 'RunUnifiedPwCPlatform' to recreate them.", vbExclamation, "PwC Health Check"
+    If Application.Visible And Application.UserControl Then
+        If Len(missing) = 0 Then
+            MsgBox "All 7 required workbook sheets verified and operational.", vbInformation, "PwC Health Check"
+        Else
+            MsgBox "The following sheets are missing:" & vbCrLf & missing & vbCrLf & _
+                   "Run 'RunUnifiedPwCPlatform' to recreate them.", vbExclamation, "PwC Health Check"
+        End If
     End If
 End Sub

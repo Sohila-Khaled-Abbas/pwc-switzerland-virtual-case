@@ -53,7 +53,13 @@ Public Sub ToggleDashboardTheme()
     End If
     Exit Sub
 ErrorHandler:
-    MsgBox "Theme Toggle encountered an error: " & Err.Description, vbExclamation, "PwC Theme Engine"
+    If Application.Visible And Application.UserControl Then
+        MsgBox "Theme Toggle encountered an error: " & Err.Description, vbExclamation, "PwC Theme Engine"
+    End If
+End Sub
+
+Public Sub ToggleTheme()
+    ToggleDashboardTheme
 End Sub
 
 ' ==============================================================================

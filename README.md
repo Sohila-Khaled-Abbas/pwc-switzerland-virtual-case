@@ -47,7 +47,7 @@ The platform elevates conventional Excel deliverables into a **state-of-the-art 
    * Deployed uniformly across all 6 worksheets (`00_Home_Portal`, `01_Business_Domains`, `02_Metadata_&_KPI_Catalog`, `03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, `05_DiversityInclusion_Cockpit`).
    * Active sheet dynamically highlighted in vibrant **PwC Tangerine (`#D04A02`)** with bold white text; inactive tabs styled in **Slate Navy (`#1E293B`)**.
    * Dual-action binding: Native Excel worksheet hyperlinks (`#'SheetName'!A1`) for instant switching, backed by VBA callback handlers (`modNavigation.NavigateTo...`).
-   * Global action controls: `Toggle Dark Mode`, `[LIVE] VERTIPAQ` health indicator, and `Export PDF` executive briefing button.
+   * Global action controls: `Toggle Dark Mode` (`btn_ThemeToggle`), `Reset Filters` (`btn_ResetFilters`), `Refresh Data` (`btn_RefreshData`), `Export PDF` (`btn_ExportBriefing`), and `[LIVE] VERTIPAQ` health status indicator.
 
 2. **Executive Home Portal (`00_Home_Portal`)**:
    * **Official PwC Branding**: Embeds the official color logo (`assets/PwC_logo_rgb_colour_pos.png`) into an elevated white card header, replacing static text boxes.
@@ -56,17 +56,18 @@ The platform elevates conventional Excel deliverables into a **state-of-the-art 
    * **Dynamic Light/Dark Theme Engine**: Pure ASCII engine (`vba/modThemeEngine.bas`) allowing seamless toggling between Crisp Light (`#F8FAFC`) and Slate Dark (`#0F172A`).
 
 3. **9 Native VertiPaq Data Model Slicers Across All 3 Cockpits**:
-   * **Call Center Cockpit (`03_CallCenter_Cockpit`)**: `Month` (`DimDate[Month_Name]`), `Topic` (`DimTopic[Topic]`), `Agent` (`DimAgent[Agent]`) docked cleanly inside Left Drawer (`Left: 36.0pt`) and wired across all analytical PivotTables (`pt_Agent`, `PivotChartTable3`, `PivotChartTable6`, `PivotChartTable8`).
-   * **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**: `Contract` (`DimContract[Contract]`), `Payment Method` (`Fact_Churn[PaymentMethod]`), `Internet Service` (`Fact_Churn[InternetService]`) wired across all 4 retention PivotTables.
-   * **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**: `Department` (`DimDepartment[Department]`), `Job Level` (`Dim_CareerLadder[Base_Job_Level]`), `Age Group` (`Fact_Employees[Age_Group]`) wired across all 4 workforce PivotTables.
-   * Styled in high-contrast dark theme (`SlicerStyleDark2`), snapped into Left Global Drawer slots (`Left: 36pt`, `Width: 186pt`), accompanied by the solid orange `🔄 Reset Filters` button, support team illustration, and executive quote card.
+   * **Call Center Cockpit (`03_CallCenter_Cockpit`)**: `Month` (`DimDate[Month_Name]`), `Topic` (`DimTopic[Topic]`), `Agent` (`DimAgent[Agent]`) docked cleanly inside Left Drawer (`Left: 26.0pt`) and wired across all analytical and summary PivotTables (`pt_Agent`, `pt_CC_Topic`, `pt_CC_Hourly`, `pt_CC_Summary`).
+   * **Customer Retention Cockpit (`04_CustomerRetention_Cockpit`)**: `Contract` (`DimContract[Contract]`), `Payment Method` (`Fact_Churn[PaymentMethod]`), `Internet Service` (`Fact_Churn[InternetService]`) wired across all 4 retention PivotTables and `pt_CR_Summary`.
+   * **Diversity & Inclusion Cockpit (`05_DiversityInclusion_Cockpit`)**: `Department` (`DimDepartment[Department]`), `Job Level` (`Dim_CareerLadder[Base_Job_Level]`), `Age Group` (`Fact_Employees[Age_Group]`) wired across all 4 workforce PivotTables and `pt_DI_Summary`.
+   * Styled in high-contrast dark theme (`SlicerStyleDark2`), snapped into Left Global Drawer slots (`Left: 26pt`, `Width: 206pt`), accompanied by the solid orange `🔄 Reset Filters` button, support team illustration, and executive quote card.
 
-4. **Single-Source-of-Truth Dynamic CUBEVALUE KPI Architecture (17 BAN Cards)**:
-   * **Call Center Cockpit (7 Top Cards)**: Total Calls (`=AA65`, 5,000), Answered Calls (`=AB65`, 4,054), Missed Calls (`=AC65`, 946), SLA % (`=AD65`, 81.1%), Avg Handle Time (`=AE65`, 67.5 s), CSAT Score (`=AF65`, 3.40), FCR % (`=AG65`, 89.9%). Each card features a circular colored icon badge, dynamic formula binding, variance indicator, and color-matched wave sparkline.
-   * **Customer Retention Cockpit (5 Cards)**: Total Subscribers, Churn Rate %, At-Risk MRR ($139.1K), M2M Churn %, Tech Tickets (`AA65:AE65`).
-   * **Diversity & Inclusion Cockpit (5 Cards)**: Corporate Census, Female Headcount %, Executive Broken Rung %, Promotions %, Turnover Rate % (`AA65:AE65`).
-   * Technical helper rows (`60:75`) hidden cleanly (`ws.Rows("60:75").Hidden = True`) to maintain pristine presentation canvas.
-   * Filter-aware: Metrics update in real-time when slicers are toggled without destroying card titles or benchmark subtext.
+4. **Single-Source-of-Truth Dynamic GETPIVOTDATA KPI Architecture (16 BAN Cards)**:
+   * **Call Center Cockpit (5 Top Cards)**: Total Calls (`=AA65`, 5,000), Answered Calls (`=AB65`, 4,054), Missed Calls (`=AC65`, 946), Answer Rate % (`=AD65`, 81.1%), Avg Speed of Answer (`=AE65`, 67.5 s). Each card features a circular colored icon badge, dynamic formula binding, and variance indicator.
+   * **Customer Retention Cockpit (5 Cards)**: Total Subscribers (`=AA65`, 7,043), Churned Customers (`=AB65`, 1,869), Churn Rate % (`=AC65`, 26.5%), Avg Monthly Ticket (`=AD65`, $64.76), Total Monthly Charges (`=AE65`, $456,116.60).
+   * **Diversity & Inclusion Cockpit (6 Cards)**: Total Employees (`=AA65`, 500), Female Representation % (`=AB65`, 41.0%), Executive Female Share % (`=AC65`, 14.3%), Total Promotions FY21 (`=AD65`, 51), Overall Promotion Rate % (`=AE65`, 10.2%), Promotion Equity Index (`=AF65`, 0.78).
+   * **Synchronous Calculation Engine**: Driven by dedicated summary PivotTables (`pt_CC_Summary`, `pt_CR_Summary`, `pt_DI_Summary`) on `Staging_Pivots`. Eliminates asynchronous background thread lag and `#N/A` errors, ensuring instant recalculation upon slicer selection.
+   * **Presentation Polish**: Technical helper rows (`60:75`) hidden cleanly (`ws.Rows("60:75").Hidden = True`), column widths `AA:AG` expanded to `16.0pt` to eliminate cell text overflow (`###`).
+   * **Filter-Aware**: Metrics dynamically re-calculate in real time when slicers are toggled without destroying card titles or benchmark subtext.
 
 5. **High-Fidelity Web Application Companion (`dashboards/call_center_website_dashboard.html`)**:
    * Inspired directly by modern executive SaaS designs, powered by our live Q1 2021 VertiPaq semantic model.
@@ -259,6 +260,9 @@ pwc-switzerland-virtual-case/
 │   └── 04_calendar_generator.m            # Autonomous dynamic date dimension M-code
 │
 ├── scripts/
+│   ├── build_complete_enterprise_app.py   # ⭐ MASTER PRODUCTION BUILDER: Assembles complete enterprise app
+│   ├── verify_complete_enterprise_app.py  # 11-step forensic QA automation suite (100% PASS)
+│   ├── promote_to_production.py           # Production promotion runner
 │   ├── scan_vba_conflicts.py              # Automated collision scanner (0 duplicate symbols)
 │   ├── verify_vba_syntax.py               # VBA syntax and block structure validator
 │   ├── vba_mcp_server/                    # ⭐ Official VBA MCP Server for direct Excel COM read/write
@@ -285,7 +289,8 @@ pwc-switzerland-virtual-case/
 ├── CHANGELOG.md                           # Version history & release notes
 ├── CONTRIBUTING.md                        # Dimensional modeling & DAX style guide
 ├── LICENSE                                # MIT Open-Source License
-├── PWC_Switzerland_Virtual_Case.xlsm      # Master production workbook (VertiPaq Model & VBA Suite)
+├── PWC_Switzerland_Virtual_Case.xlsm      # Master production workbook (VertiPaq Model, 14 PTs, 8 Charts, 9 Slicers, VBA)
+├── PWC_Switzerland_Virtual_Case_BACKUP_ORIGINAL.xlsm # Pristine pre-repair backup archive
 └── README.md                              # Master architectural documentation index
 ```
 

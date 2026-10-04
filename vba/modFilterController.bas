@@ -241,8 +241,12 @@ Public Sub ClearAllFilters()
     modAppState.RestoreAppState
     Application.StatusBar = "All filters successfully reset."
     
-    If Application.UserControl Then
+    If Application.Visible And Application.UserControl Then
         MsgBox "All dashboard slicers and filters have been successfully cleared!", _
                vbInformation, "PwC Filter Controller"
     End If
+End Sub
+
+Public Sub ResetAllDashboardFilters()
+    ClearAllFilters
 End Sub

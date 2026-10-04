@@ -471,9 +471,11 @@ Public Sub DockScorecardAsLinkedPicture(Optional ByVal themeChoice As String = "
     End If
     
     If pt Is Nothing Then
-        MsgBox "Could not find the Agent Scorecard PivotTable." & vbCrLf & _
-               "Please ensure it is created on 'Staging_Pivots' or '03_CallCenter_Cockpit'.", _
-               vbExclamation, "PwC Scorecard Docker"
+        If Application.Visible And Application.UserControl Then
+            MsgBox "Could not find the Agent Scorecard PivotTable." & vbCrLf & _
+                   "Please ensure it is created on 'Staging_Pivots' or '03_CallCenter_Cockpit'.", _
+                   vbExclamation, "PwC Scorecard Docker"
+        End If
         Exit Sub
     End If
     

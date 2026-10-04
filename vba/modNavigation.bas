@@ -6,6 +6,10 @@ Option Explicit
 ' Delivers instantaneous, flicker-free transitions between executive cockpits
 ' ==============================================================================
 
+Public Sub NavigateToHome()
+    NavigateToSheet "00_Home_Portal"
+End Sub
+
 Public Sub NavigateToHomePortal()
     NavigateToSheet "00_Home_Portal"
 End Sub
@@ -14,7 +18,15 @@ Public Sub NavigateToCallCenter()
     NavigateToSheet "03_CallCenter_Cockpit"
 End Sub
 
+Public Sub NavigateToCallCentre()
+    NavigateToSheet "03_CallCenter_Cockpit"
+End Sub
+
 Public Sub NavigateToRetention()
+    NavigateToSheet "04_CustomerRetention_Cockpit"
+End Sub
+
+Public Sub NavigateToCustomerRetention()
     NavigateToSheet "04_CustomerRetention_Cockpit"
 End Sub
 
@@ -22,11 +34,23 @@ Public Sub NavigateToDiversity()
     NavigateToSheet "05_DiversityInclusion_Cockpit"
 End Sub
 
+Public Sub NavigateToDiversityInclusion()
+    NavigateToSheet "05_DiversityInclusion_Cockpit"
+End Sub
+
 Public Sub NavigateToDomains()
     NavigateToSheet "01_Business_Domains"
 End Sub
 
+Public Sub NavigateToBusinessDomains()
+    NavigateToSheet "01_Business_Domains"
+End Sub
+
 Public Sub NavigateToCatalog()
+    NavigateToSheet "02_Metadata_&_KPI_Catalog"
+End Sub
+
+Public Sub NavigateToKPICatalog()
     NavigateToSheet "02_Metadata_&_KPI_Catalog"
 End Sub
 
@@ -50,5 +74,7 @@ Private Sub NavigateToSheet(ByVal targetSheetName As String)
 ErrorHandler:
     Application.EnableEvents = True
     Application.ScreenUpdating = True
-    MsgBox "Navigation Error: Unable to locate sheet '" & targetSheetName & "'." & vbCrLf & Err.Description, vbExclamation, "PwC Navigation"
+    If Application.Visible And Application.UserControl Then
+        MsgBox "Navigation Error: Unable to locate sheet '" & targetSheetName & "'." & vbCrLf & Err.Description, vbExclamation, "PwC Navigation"
+    End If
 End Sub
