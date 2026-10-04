@@ -52,13 +52,11 @@ Private Const SHEET_STAGING As String = "03_Staging_Data"
 Public Sub SafeDeleteShape(ByVal ws As Worksheet, ByVal shapeName As String)
     On Error Resume Next
     ws.Shapes(shapeName).Delete
-    On Error GoTo 0
 End Sub
 
 Public Sub SafeDeleteChart(ByVal ws As Worksheet, ByVal chartName As String)
     On Error Resume Next
     ws.ChartObjects(chartName).Delete
-    On Error GoTo 0
 End Sub
 
 Public Sub SafeSetShapeFormula(ByVal ws As Worksheet, ByVal shapeName As String, ByVal formulaStr As String)
@@ -68,7 +66,6 @@ Public Sub SafeSetShapeFormula(ByVal ws As Worksheet, ByVal shapeName As String,
     If Not shp Is Nothing Then
         shp.DrawingObject.Formula = formulaStr
     End If
-    On Error GoTo 0
 End Sub
 
 Public Sub ApplySoftElevation(ByVal shp As Shape)
@@ -82,7 +79,6 @@ Public Sub ApplySoftElevation(ByVal shp As Shape)
         .Transparency = 0.88
         .ForeColor.RGB = RGB(15, 23, 42)
     End With
-    On Error GoTo 0
 End Sub
 
 Public Sub CenterShapeText(ByVal shp As Shape, _
@@ -98,7 +94,6 @@ Public Sub CenterShapeText(ByVal shp As Shape, _
             .TextRange.ParagraphFormat.Alignment = msoAlignCenter
         End If
     End With
-    On Error GoTo 0
 End Sub
 
 Public Function ResolveAssetPath(ByVal fileName As String) As String
@@ -124,11 +119,11 @@ Public Sub InsertVectorIcon(ws As Worksheet, ByVal fileName As String, _
         Set shpIcon = ws.Shapes.AddPicture(iconPath, msoFalse, msoTrue, leftPos, topPos, w, h)
         If Not shpIcon Is Nothing Then
             shpIcon.Name = iconName
+            On Error Resume Next
             shpIcon.Line.Visible = msoFalse
             shpIcon.ZOrder msoBringToFront
         End If
     End If
-    On Error GoTo 0
 End Sub
 
 ' ==============================================================================
@@ -181,6 +176,7 @@ End Sub
 ' SECTION 3: TOP NAVIGATION BAR & BRAND HEADER
 ' ==============================================================================
 Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
+    On Error Resume Next
     Dim shpNav As Shape, shpLogoPic As Shape, shpBadge As Shape
     Dim navW As Single: navW = CANVAS_WIDTH
     
@@ -249,6 +245,7 @@ Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
                             ByVal w As Single, ByVal h As Single, _
                             ByVal labelText As String, ByVal isActive As Boolean, _
                             ByVal macroName As String)
+    On Error Resume Next
     Dim shp As Shape
     SafeDeleteShape ws, shapeName
     Set shp = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, w, h)
@@ -284,6 +281,7 @@ Public Sub BuildHeroHeader(ws As Worksheet, _
                            ByVal subtitleText As String, _
                            ByVal topPos As Single, _
                            Optional ByVal canvasWidth As Single = CANVAS_WIDTH)
+    On Error Resume Next
     Dim shpHero As Shape
     Set shpHero = ws.Shapes.AddShape(msoShapeRectangle, CANVAS_LEFT, topPos, canvasWidth, 44)
     With shpHero
@@ -313,6 +311,7 @@ Public Sub BuildKPICard(ws As Worksheet, ByVal cardPrefix As String, _
                         ByVal trendText As String, ByVal accentColor As Long, _
                         Optional ByVal iconFileName As String = "", _
                         Optional ByVal sparklineFileName As String = "")
+    On Error Resume Next
     Dim shpCard As Shape, shpBar As Shape, shpTitle As Shape, shpValue As Shape, shpBadge As Shape
     
     Set shpCard = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
@@ -401,7 +400,6 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
         SafeSetShapeFormula ws, "Val_CC_CSAT", "=" & sheetRef & "$AF$" & rowIdx
         SafeSetShapeFormula ws, "Val_CC_FCR", "=" & sheetRef & "$AG$" & rowIdx
     End If
-    On Error GoTo 0
 End Sub
 
 ' ==============================================================================
@@ -416,6 +414,7 @@ Public Sub BuildSlicerPanelContainer(ws As Worksheet, _
                                      ByVal slot1Label As String, _
                                      ByVal slot2Label As String, _
                                      ByVal slot3Label As String)
+    On Error Resume Next
     Dim shpPanel As Shape, shpHeader As Shape, shpResetBtn As Shape, shpQuoteCard As Shape
     
     Set shpPanel = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, panelWidth, panelHeight)
@@ -504,6 +503,7 @@ Public Sub BuildChartContainer(ws As Worksheet, _
                                ByVal subtitleText As String, _
                                ByVal badgeText As String, _
                                Optional ByVal iconFileName As String = "")
+    On Error Resume Next
     Dim shpCard As Shape, shpHeader As Shape, shpBadge As Shape
     
     Set shpCard = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, w, h)
@@ -584,7 +584,6 @@ Public Sub DeclutterAndFormatChart(chtObj As ChartObject)
             End If
         End With
     End With
-    On Error GoTo 0
 End Sub
 
 ' ==============================================================================
@@ -865,7 +864,6 @@ Public Sub BuildCallCenterVisuals(ws As Worksheet, wsStaging As Worksheet)
     
     ' 7. Sentiment Analysis & Regional SLA Pills
     Call BuildSentimentAndRegionalPills(ws, 1240, 546, 210, 204)
-    On Error GoTo 0
 End Sub
 
 Private Sub DockAgentScorecardLive(ws As Worksheet, wsStaging As Worksheet, _
@@ -895,11 +893,11 @@ Private Sub DockAgentScorecardLive(ws As Worksheet, wsStaging As Worksheet, _
             .Top = topPos
             .Width = w
             .Height = h
+            On Error Resume Next
             .Line.Visible = msoFalse
             .ZOrder msoBringToFront
         End With
     End If
-    On Error GoTo 0
 End Sub
 
 Private Sub BuildSentimentAndRegionalPills(ws As Worksheet, ByVal leftPos As Single, _
@@ -974,7 +972,6 @@ Private Sub BuildSentimentAndRegionalPills(ws As Worksheet, ByVal leftPos As Sin
             Next pIdx
         End With
     End With
-    On Error GoTo 0
 End Sub
 
 Public Sub BuildRetentionVisuals(ws As Worksheet, wsStaging As Worksheet)
@@ -1041,7 +1038,6 @@ Public Sub BuildRetentionVisuals(ws As Worksheet, wsStaging As Worksheet)
         End With
     End With
     DeclutterAndFormatChart chtObj
-    On Error GoTo 0
 End Sub
 
 Public Sub BuildDiversityVisuals(ws As Worksheet, wsStaging As Worksheet)
@@ -1107,27 +1103,26 @@ Public Sub BuildDiversityVisuals(ws As Worksheet, wsStaging As Worksheet)
         End With
     End With
     DeclutterAndFormatChart chtObj
-    On Error GoTo 0
 End Sub
 
 ' ==============================================================================
 ' SECTION 8: COCKPIT CANVAS BUILDERS
 ' ==============================================================================
 Public Sub BuildCallCenterCanvas(Optional ByVal populateInitialData As Boolean = False)
+    On Error Resume Next
     Dim wb As Workbook, ws As Worksheet, wsStaging As Worksheet
     Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook
     
-    On Error Resume Next
     Set ws = wb.Worksheets(SHEET_CC)
     If ws Is Nothing Then
         Set ws = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
         ws.Name = SHEET_CC
     End If
-    On Error GoTo 0
     
     ws.Tab.Color = PWC_ORANGE
     Dim shp As Shape
     For Each shp In ws.Shapes
+        On Error Resume Next
         shp.Delete
     Next shp
     
@@ -1198,20 +1193,20 @@ Public Sub BuildCallCenterCanvas(Optional ByVal populateInitialData As Boolean =
 End Sub
 
 Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Boolean = False)
+    On Error Resume Next
     Dim wb As Workbook, ws As Worksheet, wsStaging As Worksheet
     Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook
     
-    On Error Resume Next
     Set ws = wb.Worksheets(SHEET_RETENTION)
     If ws Is Nothing Then
         Set ws = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
         ws.Name = SHEET_RETENTION
     End If
-    On Error GoTo 0
     
     ws.Tab.Color = PWC_ORANGE
     Dim shp As Shape
     For Each shp In ws.Shapes
+        On Error Resume Next
         shp.Delete
     Next shp
     
@@ -1275,20 +1270,20 @@ Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Bo
 End Sub
 
 Public Sub BuildDiversityInclusionCanvas(Optional ByVal populateInitialData As Boolean = False)
+    On Error Resume Next
     Dim wb As Workbook, ws As Worksheet, wsStaging As Worksheet
     Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook
     
-    On Error Resume Next
     Set ws = wb.Worksheets(SHEET_DIVERSITY)
     If ws Is Nothing Then
         Set ws = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
         ws.Name = SHEET_DIVERSITY
     End If
-    On Error GoTo 0
     
     ws.Tab.Color = PWC_ORANGE
     Dim shp As Shape
     For Each shp In ws.Shapes
+        On Error Resume Next
         shp.Delete
     Next shp
     

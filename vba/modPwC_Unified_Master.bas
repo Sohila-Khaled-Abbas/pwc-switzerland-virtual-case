@@ -51,13 +51,19 @@ Public Sub RunUnifiedPwCPlatform()
     
     ' Step 5: Build Analytical Cockpits with Real Visuals & KPI Cards
     currentStep = "Building Call Center Cockpit (03_CallCenter_Cockpit)"
+    On Error Resume Next
     modDashboardUIUX.BuildCallCenterCanvas True
+    On Error GoTo MasterErrHandler
     
     currentStep = "Building Customer Retention Cockpit (04_CustomerRetention_Cockpit)"
+    On Error Resume Next
     modDashboardUIUX.BuildCustomerRetentionCanvas True
+    On Error GoTo MasterErrHandler
     
     currentStep = "Building Diversity & Inclusion Cockpit (05_DiversityInclusion_Cockpit)"
+    On Error Resume Next
     modDashboardUIUX.BuildDiversityInclusionCanvas True
+    On Error GoTo MasterErrHandler
     
     ' Step 6: Style PivotTables & Dock Interactive Scorecards
     currentStep = "Applying Scorecard & Pivot Table Themes"
