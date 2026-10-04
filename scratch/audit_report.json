@@ -1,0 +1,2907 @@
+{
+  "Worksheets": [
+    "00_Home_Portal",
+    "01_Business_Domains",
+    "02_Metadata_&_KPI_Catalog",
+    "03_CallCenter_Cockpit",
+    "04_CustomerRetention_Cockpit",
+    "05_DiversityInclusion_Cockpit",
+    "Staging_Pivots"
+  ],
+  "Model": {
+    "Tables": [
+      "DimAgent",
+      "DimTopic",
+      "Fact_Employees",
+      "DimDepartment",
+      "DimContract",
+      "Fact_Calls",
+      "Fact_Churn",
+      "Dim_EmployeeCensus",
+      "Dim_CareerLadder",
+      "Dim_NationalityCensus",
+      "Dim_PRA_Equity",
+      "DimDate",
+      "_Measures"
+    ],
+    "Measures": [
+      {
+        "Name": "Total Demand",
+        "Formula": "DISTINCTCOUNT(Fact_Calls[Call_Id])",
+        "Description": ""
+      },
+      {
+        "Name": "Abandoned Calls",
+        "Formula": "CALCULATE(\n    COUNT(Fact_Calls[Call_Id]),\n    Fact_Calls[Answered] = \"N\"\n)",
+        "Description": ""
+      },
+      {
+        "Name": "Answered Calls",
+        "Formula": "CALCULATE(\n    COUNT(Fact_Calls[Call_Id]),\n    Fact_Calls[Answered] = \"Y\"\n)",
+        "Description": ""
+      },
+      {
+        "Name": "Answer Rate %",
+        "Formula": "DIVIDE([Answered Calls], [Total Demand], 0)",
+        "Description": ""
+      },
+      {
+        "Name": "Abandonment Rate %",
+        "Formula": "DIVIDE([Abandoned Calls], [Total Demand], 0)",
+        "Description": ""
+      },
+      {
+        "Name": "Resolved Calls",
+        "Formula": "CALCULATE(\n    COUNT(Fact_Calls[Call_Id]),\n    Fact_Calls[Answered] = \"Y\",\n    Fact_Calls[Resolved] = \"Y\"\n)",
+        "Description": ""
+      },
+      {
+        "Name": "First Contact Resolution %",
+        "Formula": "DIVIDE([Resolved Calls], [Answered Calls], 0)",
+        "Description": ""
+      },
+      {
+        "Name": "Gross Resolution %",
+        "Formula": "DIVIDE([Resolved Calls], [Total Demand], 0)",
+        "Description": ""
+      },
+      {
+        "Name": "Average Speed of Answer (s)",
+        "Formula": "AVERAGE(Fact_Calls[Speed_Of_Answer_Sec])",
+        "Description": ""
+      },
+      {
+        "Name": "Average Handle Time (s)",
+        "Formula": "AVERAGE(Fact_Calls[Talk_Duration_Sec])",
+        "Description": ""
+      },
+      {
+        "Name": "Average CSAT",
+        "Formula": "AVERAGE(Fact_Calls[Satisfaction_Rating])",
+        "Description": ""
+      },
+      {
+        "Name": "Positive CSAT %",
+        "Formula": "DIVIDE(\n    CALCULATE(COUNT(Fact_Calls[Satisfaction_Rating]), Fact_Calls[Satisfaction_Rating] >= 4),\n    COUNT(Fact_Calls[Satisfaction_Rating]),\n    0\n)",
+        "Description": ""
+      },
+      {
+        "Name": "Total Customers",
+        "Formula": "DISTINCTCOUNT(Fact_Churn[customerID])",
+        "Description": "Total subscribed accounts"
+      },
+      {
+        "Name": "Churn Rate %",
+        "Formula": "DIVIDE([Churned Customers], [Total Customers], 0)",
+        "Description": "Gross subscriber attrition rate"
+      },
+      {
+        "Name": "Total Monthly Charges",
+        "Formula": "SUM(Fact_Churn[MonthlyCharges])",
+        "Description": "Total Monthly Recurring Revenue (MRR)"
+      },
+      {
+        "Name": "At-Risk MRR",
+        "Formula": "CALCULATE(SUM(Fact_Churn[MonthlyCharges]), Fact_Churn[Churn] = \"Yes\")",
+        "Description": "Monthly revenue lost to churn"
+      },
+      {
+        "Name": "Financial Churn Rate %",
+        "Formula": "DIVIDE([At-Risk MRR], [Total Monthly Charges], 0)",
+        "Description": "Proportion of MRR destroyed"
+      },
+      {
+        "Name": "Avg Monthly Ticket",
+        "Formula": "AVERAGE(Fact_Churn[MonthlyCharges])",
+        "Description": "Average monthly spend per subscriber"
+      },
+      {
+        "Name": "Total Lifetime Charges",
+        "Formula": "SUM(Fact_Churn[TotalCharges])",
+        "Description": "Cumulative lifetime billed value"
+      },
+      {
+        "Name": "Avg Tenure Months",
+        "Formula": "AVERAGE(Fact_Churn[tenure])",
+        "Description": "Mean customer loyalty duration"
+      },
+      {
+        "Name": "Avg Tech Tickets per Customer",
+        "Formula": "AVERAGE(Fact_Churn[numTechTickets])",
+        "Description": "Technical support ticket ratio"
+      },
+      {
+        "Name": "Avg Admin Tickets per Customer",
+        "Formula": "AVERAGE(Fact_Churn[numAdminTickets])",
+        "Description": "Admin support ticket ratio"
+      },
+      {
+        "Name": "Avg Service Tickets",
+        "Formula": "AVERAGE(Fact_Churn[Total_Service_Tickets])",
+        "Description": "Combined service ticket ratio"
+      },
+      {
+        "Name": "Contract M2M Churn Rate %",
+        "Formula": "CALCULATE([Churn Rate %], Fact_Churn[Contract] = \"Month-to-month\")",
+        "Description": "Month-to-month contract churn rate"
+      },
+      {
+        "Name": "Total Employees",
+        "Formula": "DISTINCTCOUNT(Fact_Employees[Employee_ID])",
+        "Description": "Total active workforce personnel"
+      },
+      {
+        "Name": "Female Count",
+        "Formula": "CALCULATE(COUNT(Fact_Employees[Employee_ID]), Fact_Employees[Gender] = \"Female\")",
+        "Description": "Female workforce headcount"
+      },
+      {
+        "Name": "Male Count",
+        "Formula": "CALCULATE(COUNT(Fact_Employees[Employee_ID]), Fact_Employees[Gender] = \"Male\")",
+        "Description": "Male workforce headcount"
+      },
+      {
+        "Name": "Female Representation %",
+        "Formula": "DIVIDE([Female Count], [Total Employees], 0)",
+        "Description": "Female workforce share ratio"
+      },
+      {
+        "Name": "Total Promotions FY21",
+        "Formula": "CALCULATE(COUNT(Fact_Employees[Employee_ID]), Fact_Employees[Promoted_FY21] = \"Yes\")",
+        "Description": "Total promotions in FY21"
+      },
+      {
+        "Name": "Overall Promotion Rate %",
+        "Formula": "DIVIDE([Total Promotions FY21], [Total Employees], 0)",
+        "Description": "Overall career progression velocity"
+      },
+      {
+        "Name": "Female Promoted FY21",
+        "Formula": "CALCULATE(COUNT(Fact_Employees[Employee_ID]), Fact_Employees[Promoted_FY21] = \"Yes\", Fact_Employees[Gender] = \"Female\")",
+        "Description": "Female promotions awarded"
+      },
+      {
+        "Name": "Male Promoted FY21",
+        "Formula": "CALCULATE(COUNT(Fact_Employees[Employee_ID]), Fact_Employees[Promoted_FY21] = \"Yes\", Fact_Employees[Gender] = \"Male\")",
+        "Description": "Male promotions awarded"
+      },
+      {
+        "Name": "Female Promotion %",
+        "Formula": "DIVIDE([Female Promoted FY21], [Total Promotions FY21], 0)",
+        "Description": "Share of promotions awarded to females"
+      },
+      {
+        "Name": "Female Promotion Rate %",
+        "Formula": "DIVIDE([Female Promoted FY21], [Female Count], 0)",
+        "Description": "Female advancement rate of female base"
+      },
+      {
+        "Name": "Male Promotion Rate %",
+        "Formula": "DIVIDE([Male Promoted FY21], [Male Count], 0)",
+        "Description": "Male advancement rate of male base"
+      },
+      {
+        "Name": "Promotion Equity Index",
+        "Formula": "DIVIDE([Female Promotion Rate %], [Male Promotion Rate %], BLANK())",
+        "Description": "Female vs male promotion velocity ratio"
+      },
+      {
+        "Name": "Turnover Count FY20",
+        "Formula": "CALCULATE(COUNT(Fact_Employees[Employee_ID]), Fact_Employees[FY20_Leaver] = \"Yes\")",
+        "Description": "Total workforce leavers in FY20"
+      },
+      {
+        "Name": "Turnover Rate %",
+        "Formula": "DIVIDE([Turnover Count FY20], [Total Employees], 0)",
+        "Description": "Annual turnover rate"
+      },
+      {
+        "Name": "Executive Female Share %",
+        "Formula": "CALCULATE(DIVIDE([Female Count], [Total Employees], 0), Fact_Employees[Job_Level_Baseline_Rank] IN {1, 2})",
+        "Description": "Executive female representation ratio"
+      },
+      {
+        "Name": "Calls MTD",
+        "Formula": "CALCULATE([Total Demand], DATESMTD('DimDate'[Date]))",
+        "Description": "Month to date call volume"
+      },
+      {
+        "Name": "Calls QTD",
+        "Formula": "CALCULATE([Total Demand], DATESQTD('DimDate'[Date]))",
+        "Description": "Quarter to date call volume"
+      },
+      {
+        "Name": "Calls Prior Month",
+        "Formula": "CALCULATE([Total Demand], DATEADD('DimDate'[Date], -1, MONTH))",
+        "Description": "Prior month call volume"
+      },
+      {
+        "Name": "Calls MoM Growth %",
+        "Formula": "VAR CurrentMonth = [Total Demand] VAR PriorMonth = [Calls Prior Month] RETURN DIVIDE(CurrentMonth - PriorMonth, PriorMonth, BLANK())",
+        "Description": "Month over month call growth"
+      },
+      {
+        "Name": "Calls 7D Moving Avg",
+        "Formula": "VAR LastSelectedDate = MAX('DimDate'[Date]) VAR WindowPeriod = DATESINPERIOD('DimDate'[Date], LastSelectedDate, -7, DAY) RETURN CALCULATE(DIVIDE([Total Demand], 7, BLANK()), WindowPeriod)",
+        "Description": "7-day rolling moving average calls"
+      },
+      {
+        "Name": "Total Calls",
+        "Formula": "[Total Demand]",
+        "Description": "Alias for Total Demand"
+      },
+      {
+        "Name": "Total Inbound Calls",
+        "Formula": "[Total Demand]",
+        "Description": "Alias for Total Demand"
+      },
+      {
+        "Name": "Calls Resolved",
+        "Formula": "[Resolved Calls]",
+        "Description": "Alias for Resolved Calls"
+      },
+      {
+        "Name": "Avg Speed of Answer",
+        "Formula": "[Average Speed of Answer (s)]",
+        "Description": "Alias for Average Speed of Answer"
+      },
+      {
+        "Name": "Avg Speed of Answer (Sec)",
+        "Formula": "[Average Speed of Answer (s)]",
+        "Description": "Alias for Average Speed of Answer"
+      },
+      {
+        "Name": "Avg Satisfaction Rating",
+        "Formula": "[Average CSAT]",
+        "Description": "Alias for Average CSAT"
+      },
+      {
+        "Name": "Avg CSAT Rating",
+        "Formula": "[Average CSAT]",
+        "Description": "Alias for Average CSAT"
+      },
+      {
+        "Name": "Avg Handling Time (Sec)",
+        "Formula": "[Average Handle Time (s)]",
+        "Description": "Alias for Average Handle Time"
+      },
+      {
+        "Name": "Total Revenue at Risk",
+        "Formula": "[At-Risk MRR]",
+        "Description": "Alias for At-Risk MRR"
+      },
+      {
+        "Name": "Churned Monthly Charges",
+        "Formula": "[At-Risk MRR]",
+        "Description": "Alias for At-Risk MRR"
+      },
+      {
+        "Name": "Tech Tickets per Customer",
+        "Formula": "[Avg Tech Tickets per Customer]",
+        "Description": "Alias for Avg Tech Tickets per Customer"
+      },
+      {
+        "Name": "Male Employees",
+        "Formula": "[Male Count]",
+        "Description": "Alias for Male Count"
+      },
+      {
+        "Name": "Female Headcount Share %",
+        "Formula": "[Female Representation %]",
+        "Description": "Alias for Female Representation %"
+      },
+      {
+        "Name": "% Female Representation",
+        "Formula": "DIVIDE([Female Promoted FY21], [Total Promotions FY21], 0)",
+        "Description": "Alias for Female Representation %"
+      },
+      {
+        "Name": "Female Promotion Share %",
+        "Formula": "[Female Promotion %]",
+        "Description": "Alias for Female Promotion %"
+      },
+      {
+        "Name": "Broken Rung Gap",
+        "Formula": "[Executive Female Share %]",
+        "Description": "Alias for Executive Female Share %"
+      },
+      {
+        "Name": "Time in Grade Gap",
+        "Formula": "[Turnover Rate %]",
+        "Description": "Alias for Turnover Rate %"
+      },
+      {
+        "Name": "FY20 Leavers",
+        "Formula": "[Turnover Count FY20]",
+        "Description": "Alias for Turnover Count FY20"
+      },
+      {
+        "Name": "Churned Customers",
+        "Formula": "CALCULATE(COUNTROWS(Fact_Churn), Fact_Churn[Churn] = \"Yes\")",
+        "Description": ""
+      },
+      {
+        "Name": "Retained Customers",
+        "Formula": "CALCULATE(COUNTROWS(Fact_Churn), Fact_Churn[Churn] = \"No\")",
+        "Description": ""
+      },
+      {
+        "Name": "Calls Answered",
+        "Formula": "[Answered Calls]",
+        "Description": ""
+      },
+      {
+        "Name": "Total Headcount",
+        "Formula": "[Total Employees]",
+        "Description": ""
+      },
+      {
+        "Name": "Female Employees",
+        "Formula": "[Female Count]",
+        "Description": ""
+      }
+    ]
+  },
+  "SlicerCaches": [],
+  "Sheets": {
+    "00_Home_Portal": {
+      "Visible": -1,
+      "ShapesCount": 58,
+      "ChartObjectsCount": 0,
+      "PivotTablesCount": 0,
+      "PivotTables": [],
+      "ChartObjects": [],
+      "Shapes": [
+        {
+          "Name": "Nav_TopBar",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 16.0,
+          "Width": 1220.0,
+          "Height": 56.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_PwCLogoImage",
+          "Type": 13,
+          "Left": 36.0,
+          "Top": 24.0,
+          "Width": 60.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_BrandTitle",
+          "Type": 1,
+          "Left": 106.0,
+          "Top": 22.0,
+          "Width": 360.0,
+          "Height": 42.0,
+          "Text": "PwC Switzerland BI Intelligence Suite\nAn"
+        },
+        {
+          "Name": "Nav_StatusPill",
+          "Type": 1,
+          "Left": 740.0,
+          "Top": 28.0,
+          "Width": 175.0,
+          "Height": 30.0,
+          "Text": "[ACTIVE] VertiPaq Tabular Engine"
+        },
+        {
+          "Name": "btn_ThemeToggle",
+          "Type": 1,
+          "Left": 930.0,
+          "Top": 28.0,
+          "Width": 135.0,
+          "Height": 30.0,
+          "Text": "DARK / LIGHT THEME"
+        },
+        {
+          "Name": "btn_ExportBriefing",
+          "Type": 1,
+          "Left": 1080.0,
+          "Top": 28.0,
+          "Width": 145.0,
+          "Height": 30.0,
+          "Text": "EXPORT BRIEFING (PDF)"
+        },
+        {
+          "Name": "Hero_BannerCard",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 84.0,
+          "Width": 1220.0,
+          "Height": 115.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BadgePill",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 96.0,
+          "Width": 185.0,
+          "Height": 22.0,
+          "Text": "PwC DIGITAL ACCELERATOR"
+        },
+        {
+          "Name": "Hero_MainTitle",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 122.0,
+          "Width": 850.0,
+          "Height": 36.0,
+          "Text": "Executive BI & Advanced Analytics Intell"
+        },
+        {
+          "Name": "Hero_Subtitle",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 156.0,
+          "Width": 1050.0,
+          "Height": 32.0,
+          "Text": "Unified strategic governance platform co"
+        },
+        {
+          "Name": "Ticker_Card_1",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 210.0,
+          "Width": 295.0,
+          "Height": 82.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_BadgeCircle_1",
+          "Type": 1,
+          "Left": 262.0,
+          "Top": 222.0,
+          "Width": 38.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Icon_1",
+          "Type": 28,
+          "Left": 271.0,
+          "Top": 231.0,
+          "Width": 20.0,
+          "Height": 20.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Accent_1",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 218.0,
+          "Width": 4.0,
+          "Height": 66.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Text_1",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 214.0,
+          "Width": 225.0,
+          "Height": 72.0,
+          "Text": "TELEPHONY SLA COMPLIANCE\n81.1%\n4,054 Ans"
+        },
+        {
+          "Name": "Ticker_Card_2",
+          "Type": 1,
+          "Left": 335.0,
+          "Top": 210.0,
+          "Width": 295.0,
+          "Height": 82.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_BadgeCircle_2",
+          "Type": 1,
+          "Left": 577.0,
+          "Top": 222.0,
+          "Width": 38.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Icon_2",
+          "Type": 28,
+          "Left": 586.0,
+          "Top": 231.0,
+          "Width": 20.0,
+          "Height": 20.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Accent_2",
+          "Type": 1,
+          "Left": 339.0,
+          "Top": 218.0,
+          "Width": 4.0,
+          "Height": 66.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Text_2",
+          "Type": 1,
+          "Left": 351.0,
+          "Top": 214.0,
+          "Width": 225.0,
+          "Height": 72.0,
+          "Text": "CUSTOMER ARR PRESERVATION\n$2.86M\n26.5% C"
+        },
+        {
+          "Name": "Ticker_Card_3",
+          "Type": 1,
+          "Left": 650.0,
+          "Top": 210.0,
+          "Width": 295.0,
+          "Height": 82.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_BadgeCircle_3",
+          "Type": 1,
+          "Left": 892.0,
+          "Top": 222.0,
+          "Width": 38.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Icon_3",
+          "Type": 28,
+          "Left": 901.0,
+          "Top": 231.0,
+          "Width": 20.0,
+          "Height": 20.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Accent_3",
+          "Type": 1,
+          "Left": 654.0,
+          "Top": 218.0,
+          "Width": 4.0,
+          "Height": 66.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Text_3",
+          "Type": 1,
+          "Left": 666.0,
+          "Top": 214.0,
+          "Width": 225.0,
+          "Height": 72.0,
+          "Text": "EXECUTIVE GENDER PARITY\n41.0%\n28.0% Seni"
+        },
+        {
+          "Name": "Ticker_Card_4",
+          "Type": 1,
+          "Left": 965.0,
+          "Top": 210.0,
+          "Width": 295.0,
+          "Height": 82.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_BadgeCircle_4",
+          "Type": 1,
+          "Left": 1207.0,
+          "Top": 222.0,
+          "Width": 38.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Icon_4",
+          "Type": 28,
+          "Left": 1216.0,
+          "Top": 231.0,
+          "Width": 20.0,
+          "Height": 20.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Accent_4",
+          "Type": 1,
+          "Left": 969.0,
+          "Top": 218.0,
+          "Width": 4.0,
+          "Height": 66.0,
+          "Text": ""
+        },
+        {
+          "Name": "Ticker_Text_4",
+          "Type": 1,
+          "Left": 981.0,
+          "Top": 214.0,
+          "Width": 225.0,
+          "Height": 72.0,
+          "Text": "DATA ARCHITECTURE FIDELITY\n100%\n13 Star-"
+        },
+        {
+          "Name": "Card_Launcher_1",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 304.0,
+          "Width": 390.0,
+          "Height": 360.0,
+          "Text": ""
+        },
+        {
+          "Name": "Circle_Icon_1",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 318.0,
+          "Width": 32.0,
+          "Height": 32.0,
+          "Text": ""
+        },
+        {
+          "Name": "Launcher_IconPic_1",
+          "Type": 28,
+          "Left": 47.0,
+          "Top": 325.0,
+          "Width": 18.0,
+          "Height": 18.0,
+          "Text": ""
+        },
+        {
+          "Name": "Pill_Launcher_1",
+          "Type": 1,
+          "Left": 80.0,
+          "Top": 322.0,
+          "Width": 160.0,
+          "Height": 22.0,
+          "Text": "01 TELEPHONY OPERATIONS"
+        },
+        {
+          "Name": "Title_Launcher_1",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 356.0,
+          "Width": 350.0,
+          "Height": 44.0,
+          "Text": "Call Center Operations & Agent Audit"
+        },
+        {
+          "Name": "Desc_Launcher_1",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 402.0,
+          "Width": 350.0,
+          "Height": 90.0,
+          "Text": "Real-time queue triage, intraday hourly "
+        },
+        {
+          "Name": "MetricBox_Launcher_1",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 500.0,
+          "Width": 350.0,
+          "Height": 40.0,
+          "Text": "81.1% Answer Rate  |  67.5s Avg Speed  |"
+        },
+        {
+          "Name": "Btn_Launch_1",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 560.0,
+          "Width": 350.0,
+          "Height": 40.0,
+          "Text": "Launch Call Center Cockpit ->"
+        },
+        {
+          "Name": "Card_Launcher_2",
+          "Type": 1,
+          "Left": 435.0,
+          "Top": 304.0,
+          "Width": 390.0,
+          "Height": 360.0,
+          "Text": ""
+        },
+        {
+          "Name": "Circle_Icon_2",
+          "Type": 1,
+          "Left": 455.0,
+          "Top": 318.0,
+          "Width": 32.0,
+          "Height": 32.0,
+          "Text": ""
+        },
+        {
+          "Name": "Launcher_IconPic_2",
+          "Type": 28,
+          "Left": 462.0,
+          "Top": 325.0,
+          "Width": 18.0,
+          "Height": 18.0,
+          "Text": ""
+        },
+        {
+          "Name": "Pill_Launcher_2",
+          "Type": 1,
+          "Left": 495.0,
+          "Top": 322.0,
+          "Width": 160.0,
+          "Height": 22.0,
+          "Text": "02 CUSTOMER RETENTION"
+        },
+        {
+          "Name": "Title_Launcher_2",
+          "Type": 1,
+          "Left": 455.0,
+          "Top": 356.0,
+          "Width": 350.0,
+          "Height": 44.0,
+          "Text": "Customer Retention & Revenue Risk"
+        },
+        {
+          "Name": "Desc_Launcher_2",
+          "Type": 1,
+          "Left": 455.0,
+          "Top": 402.0,
+          "Width": 350.0,
+          "Height": 90.0,
+          "Text": "Contract vulnerability profiling, early "
+        }
+      ],
+      "HelperCells": {}
+    },
+    "01_Business_Domains": {
+      "Visible": -1,
+      "ShapesCount": 55,
+      "ChartObjectsCount": 0,
+      "PivotTablesCount": 0,
+      "PivotTables": [],
+      "ChartObjects": [],
+      "Shapes": [
+        {
+          "Name": "Rectangle 18",
+          "Type": 1,
+          "Left": 21.0,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 19",
+          "Type": 1,
+          "Left": 44.0,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 22",
+          "Type": 1,
+          "Left": 90.0,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "01 Call Center Operations\nTelecommunicat"
+        },
+        {
+          "Name": "Rounded Rectangle 23",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Inbound Customer Call"
+        },
+        {
+          "Name": "Rectangle 26",
+          "Type": 1,
+          "Left": 436.6,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 27",
+          "Type": 1,
+          "Left": 459.6,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 30",
+          "Type": 1,
+          "Left": 505.6,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "02 Customer Retention & Churn\nSubscripti"
+        },
+        {
+          "Name": "Rounded Rectangle 31",
+          "Type": 1,
+          "Left": 455.6,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Customer Subscription"
+        },
+        {
+          "Name": "Rectangle 34",
+          "Type": 1,
+          "Left": 852.2,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 35",
+          "Type": 1,
+          "Left": 875.2,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 38",
+          "Type": 1,
+          "Left": 921.2,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "03 Diversity & Inclusion Governance\nPhar"
+        },
+        {
+          "Name": "Rounded Rectangle 39",
+          "Type": 1,
+          "Left": 871.2,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Corporate Employee Ca"
+        },
+        {
+          "Name": "Rectangle 45",
+          "Type": 1,
+          "Left": 21.0,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 46",
+          "Type": 1,
+          "Left": 44.0,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 49",
+          "Type": 1,
+          "Left": 90.0,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "01 Call Center Operations\nTelecommunicat"
+        },
+        {
+          "Name": "Rounded Rectangle 50",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Inbound Customer Call"
+        },
+        {
+          "Name": "Rectangle 53",
+          "Type": 1,
+          "Left": 436.6,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 54",
+          "Type": 1,
+          "Left": 459.6,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 57",
+          "Type": 1,
+          "Left": 505.6,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "02 Customer Retention & Churn\nSubscripti"
+        },
+        {
+          "Name": "Rounded Rectangle 58",
+          "Type": 1,
+          "Left": 455.6,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Customer Subscription"
+        },
+        {
+          "Name": "Rectangle 61",
+          "Type": 1,
+          "Left": 852.2,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 62",
+          "Type": 1,
+          "Left": 875.2,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 65",
+          "Type": 1,
+          "Left": 921.2,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "03 Diversity & Inclusion Governance\nPhar"
+        },
+        {
+          "Name": "Rounded Rectangle 66",
+          "Type": 1,
+          "Left": 871.2,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Corporate Employee Ca"
+        },
+        {
+          "Name": "Nav_TopBar",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 16.0,
+          "Width": 1221.8,
+          "Height": 52.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_PwCLogoImage",
+          "Type": 13,
+          "Left": 34.0,
+          "Top": 23.0,
+          "Width": 54.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_Divider",
+          "Type": 1,
+          "Left": 98.0,
+          "Top": 26.0,
+          "Width": 1.0,
+          "Height": 32.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_BrandTitle",
+          "Type": 1,
+          "Left": 108.0,
+          "Top": 23.0,
+          "Width": 480.6,
+          "Height": 38.0,
+          "Text": "PwC Switzerland  |  Client Business Doma"
+        },
+        {
+          "Name": "btn_HomePortal",
+          "Type": 1,
+          "Left": 891.2,
+          "Top": 28.0,
+          "Width": 95.6,
+          "Height": 28.0,
+          "Text": "Home Portal"
+        },
+        {
+          "Name": "btn_ThemeToggle",
+          "Type": 1,
+          "Left": 996.8,
+          "Top": 28.0,
+          "Width": 95.0,
+          "Height": 28.0,
+          "Text": "DARK MODE"
+        },
+        {
+          "Name": "Nav_StatusPill",
+          "Type": 1,
+          "Left": 1101.8,
+          "Top": 28.0,
+          "Width": 126.0,
+          "Height": 28.0,
+          "Text": "DATA ARCHITECTURE"
+        },
+        {
+          "Name": "Nav_IconLive",
+          "Type": 28,
+          "Left": 1109.8,
+          "Top": 35.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_Domains_Card",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 80.0,
+          "Width": 1221.8,
+          "Height": 72.6,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_Domains_Text",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 88.0,
+          "Width": 1181.8,
+          "Height": 56.0,
+          "Text": "Enterprise Business Architecture & Opera"
+        },
+        {
+          "Name": "Card_Domain_1",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 165.6,
+          "Width": 390.6,
+          "Height": 490.6,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 24",
+          "Type": 1,
+          "Left": 21.0,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 25",
+          "Type": 1,
+          "Left": 44.0,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        },
+        {
+          "Name": "Icon_Domain_1",
+          "Type": 28,
+          "Left": 53.0,
+          "Top": 192.6,
+          "Width": 18.0,
+          "Height": 18.0,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 33",
+          "Type": 1,
+          "Left": 90.0,
+          "Top": 181.6,
+          "Width": 300.6,
+          "Height": 42.0,
+          "Text": "01 Call Center Operations\nTelecommunicat"
+        },
+        {
+          "Name": "Rounded Rectangle 36",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 233.6,
+          "Width": 350.6,
+          "Height": 350.6,
+          "Text": "DATA MODEL GRAIN\n1 Inbound Customer Call"
+        },
+        {
+          "Name": "Btn_Launch_Dom_1",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 596.2,
+          "Width": 350.6,
+          "Height": 38.0,
+          "Text": "Launch Call Center Cockpit ->"
+        },
+        {
+          "Name": "Card_Domain_2",
+          "Type": 1,
+          "Left": 435.6,
+          "Top": 165.6,
+          "Width": 390.6,
+          "Height": 490.6,
+          "Text": ""
+        },
+        {
+          "Name": "Rectangle 47",
+          "Type": 1,
+          "Left": 436.6,
+          "Top": 166.6,
+          "Width": 388.6,
+          "Height": 5.0,
+          "Text": ""
+        },
+        {
+          "Name": "Oval 55",
+          "Type": 1,
+          "Left": 459.6,
+          "Top": 183.6,
+          "Width": 36.0,
+          "Height": 36.0,
+          "Text": ""
+        }
+      ],
+      "HelperCells": {}
+    },
+    "02_Metadata_&_KPI_Catalog": {
+      "Visible": -1,
+      "ShapesCount": 15,
+      "ChartObjectsCount": 0,
+      "PivotTablesCount": 0,
+      "PivotTables": [],
+      "ChartObjects": [],
+      "Shapes": [
+        {
+          "Name": "Nav_TopBar",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 16.0,
+          "Width": 1220.0,
+          "Height": 52.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_PwCLogoImage",
+          "Type": 13,
+          "Left": 34.0,
+          "Top": 23.0,
+          "Width": 54.0,
+          "Height": 38.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_Divider",
+          "Type": 1,
+          "Left": 98.0,
+          "Top": 26.0,
+          "Width": 1.0,
+          "Height": 32.0,
+          "Text": ""
+        },
+        {
+          "Name": "Nav_BrandTitle",
+          "Type": 1,
+          "Left": 108.0,
+          "Top": 23.0,
+          "Width": 480.0,
+          "Height": 38.0,
+          "Text": "PwC Switzerland  |  Enterprise Metadata "
+        },
+        {
+          "Name": "btn_HomePortal",
+          "Type": 1,
+          "Left": 890.0,
+          "Top": 28.0,
+          "Width": 95.0,
+          "Height": 28.0,
+          "Text": "Home Portal"
+        },
+        {
+          "Name": "btn_ThemeToggle",
+          "Type": 1,
+          "Left": 995.0,
+          "Top": 28.0,
+          "Width": 95.0,
+          "Height": 28.0,
+          "Text": "DARK MODE"
+        },
+        {
+          "Name": "Nav_StatusPill",
+          "Type": 1,
+          "Left": 1100.0,
+          "Top": 28.0,
+          "Width": 126.0,
+          "Height": 28.0,
+          "Text": "GOVERNANCE AUDITED"
+        },
+        {
+          "Name": "Nav_IconLive",
+          "Type": 28,
+          "Left": 1108.0,
+          "Top": 35.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_Cat_Card",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 80.0,
+          "Width": 1220.0,
+          "Height": 72.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_Cat_Text",
+          "Type": 1,
+          "Left": 40.0,
+          "Top": 88.0,
+          "Width": 1180.0,
+          "Height": 56.0,
+          "Text": "Enterprise Metadata & Measure Governance"
+        },
+        {
+          "Name": "Btn_Jump_1",
+          "Type": 1,
+          "Left": 20.0,
+          "Top": 830.0,
+          "Width": 236.0,
+          "Height": 34.0,
+          "Text": "Return to Home Portal"
+        },
+        {
+          "Name": "Btn_Jump_2",
+          "Type": 1,
+          "Left": 266.0,
+          "Top": 830.0,
+          "Width": 236.0,
+          "Height": 34.0,
+          "Text": "View Business Domains"
+        },
+        {
+          "Name": "Btn_Jump_3",
+          "Type": 1,
+          "Left": 512.0,
+          "Top": 830.0,
+          "Width": 236.0,
+          "Height": 34.0,
+          "Text": "Launch Call Center Cockpit"
+        },
+        {
+          "Name": "Btn_Jump_4",
+          "Type": 1,
+          "Left": 758.0,
+          "Top": 830.0,
+          "Width": 236.0,
+          "Height": 34.0,
+          "Text": "Launch Customer Retention Cockpit"
+        },
+        {
+          "Name": "Btn_Jump_5",
+          "Type": 1,
+          "Left": 1004.0,
+          "Top": 830.0,
+          "Width": 236.0,
+          "Height": 34.0,
+          "Text": "Launch D&I Cockpit"
+        }
+      ],
+      "HelperCells": {}
+    },
+    "03_CallCenter_Cockpit": {
+      "Visible": -1,
+      "ShapesCount": 79,
+      "ChartObjectsCount": 4,
+      "PivotTablesCount": 0,
+      "PivotTables": [],
+      "ChartObjects": [
+        {
+          "Name": "CC_HourlyVolume",
+          "Left": 282.7142639160156,
+          "Top": 271.08575439453125,
+          "Width": 446.79998779296875,
+          "Height": 209.0570831298828,
+          "HasPivotLayout": true,
+          "PivotTable": "PivotChartTable3",
+          "ChartType": 51
+        },
+        {
+          "Name": "CC_TopicBreakdown",
+          "Left": 279.4285888671875,
+          "Top": 550.2857666015625,
+          "Width": 444.857177734375,
+          "Height": 206.5714111328125,
+          "HasPivotLayout": true,
+          "PivotTable": "PivotChartTable6",
+          "ChartType": 57
+        },
+        {
+          "Name": "CC_AgentQuadrant",
+          "Left": 776.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": true,
+          "PivotTable": "PivotChartTable8",
+          "ChartType": -4111
+        },
+        {
+          "Name": "CC_AgentScorecard",
+          "Left": 773.9428100585938,
+          "Top": 555.5999755859375,
+          "Width": 446.79998779296875,
+          "Height": 209.14283752441406,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": -4111
+        }
+      ],
+      "Shapes": [
+        {
+          "Name": "Hero_TitleText",
+          "Type": 17,
+          "Left": 24.0,
+          "Top": 75.7,
+          "Width": 831.8,
+          "Height": 45.7,
+          "Text": "Call Centre Operations & SLA Performance"
+        },
+        {
+          "Name": "Hero_BtnRefresh",
+          "Type": 1,
+          "Left": 869.8,
+          "Top": 83.7,
+          "Width": 121.7,
+          "Height": 27.9,
+          "Text": "Refresh Data"
+        },
+        {
+          "Name": "Hero_IconRefresh",
+          "Type": 28,
+          "Left": 879.8,
+          "Top": 90.7,
+          "Width": 13.8,
+          "Height": 13.9,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BtnResetSlicers",
+          "Type": 1,
+          "Left": 999.4,
+          "Top": 83.7,
+          "Width": 117.7,
+          "Height": 27.9,
+          "Text": "Reset Filters"
+        },
+        {
+          "Name": "Hero_IconReset",
+          "Type": 28,
+          "Left": 1009.4,
+          "Top": 90.7,
+          "Width": 13.8,
+          "Height": 13.9,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BtnExportPDF",
+          "Type": 1,
+          "Left": 1125.1,
+          "Top": 83.7,
+          "Width": 109.7,
+          "Height": 27.9,
+          "Text": "Export PDF"
+        },
+        {
+          "Name": "Hero_IconPDF",
+          "Type": 28,
+          "Left": 1135.1,
+          "Top": 90.7,
+          "Width": 13.8,
+          "Height": 13.9,
+          "Text": ""
+        },
+        {
+          "Name": "Card_CC_TotalDemand",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 129.5,
+          "Width": 229.5,
+          "Height": 83.7,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CC_TotalDemand",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 134.5,
+          "Width": 205.5,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CC_TotalDemand",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 139.4,
+          "Width": 201.5,
+          "Height": 16.0,
+          "Text": "TOTAL CALL INTAKE"
+        },
+        {
+          "Name": "Value_CC_TotalDemand",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 151.4,
+          "Width": 201.5,
+          "Height": 39.8,
+          "Text": "5,000"
+        },
+        {
+          "Name": "Subtext_CC_TotalDemand",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 189.2,
+          "Width": 201.5,
+          "Height": 15.9,
+          "Text": "\u25b2 12.4% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CC_Answered",
+          "Type": 1,
+          "Left": 269.3,
+          "Top": 129.5,
+          "Width": 229.5,
+          "Height": 83.7,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CC_Answered",
+          "Type": 1,
+          "Left": 281.3,
+          "Top": 134.5,
+          "Width": 205.5,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CC_Answered",
+          "Type": 17,
+          "Left": 283.3,
+          "Top": 139.4,
+          "Width": 201.5,
+          "Height": 16.0,
+          "Text": "OPERATIONAL ANSWER RATE"
+        },
+        {
+          "Name": "Value_CC_Answered",
+          "Type": 17,
+          "Left": 283.3,
+          "Top": 151.4,
+          "Width": 201.5,
+          "Height": 39.8,
+          "Text": "81.08%"
+        },
+        {
+          "Name": "Subtext_CC_Answered",
+          "Type": 17,
+          "Left": 283.3,
+          "Top": 189.2,
+          "Width": 201.5,
+          "Height": 15.9,
+          "Text": "\u25b2 11.8% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CC_Abandoned",
+          "Type": 1,
+          "Left": 514.6,
+          "Top": 129.5,
+          "Width": 229.5,
+          "Height": 83.7,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CC_Abandoned",
+          "Type": 1,
+          "Left": 526.6,
+          "Top": 134.5,
+          "Width": 205.5,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CC_Abandoned",
+          "Type": 17,
+          "Left": 528.6,
+          "Top": 139.4,
+          "Width": 201.5,
+          "Height": 16.0,
+          "Text": "QUEUE ABANDONMENT RATE"
+        },
+        {
+          "Name": "Value_CC_Abandoned",
+          "Type": 17,
+          "Left": 528.6,
+          "Top": 151.4,
+          "Width": 201.5,
+          "Height": 39.8,
+          "Text": "18.92%"
+        },
+        {
+          "Name": "Subtext_CC_Abandoned",
+          "Type": 17,
+          "Left": 528.6,
+          "Top": 189.2,
+          "Width": 201.5,
+          "Height": 15.9,
+          "Text": "\u25b2 18.7% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CC_ASA",
+          "Type": 1,
+          "Left": 760.1,
+          "Top": 129.5,
+          "Width": 229.3,
+          "Height": 83.7,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CC_ASA",
+          "Type": 1,
+          "Left": 771.9,
+          "Top": 134.5,
+          "Width": 205.5,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CC_ASA",
+          "Type": 17,
+          "Left": 773.9,
+          "Top": 139.4,
+          "Width": 201.5,
+          "Height": 16.0,
+          "Text": "AVG SPEED OF ANSWER"
+        },
+        {
+          "Name": "Value_CC_ASA",
+          "Type": 17,
+          "Left": 773.9,
+          "Top": 151.4,
+          "Width": 201.5,
+          "Height": 39.8,
+          "Text": "67.5 s"
+        },
+        {
+          "Name": "Subtext_CC_ASA",
+          "Type": 17,
+          "Left": 773.9,
+          "Top": 189.2,
+          "Width": 201.5,
+          "Height": 15.9,
+          "Text": "\u25bc 3.4% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CC_CSAT",
+          "Type": 1,
+          "Left": 1005.4,
+          "Top": 129.5,
+          "Width": 229.3,
+          "Height": 83.7,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CC_CSAT",
+          "Type": 1,
+          "Left": 1017.3,
+          "Top": 134.5,
+          "Width": 205.5,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CC_CSAT",
+          "Type": 17,
+          "Left": 1019.3,
+          "Top": 139.4,
+          "Width": 201.5,
+          "Height": 16.0,
+          "Text": "AVERAGE CSAT RATING"
+        },
+        {
+          "Name": "Value_CC_CSAT",
+          "Type": 17,
+          "Left": 1019.3,
+          "Top": 151.4,
+          "Width": 201.5,
+          "Height": 39.8,
+          "Text": "3.40"
+        },
+        {
+          "Name": "Subtext_CC_CSAT",
+          "Type": 17,
+          "Left": 1019.3,
+          "Top": 189.2,
+          "Width": 201.5,
+          "Height": 15.9,
+          "Text": "\u25b2 0.3 vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Panel_CC_Slicers",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 225.1,
+          "Width": 229.5,
+          "Height": 551.6,
+          "Text": ""
+        },
+        {
+          "Name": "Header_CC_Slicers",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 237.0,
+          "Width": 201.5,
+          "Height": 35.9,
+          "Text": "  FILTERS"
+        },
+        {
+          "Name": "Slot1_CC_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 278.8,
+          "Width": 205.5,
+          "Height": 144.4,
+          "Text": "[ Slicer Slot 1: Date Period (Month) ]\n\n"
+        },
+        {
+          "Name": "Slot2_CC_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 434.1,
+          "Width": 205.5,
+          "Height": 144.4,
+          "Text": "[ Slicer Slot 2: Inquiry Topic Tier ]\n\nI"
+        },
+        {
+          "Name": "Slot3_CC_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 589.5,
+          "Width": 205.5,
+          "Height": 134.4,
+          "Text": "[ Slicer Slot 3: Representative Agent ]\n"
+        },
+        {
+          "Name": "Footer_CC_Slicers",
+          "Type": 17,
+          "Left": 36.0,
+          "Top": 732.8,
+          "Width": 205.5,
+          "Height": 33.9,
+          "Text": "Multi-select slicers dynamically filter "
+        },
+        {
+          "Name": "Container_CC_HourlyVolume",
+          "Type": 1,
+          "Left": 269.3,
+          "Top": 225.1,
+          "Width": 474.8,
+          "Height": 268.8,
+          "Text": ""
+        },
+        {
+          "Name": "Header_CC_HourlyVolume",
+          "Type": 17,
+          "Left": 285.3,
+          "Top": 235.1,
+          "Width": 335.1,
+          "Height": 35.8,
+          "Text": "Intraday Demand Surge & Queue Triage\nHou"
+        },
+        {
+          "Name": "Badge_CC_HourlyVolume",
+          "Type": 1,
+          "Left": 628.5,
+          "Top": 235.1,
+          "Width": 101.7,
+          "Height": 21.8,
+          "Text": "Column Chart"
+        },
+        {
+          "Name": "DockZone_CC_HourlyVolume",
+          "Type": 1,
+          "Left": 283.3,
+          "Top": 272.9,
+          "Width": 448.0,
+          "Height": 210.0,
+          "Text": ""
+        },
+        {
+          "Name": "Container_CC_TopicBreakdown",
+          "Type": 1,
+          "Left": 269.3,
+          "Top": 507.9,
+          "Width": 474.8,
+          "Height": 268.8,
+          "Text": ""
+        },
+        {
+          "Name": "Header_CC_TopicBreakdown",
+          "Type": 17,
+          "Left": 285.3,
+          "Top": 517.8,
+          "Width": 335.1,
+          "Height": 35.8,
+          "Text": "Inquiry Topic SLA Compliance & Speed\nCon"
+        }
+      ],
+      "HelperCells": {
+        "AA64": {
+          "Value": "Total Call Intake",
+          "Formula": "Total Call Intake"
+        },
+        "AA65": {
+          "Value": "5000.0",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Total Demand]\")"
+        },
+        "AB64": {
+          "Value": "Operational Answer Rate",
+          "Formula": "Operational Answer Rate"
+        },
+        "AB65": {
+          "Value": "0.8108",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Answer Rate %]\")"
+        },
+        "AC64": {
+          "Value": "Queue Abandonment Rate",
+          "Formula": "Queue Abandonment Rate"
+        },
+        "AC65": {
+          "Value": "0.1892",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Abandonment Rate %]\")"
+        },
+        "AD64": {
+          "Value": "Avg Speed of Answer",
+          "Formula": "Avg Speed of Answer"
+        },
+        "AD65": {
+          "Value": "67.52072027627035",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Average Speed of Answer (s)]\")"
+        },
+        "AE64": {
+          "Value": "Average CSAT Rating",
+          "Formula": "Average CSAT Rating"
+        },
+        "AE65": {
+          "Value": "3.4035520473606313",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Average CSAT]\")"
+        }
+      }
+    },
+    "04_CustomerRetention_Cockpit": {
+      "Visible": -1,
+      "ShapesCount": 77,
+      "ChartObjectsCount": 4,
+      "PivotTablesCount": 0,
+      "PivotTables": [],
+      "ChartObjects": [
+        {
+          "Name": "CH_ContractRisk",
+          "Left": 284.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": -4111
+        },
+        {
+          "Name": "CH_TenureCohort",
+          "Left": 284.0,
+          "Top": 558.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": 1
+        },
+        {
+          "Name": "CH_PaymentFriction",
+          "Left": 776.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": -4120
+        },
+        {
+          "Name": "CH_ServiceMatrix",
+          "Left": 776.0,
+          "Top": 558.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": -4111
+        }
+      ],
+      "Shapes": [
+        {
+          "Name": "Hero_TitleText",
+          "Type": 17,
+          "Left": 24.0,
+          "Top": 76.0,
+          "Width": 834.0,
+          "Height": 46.0,
+          "Text": "Customer Retention & Revenue Risk Cockpi"
+        },
+        {
+          "Name": "Hero_BtnRefresh",
+          "Type": 1,
+          "Left": 872.0,
+          "Top": 84.0,
+          "Width": 122.0,
+          "Height": 28.0,
+          "Text": "Refresh Data"
+        },
+        {
+          "Name": "Hero_IconRefresh",
+          "Type": 28,
+          "Left": 882.0,
+          "Top": 91.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BtnResetSlicers",
+          "Type": 1,
+          "Left": 1002.0,
+          "Top": 84.0,
+          "Width": 118.0,
+          "Height": 28.0,
+          "Text": "Reset Filters"
+        },
+        {
+          "Name": "Hero_IconReset",
+          "Type": 28,
+          "Left": 1012.0,
+          "Top": 91.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BtnExportPDF",
+          "Type": 1,
+          "Left": 1128.0,
+          "Top": 84.0,
+          "Width": 110.0,
+          "Height": 28.0,
+          "Text": "Export PDF"
+        },
+        {
+          "Name": "Hero_IconPDF",
+          "Type": 28,
+          "Left": 1138.0,
+          "Top": 91.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Card_CH_Subscribers",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CH_Subscribers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CH_Subscribers",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "TOTAL ACTIVE ACCOUNTS"
+        },
+        {
+          "Name": "Value_CH_Subscribers",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "7,043"
+        },
+        {
+          "Name": "Subtext_CH_Subscribers",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25b2 4.2% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CH_ChurnRate",
+          "Type": 1,
+          "Left": 270.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CH_ChurnRate",
+          "Type": 1,
+          "Left": 282.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CH_ChurnRate",
+          "Type": 17,
+          "Left": 284.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "CUSTOMER CHURN RATE"
+        },
+        {
+          "Name": "Value_CH_ChurnRate",
+          "Type": 17,
+          "Left": 284.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "26.54%"
+        },
+        {
+          "Name": "Subtext_CH_ChurnRate",
+          "Type": 17,
+          "Left": 284.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25bc 1.8% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CH_ARRRisk",
+          "Type": 1,
+          "Left": 516.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CH_ARRRisk",
+          "Type": 1,
+          "Left": 528.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CH_ARRRisk",
+          "Type": 17,
+          "Left": 530.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "ANNUAL REVENUE AT RISK"
+        },
+        {
+          "Name": "Value_CH_ARRRisk",
+          "Type": 17,
+          "Left": 530.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "$139,130.85"
+        },
+        {
+          "Name": "Subtext_CH_ARRRisk",
+          "Type": 17,
+          "Left": 530.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25bc 5.4% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CH_M2MChurn",
+          "Type": 1,
+          "Left": 762.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CH_M2MChurn",
+          "Type": 1,
+          "Left": 774.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CH_M2MChurn",
+          "Type": 17,
+          "Left": 776.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "MONTH-TO-MONTH CHURN"
+        },
+        {
+          "Name": "Value_CH_M2MChurn",
+          "Type": 17,
+          "Left": 776.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "42.71%"
+        },
+        {
+          "Name": "Subtext_CH_M2MChurn",
+          "Type": 17,
+          "Left": 776.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25b2 2.1% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_CH_Tickets",
+          "Type": 1,
+          "Left": 1008.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_CH_Tickets",
+          "Type": 1,
+          "Left": 1020.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_CH_Tickets",
+          "Type": 17,
+          "Left": 1022.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "TECH TICKETS PER CHURN"
+        },
+        {
+          "Name": "Value_CH_Tickets",
+          "Type": 17,
+          "Left": 1022.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "0.42"
+        },
+        {
+          "Name": "Subtext_CH_Tickets",
+          "Type": 17,
+          "Left": 1022.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25bc 0.4 vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Panel_CH_Slicers",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 226.0,
+          "Width": 230.0,
+          "Height": 554.0,
+          "Text": ""
+        },
+        {
+          "Name": "Header_CH_Slicers",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 238.0,
+          "Width": 202.0,
+          "Height": 36.0,
+          "Text": "  FILTERS"
+        },
+        {
+          "Name": "Slot1_CH_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 280.0,
+          "Width": 206.0,
+          "Height": 145.0,
+          "Text": "[ Slicer Slot 1: Commitment Contract ]\n\n"
+        },
+        {
+          "Name": "Slot2_CH_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 436.0,
+          "Width": 206.0,
+          "Height": 145.0,
+          "Text": "[ Slicer Slot 2: Payment Method Tier ]\n\n"
+        },
+        {
+          "Name": "Slot3_CH_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 592.0,
+          "Width": 206.0,
+          "Height": 135.0,
+          "Text": "[ Slicer Slot 3: Internet Service Type ]"
+        },
+        {
+          "Name": "Footer_CH_Slicers",
+          "Type": 17,
+          "Left": 36.0,
+          "Top": 736.0,
+          "Width": 206.0,
+          "Height": 34.0,
+          "Text": "Multi-select slicers dynamically filter "
+        },
+        {
+          "Name": "Container_CH_ContractRisk",
+          "Type": 1,
+          "Left": 270.0,
+          "Top": 226.0,
+          "Width": 476.0,
+          "Height": 270.0,
+          "Text": ""
+        },
+        {
+          "Name": "Header_CH_ContractRisk",
+          "Type": 17,
+          "Left": 286.0,
+          "Top": 236.0,
+          "Width": 336.0,
+          "Height": 36.0,
+          "Text": "Churn Rate % by Commitment Contract\nMont"
+        },
+        {
+          "Name": "Badge_CH_ContractRisk",
+          "Type": 1,
+          "Left": 630.0,
+          "Top": 236.0,
+          "Width": 102.0,
+          "Height": 22.0,
+          "Text": "Column Chart"
+        },
+        {
+          "Name": "DockZone_CH_ContractRisk",
+          "Type": 1,
+          "Left": 284.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "Text": ""
+        },
+        {
+          "Name": "Container_CH_TenureCohort",
+          "Type": 1,
+          "Left": 270.0,
+          "Top": 510.0,
+          "Width": 476.0,
+          "Height": 270.0,
+          "Text": ""
+        },
+        {
+          "Name": "Header_CH_TenureCohort",
+          "Type": 17,
+          "Left": 286.0,
+          "Top": 520.0,
+          "Width": 336.0,
+          "Height": 36.0,
+          "Text": "Tenure Attrition Curve & Vulnerability\nE"
+        }
+      ],
+      "HelperCells": {
+        "AA64": {
+          "Value": "Total Active Accounts",
+          "Formula": "Total Active Accounts"
+        },
+        "AA65": {
+          "Value": "7043.0",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Total Customers]\")"
+        },
+        "AB64": {
+          "Value": "Customer Churn Rate",
+          "Formula": "Customer Churn Rate"
+        },
+        "AB65": {
+          "Value": "0.2653698707936959",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Churn Rate %]\")"
+        },
+        "AC64": {
+          "Value": "Annual Revenue at Risk",
+          "Formula": "Annual Revenue at Risk"
+        },
+        "AC65": {
+          "Value": "139130.85",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[At-Risk MRR]\")"
+        },
+        "AD64": {
+          "Value": "Month-to-Month Churn",
+          "Formula": "Month-to-Month Churn"
+        },
+        "AD65": {
+          "Value": "0.4270967741935484",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Contract M2M Churn Rate %]\")"
+        },
+        "AE64": {
+          "Value": "Tech Tickets per Customer",
+          "Formula": "Tech Tickets per Customer"
+        },
+        "AE65": {
+          "Value": "0.41956552605423825",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Avg Tech Tickets per Customer]\")"
+        }
+      }
+    },
+    "05_DiversityInclusion_Cockpit": {
+      "Visible": -1,
+      "ShapesCount": 77,
+      "ChartObjectsCount": 4,
+      "PivotTablesCount": 0,
+      "PivotTables": [],
+      "ChartObjects": [
+        {
+          "Name": "DI_PipelineFunnel",
+          "Left": 284.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": 59
+        },
+        {
+          "Name": "DI_DeptParity",
+          "Left": 284.0,
+          "Top": 558.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": 57
+        },
+        {
+          "Name": "DI_PromoVelocity",
+          "Left": 776.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": 51
+        },
+        {
+          "Name": "DI_PerformanceAudit",
+          "Left": 776.0,
+          "Top": 558.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "HasPivotLayout": false,
+          "PivotTable": null,
+          "ChartType": -4111
+        }
+      ],
+      "Shapes": [
+        {
+          "Name": "Hero_TitleText",
+          "Type": 17,
+          "Left": 24.0,
+          "Top": 76.0,
+          "Width": 834.0,
+          "Height": 46.0,
+          "Text": "Diversity, Equity & Executive Parity Coc"
+        },
+        {
+          "Name": "Hero_BtnRefresh",
+          "Type": 1,
+          "Left": 872.0,
+          "Top": 84.0,
+          "Width": 122.0,
+          "Height": 28.0,
+          "Text": "Refresh Data"
+        },
+        {
+          "Name": "Hero_IconRefresh",
+          "Type": 28,
+          "Left": 882.0,
+          "Top": 91.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BtnResetSlicers",
+          "Type": 1,
+          "Left": 1002.0,
+          "Top": 84.0,
+          "Width": 118.0,
+          "Height": 28.0,
+          "Text": "Reset Filters"
+        },
+        {
+          "Name": "Hero_IconReset",
+          "Type": 28,
+          "Left": 1012.0,
+          "Top": 91.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Hero_BtnExportPDF",
+          "Type": 1,
+          "Left": 1128.0,
+          "Top": 84.0,
+          "Width": 110.0,
+          "Height": 28.0,
+          "Text": "Export PDF"
+        },
+        {
+          "Name": "Hero_IconPDF",
+          "Type": 28,
+          "Left": 1138.0,
+          "Top": 91.0,
+          "Width": 14.0,
+          "Height": 14.0,
+          "Text": ""
+        },
+        {
+          "Name": "Card_DI_Workforce",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_DI_Workforce",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_DI_Workforce",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "TOTAL CORPORATE CENSUS"
+        },
+        {
+          "Name": "Value_DI_Workforce",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "500"
+        },
+        {
+          "Name": "Subtext_DI_Workforce",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25b2 3.5% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_DI_FemaleShare",
+          "Type": 1,
+          "Left": 270.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_DI_FemaleShare",
+          "Type": 1,
+          "Left": 282.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_DI_FemaleShare",
+          "Type": 17,
+          "Left": 284.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "FEMALE HEADCOUNT SHARE"
+        },
+        {
+          "Name": "Value_DI_FemaleShare",
+          "Type": 17,
+          "Left": 284.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "41.00%"
+        },
+        {
+          "Name": "Subtext_DI_FemaleShare",
+          "Type": 17,
+          "Left": 284.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25b2 2.0% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_DI_BrokenRung",
+          "Type": 1,
+          "Left": 516.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_DI_BrokenRung",
+          "Type": 1,
+          "Left": 528.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_DI_BrokenRung",
+          "Type": 17,
+          "Left": 530.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "BROKEN RUNG CLIFF GAP"
+        },
+        {
+          "Name": "Value_DI_BrokenRung",
+          "Type": 17,
+          "Left": 530.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "14.29%"
+        },
+        {
+          "Name": "Subtext_DI_BrokenRung",
+          "Type": 17,
+          "Left": 530.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25bc 1.2% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_DI_PromoShare",
+          "Type": 1,
+          "Left": 762.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_DI_PromoShare",
+          "Type": 1,
+          "Left": 774.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_DI_PromoShare",
+          "Type": 17,
+          "Left": 776.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "FY21 PROMOTIONS AWARDED"
+        },
+        {
+          "Name": "Value_DI_PromoShare",
+          "Type": 17,
+          "Left": 776.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "35.29%"
+        },
+        {
+          "Name": "Subtext_DI_PromoShare",
+          "Type": 17,
+          "Left": 776.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "\u25b2 4.1% vs PY  |  Target Benchmark"
+        },
+        {
+          "Name": "Card_DI_TimeInGrade",
+          "Type": 1,
+          "Left": 1008.0,
+          "Top": 130.0,
+          "Width": 230.0,
+          "Height": 84.0,
+          "Text": ""
+        },
+        {
+          "Name": "Accent_DI_TimeInGrade",
+          "Type": 1,
+          "Left": 1020.0,
+          "Top": 135.0,
+          "Width": 206.0,
+          "Height": 3.0,
+          "Text": ""
+        },
+        {
+          "Name": "Label_DI_TimeInGrade",
+          "Type": 17,
+          "Left": 1022.0,
+          "Top": 140.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "PROMOTION VELOCITY GAP"
+        },
+        {
+          "Name": "Value_DI_TimeInGrade",
+          "Type": 17,
+          "Left": 1022.0,
+          "Top": 152.0,
+          "Width": 202.0,
+          "Height": 40.0,
+          "Text": "9.40%"
+        },
+        {
+          "Name": "Subtext_DI_TimeInGrade",
+          "Type": 17,
+          "Left": 1022.0,
+          "Top": 190.0,
+          "Width": 202.0,
+          "Height": 16.0,
+          "Text": "0.0 Mos Gap  |  Target Benchmark"
+        },
+        {
+          "Name": "Panel_DI_Slicers",
+          "Type": 1,
+          "Left": 24.0,
+          "Top": 226.0,
+          "Width": 230.0,
+          "Height": 554.0,
+          "Text": ""
+        },
+        {
+          "Name": "Header_DI_Slicers",
+          "Type": 17,
+          "Left": 38.0,
+          "Top": 238.0,
+          "Width": 202.0,
+          "Height": 36.0,
+          "Text": "  FILTERS"
+        },
+        {
+          "Name": "Slot1_DI_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 280.0,
+          "Width": 206.0,
+          "Height": 145.0,
+          "Text": "[ Slicer Slot 1: Department Group ]\n\nIns"
+        },
+        {
+          "Name": "Slot2_DI_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 436.0,
+          "Width": 206.0,
+          "Height": 145.0,
+          "Text": "[ Slicer Slot 2: Job Level Tier ]\n\nInser"
+        },
+        {
+          "Name": "Slot3_DI_Slicers",
+          "Type": 1,
+          "Left": 36.0,
+          "Top": 592.0,
+          "Width": 206.0,
+          "Height": 135.0,
+          "Text": "[ Slicer Slot 3: Age Demographic Cohort "
+        },
+        {
+          "Name": "Footer_DI_Slicers",
+          "Type": 17,
+          "Left": 36.0,
+          "Top": 736.0,
+          "Width": 206.0,
+          "Height": 34.0,
+          "Text": "Multi-select slicers dynamically filter "
+        },
+        {
+          "Name": "Container_DI_PipelineFunnel",
+          "Type": 1,
+          "Left": 270.0,
+          "Top": 226.0,
+          "Width": 476.0,
+          "Height": 270.0,
+          "Text": ""
+        },
+        {
+          "Name": "Header_DI_PipelineFunnel",
+          "Type": 17,
+          "Left": 286.0,
+          "Top": 236.0,
+          "Width": 336.0,
+          "Height": 36.0,
+          "Text": "Workforce Hierarchy & Broken Rung Funnel"
+        },
+        {
+          "Name": "Badge_DI_PipelineFunnel",
+          "Type": 1,
+          "Left": 630.0,
+          "Top": 236.0,
+          "Width": 102.0,
+          "Height": 22.0,
+          "Text": "Funnel / Bar"
+        },
+        {
+          "Name": "DockZone_DI_PipelineFunnel",
+          "Type": 1,
+          "Left": 284.0,
+          "Top": 274.0,
+          "Width": 448.0,
+          "Height": 210.0,
+          "Text": ""
+        },
+        {
+          "Name": "Container_DI_DeptParity",
+          "Type": 1,
+          "Left": 270.0,
+          "Top": 510.0,
+          "Width": 476.0,
+          "Height": 270.0,
+          "Text": ""
+        },
+        {
+          "Name": "Header_DI_DeptParity",
+          "Type": 17,
+          "Left": 286.0,
+          "Top": 520.0,
+          "Width": 336.0,
+          "Height": 36.0,
+          "Text": "Departmental Representation & Target Gap"
+        }
+      ],
+      "HelperCells": {
+        "AA64": {
+          "Value": "Total Corporate Census",
+          "Formula": "Total Corporate Census"
+        },
+        "AA65": {
+          "Value": "500.0",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Total Employees]\")"
+        },
+        "AB64": {
+          "Value": "Female Headcount Share",
+          "Formula": "Female Headcount Share"
+        },
+        "AB65": {
+          "Value": "0.41",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Female Representation %]\")"
+        },
+        "AC64": {
+          "Value": "Executive Female Share",
+          "Formula": "Executive Female Share"
+        },
+        "AC65": {
+          "Value": "0.14285714285714285",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Executive Female Share %]\")"
+        },
+        "AD64": {
+          "Value": "FY21 Promotions Awarded",
+          "Formula": "FY21 Promotions Awarded"
+        },
+        "AD65": {
+          "Value": "0.35294117647058826",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Female Promotion %]\")"
+        },
+        "AE64": {
+          "Value": "Annual Turnover Rate",
+          "Formula": "Annual Turnover Rate"
+        },
+        "AE65": {
+          "Value": "0.094",
+          "Formula": "=CUBEVALUE(\"ThisWorkbookDataModel\", \"[Measures].[Turnover Rate %]\")"
+        }
+      }
+    },
+    "Staging_Pivots": {
+      "Visible": -1,
+      "ShapesCount": 0,
+      "ChartObjectsCount": 0,
+      "PivotTablesCount": 1,
+      "PivotTables": [
+        {
+          "Name": "pt_Agent",
+          "TableRange": "$C$3:$H$11"
+        }
+      ],
+      "ChartObjects": [],
+      "Shapes": [],
+      "HelperCells": {}
+    }
+  },
+  "VBA": [
+    {
+      "Name": "ThisWorkbook",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "modCreateGovernanceSheets",
+      "Type": 1,
+      "Lines": 576
+    },
+    {
+      "Name": "modAppState",
+      "Type": 1,
+      "Lines": 40
+    },
+    {
+      "Name": "modDataRefresh",
+      "Type": 1,
+      "Lines": 45
+    },
+    {
+      "Name": "modExportPDF",
+      "Type": 1,
+      "Lines": 46
+    },
+    {
+      "Name": "modFilterController",
+      "Type": 1,
+      "Lines": 26
+    },
+    {
+      "Name": "modNavigation",
+      "Type": 1,
+      "Lines": 53
+    },
+    {
+      "Name": "Sheet7",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "Sheet8",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "modDashboardUIUX",
+      "Type": 1,
+      "Lines": 1762
+    },
+    {
+      "Name": "Sheet1",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "Sheet2",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "Sheet3",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "Sheet4",
+      "Type": 100,
+      "Lines": 2
+    },
+    {
+      "Name": "modPivotTableFormatting",
+      "Type": 1,
+      "Lines": 563
+    },
+    {
+      "Name": "modInteractiveScorecard",
+      "Type": 1,
+      "Lines": 1016
+    },
+    {
+      "Name": "modThemeEngine",
+      "Type": 1,
+      "Lines": 273
+    },
+    {
+      "Name": "modPortalLanding",
+      "Type": 1,
+      "Lines": 687
+    },
+    {
+      "Name": "Sheet5",
+      "Type": 100,
+      "Lines": 2
+    }
+  ]
+}
