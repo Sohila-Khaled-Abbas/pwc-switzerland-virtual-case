@@ -2,7 +2,7 @@ Attribute VB_Name = "modExportPDF"
 Option Explicit
 
 ' ==============================================================================
-' PwC Switzerland Digital Accelerator — Publication-Grade PDF Generator
+' PwC Switzerland Digital Accelerator -- Publication-Grade PDF Generator
 ' Exports active dashboard canvas formatted for A4 Landscape executive briefing
 ' Connected to modAppState and modDashboardUIUX
 ' ==============================================================================

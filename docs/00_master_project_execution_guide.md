@@ -132,26 +132,28 @@ flowchart TD
 
 ---
 
-### Phase 6: Automated Dashboard Canvas Generation & UI/UX Scaffolding (via VBA)
-*Reference Code*: [`vba/modPwC_Unified_Master.bas`](../vba/modPwC_Unified_Master.bas) (Unified Master Suite) or modular [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas)  
+### Phase 6: Automated Dashboard Canvas Generation & Multi-Module Architecture
+*Master Execution Guide*: [`docs/10_vba_script_execution_and_architecture_guide.md`](10_vba_script_execution_and_architecture_guide.md)  
+*Orchestrator Code*: [`vba/modPwC_Unified_Master.bas`](../vba/modPwC_Unified_Master.bas)  
+*UI/UX Engine Code*: [`vba/modDashboardUIUX.bas`](../vba/modDashboardUIUX.bas)  
 *Design Masterclass*: [`docs/07_dashboard_background_and_uiux_guide.md`](07_dashboard_background_and_uiux_guide.md), [`05_dashboard_design_system.md`](05_dashboard_design_system.md)  
-*Connected Capabilities*: Application State Shield, VertiPaq Data Refresh, Multi-Pivot Slicer Reset, Executive PDF Export, Dynamic Light/Dark Theme Engine
+*Connected Subsystems*: `modAppState`, `modThemeEngine`, `modNavigation`, `modDataRefresh`, `modFilterController`, `modExportPDF`, `modCreateGovernanceSheets`, `modPortalLanding`, `modInteractiveScorecard`, `modPivotTableFormatting`
 
 > [!IMPORTANT]
 > **The Golden UI/UX Rule: Build the Canvas BEFORE Inserting Visuals.**  
 > Conventional Excel users create cluttered dashboards by generating PivotCharts first and awkwardly arranging them over harsh spreadsheet gridlines.  
-> **Tier-1 Management Consulting Best Practice**: Treat the Excel worksheet like a **modern Web Application (SaaS) Interface**. Use the unified master VBA script [`vba/modPwC_Unified_Master.bas`](../vba/modPwC_Unified_Master.bas) to programmatically generate the entire visual scaffold—including the modern shaped rounded square top navigation bar, embedded official PwC color logo, interactive tab pills, live status indicators, vector SVG action buttons, 7 BAN KPI card containers (on Call Center) & 5 BAN containers (on Retention & D&I), dark slate global slicer drawer, and chart docking frames—**before** docking any PivotCharts or wiring DAX measures.
+> **Tier-1 Management Consulting Best Practice**: Treat the Excel worksheet like a **modern Web Application (SaaS) Interface**. Use the unified master VBA script [`vba/modPwC_Unified_Master.bas`](../vba/modPwC_Unified_Master.bas) or the modular suite [`vba/`](../vba/) to programmatically generate the entire visual scaffold—including the modern shaped rounded square top navigation bar, embedded official PwC color logo, interactive tab pills, live status indicators, vector SVG action buttons, 7 BAN KPI card containers (on Call Center) & 5 BAN containers (on Retention & D&I), dark slate global slicer drawer, and chart docking frames—**before** docking any PivotCharts or wiring DAX measures.
 
 ```mermaid
 flowchart TD
-    subgraph Step1["Step 6.1: Manual VBA Automation (Single Unified Module)"]
+    subgraph Step1["Step 6.1: Manual VBA Automation (Multi-Module Connected Architecture)"]
         A["Open PWC_Switzerland_Virtual_Case.xlsm"] --> B["Alt + F11 (VBA Editor)"]
-        B --> C["Import vba/modPwC_Unified_Master.bas"]
-        C --> D["Run Public Sub RunCompletePwCPlatform (1-Click Complete Pipeline)"]
-        C --> D2["Or Run Public Sub BuildAllDashboardCanvases"]
+        B --> C["Import all 12 modules from vba/"]
+        C --> D["Run Public Sub RunUnifiedPwCPlatform (or RunCompletePwCPlatform)"]
+        C --> D2["Or Run Public Sub BuildCallCenterCanvas from modDashboardUIUX"]
     end
 
-    subgraph Step2["Step 6.2: Generated Web-App Layout (Zero Encoding Bugs)"]
+    subgraph Step2["Step 6.2: Generated Web-App Layout (Zero Errors & Fail-Safe Deletion)"]
         D --> E1["1. Modern Shaped Rounded Square Nav Bar (PwC Logo + Pills + Centered Text)"]
         D --> E2["2. Executive Hero Header (Domain Title + 3 SVG Action Buttons)"]
         D --> E3["3. 7 Floating BAN KPI Cards on Call Center (Image Match: Badges, Sparklines, Formatted Values)"]
@@ -161,9 +163,10 @@ flowchart TD
     end
 
     subgraph Step3["Step 6.3: Integrated Application Ecosystem"]
-        E2 --> F1["[Refresh Data] -> RefreshPipelineSynchronously"]
-        E2 --> F2["[Reset Filters] -> ClearAllFilters"]
-        E2 --> F3["[Export PDF]    -> ExportExecutiveReport"]
+        E2 --> F1["[Refresh Data] -> modDataRefresh.RefreshPipelineSynchronously"]
+        E2 --> F2["[Clear Slicers]-> modFilterController.ClearAllFilters"]
+        E2 --> F3["[Export PDF]    -> modExportPDF.ExportActiveDashboardPDF"]
+        E2 --> F4["[Theme Mode]   -> modThemeEngine.ToggleDashboardTheme"]
         E3 --> G1["Auto-Linked to Row 65 CUBEVALUE Staging Formulas (AA65:AG65)"]
         E4 --> G2["Insert Slicers into Filter Slots & Wire Multi-Pivot Connections"]
         E5 --> G3["Dock PivotCharts into Container Frames & Run DeclutterAndFormatChart"]
@@ -172,20 +175,19 @@ flowchart TD
 
 ---
 
-#### Step 6.1: Manual Execution of the Unified Master Engine (`modPwC_Unified_Master.bas`)
-You execute the automated UI/UX engine **manually** inside Excel. Follow these exact steps:
+#### Step 6.1: Manual Execution of the Master Orchestrator Engine
+You execute the automated UI/UX engine **manually** inside Excel. For full details, see [`docs/10_vba_script_execution_and_architecture_guide.md`](10_vba_script_execution_and_architecture_guide.md):
 
 1. **Open the Master Macro-Enabled Workbook**:
    - Open `PWC_Switzerland_Virtual_Case.xlsm` in Microsoft Excel.
 2. **Open the Visual Basic Editor**:
    - Press `Alt + F11` (or click **Developer** tab $\to$ **Visual Basic**).
-3. **Import the Consolidated Master Script**:
-   - Click **File** $\to$ **Import File...** $\to$ select [`vba/modPwC_Unified_Master.bas`](../vba/modPwC_Unified_Master.bas).
-   - *Note*: This single module contains the entire integrated platform (governance, landing portal, 3 cockpits, scorecard docker, refresh, reset, PDF export, and theme switcher) without any namespace conflicts!
+3. **Verify All 12 Modules**:
+   - Verify the 12 modules exist in the Project Explorer (`modAppState`, `modCreateGovernanceSheets`, `modDashboardUIUX`, `modDataRefresh`, `modExportPDF`, `modFilterController`, `modInteractiveScorecard`, `modNavigation`, `modPivotTableFormatting`, `modPortalLanding`, `modPwC_Unified_Master`, `modThemeEngine`).
+   - Click **Debug** $\to$ **Compile VBAProject** to verify zero syntax or ambiguous name errors.
 4. **Execute the Master Orchestrator Macro**:
-   - Double-click `modPwC_Unified_Master` to open the code.
-   - To build the entire platform end-to-end: Place cursor inside `Public Sub RunCompletePwCPlatform()` and press **`F5`**.
-   - To build only the 3 dashboard canvases: Place cursor inside `Public Sub BuildAllDashboardCanvases()` and press **`F5`**.
+   - Press `Alt + F8` (or inside `modPwC_Unified_Master.bas`).
+   - Select **`RunUnifiedPwCPlatform`** (or `RunCompletePwCPlatform`) and click **Run**.
 5. **Confirmation**:
    - An executive confirmation dialog will appear summarizing the generated cockpits, connected vector controls, and active data validation. Click **OK**.
 

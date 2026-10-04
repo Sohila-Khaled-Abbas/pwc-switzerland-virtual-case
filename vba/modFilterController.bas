@@ -2,7 +2,7 @@ Attribute VB_Name = "modFilterController"
 Option Explicit
 
 ' ==============================================================================
-' PwC Switzerland Digital Accelerator — Slicer & Filter State Controller
+' PwC Switzerland Digital Accelerator -- Slicer & Filter State Controller
 ' Resets all multi-dimensional slicers and table filters across the workbook
 ' Connected to modAppState and modDashboardUIUX
 ' ==============================================================================

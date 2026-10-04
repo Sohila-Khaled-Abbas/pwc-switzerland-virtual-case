@@ -2,7 +2,7 @@ Attribute VB_Name = "modDataRefresh"
 Option Explicit
 
 ' ==============================================================================
-' PwC Switzerland Digital Accelerator — Synchronous Data Refresh Layer
+' PwC Switzerland Digital Accelerator -- Synchronous Data Refresh Layer
 ' Refreshes analytical PivotTables and CUBE calculations in sequence
 ' Connected to modAppState, modDashboardUIUX, and modFilterController
 ' ==============================================================================

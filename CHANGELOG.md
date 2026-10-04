@@ -4,6 +4,34 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [3.2.0] - 2026-10-04
+
+### 💎 Multi-Module Interconnection, Safe Deletion Shield & Standalone Repository
+
+- **Multi-Module Interconnected Architecture Across All 12 `.bas` Modules**:
+  - Re-architected the entire VBA suite into 12 collaborative, zero-collision modules (`modAppState`, `modThemeEngine`, `modNavigation`, `modDataRefresh`, `modFilterController`, `modExportPDF`, `modCreateGovernanceSheets`, `modPortalLanding`, `modDashboardUIUX`, `modInteractiveScorecard`, `modPivotTableFormatting`, `modPwC_Unified_Master`).
+  - Scoped all module-specific constants as `Private Const` and eliminated all redundant public procedure duplicates across modules.
+  - Automated collision scanner (`scripts/scan_vba_conflicts.py`) confirms **0 duplicate procedures** and **0 duplicate constants**.
+  - All 12 modules compile simultaneously in Excel VBE without any "Ambiguous name detected" errors.
+
+- **Fail-Safe Shape & Chart Deletion (Elimination of Error `-2147024809`)**:
+  - Identified root cause of runtime error `-2147024809: "The item with the specified name wasn't found"` caused by calling `.Delete` on non-existent shapes/charts after `On Error GoTo 0` resets.
+  - Implemented `SafeDeleteShape`, `SafeDeleteChart`, and `SafeSetShapeFormula` wrappers across all visual generation pipelines in `modDashboardUIUX.bas`.
+
+- **UI/UX Enhancement: Rounded Square Nav Pills & Centered Text**:
+  - Enforced modern rounded square buttons (`.Adjustments.Item(1) = 0.25`) across the Top Navigation Bar and Slicer Panels.
+  - Enforced strict vertical and horizontal centering (`.VerticalAnchor = msoAnchorMiddle`, `.TextRange.ParagraphFormat.Alignment = msoAlignCenter`) across all metric BAN cards and action buttons.
+
+- **VBA MCP Server Integration**:
+  - Cloned and vendored `scripts/vba_mcp_server/` (`FastMCP` + `pywin32`) for direct Excel COM read/write of VBA modules without manual export/import.
+  - Registered `vba-mcp-server` in IDE configuration for automated programmatic inspection.
+
+- **Standalone Repository Architecture (`pwc-switzerland-virtual-case`)**:
+  - Cleaned up git remotes and performed `git subtree split` to publish ONLY the PWC project files (`README.md`, `PWC_Switzerland_Virtual_Case.xlsm`, `vba/`, `assets/`, `docs/`, `scripts/`, etc.) to `https://github.com/Sohila-Khaled-Abbas/pwc-switzerland-virtual-case`, completely removing parent course materials.
+  - Authoritative execution documentation added: `docs/10_vba_script_execution_and_architecture_guide.md`.
+
+---
+
 ## [3.1.0] - 2026-10-04
 
 ### 🚀 Fully Automated Visuals Generation & Runtime Defect Resolutions

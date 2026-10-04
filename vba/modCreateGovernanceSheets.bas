@@ -74,8 +74,8 @@ CleanExit:
     Application.DisplayAlerts = True
     
     MsgBox "PwC Governance Architecture successfully generated!" & vbCrLf & vbCrLf & _
-           "• '01_Business_Domains': 3 Structured Executive Briefing Cards created" & vbCrLf & _
-           "• '02_Metadata_&_KPI_Catalog': 12 Model Tables & 10 Core KPIs registered" & vbCrLf & vbCrLf & _
+           "* '01_Business_Domains': 3 Structured Executive Briefing Cards created" & vbCrLf & _
+           "* '02_Metadata_&_KPI_Catalog': 12 Model Tables & 10 Core KPIs registered" & vbCrLf & vbCrLf & _
            "All formatting, column widths, and brand colors auto-fitted successfully." & vbCrLf & _
            "Next Step: Add explicit DAX measures to VertiPaq model.", _
            vbInformation, "PwC Switzerland BI Architecture"

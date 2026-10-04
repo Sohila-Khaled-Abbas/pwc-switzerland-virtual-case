@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vba-mcp-server"
+version = "1.0.0"
+description = "MCP server for direct Excel VBA code read/write. Let AI assistants access and modify VBA modules without manual export/import."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "xiongchenghou" }
+]
+keywords = [
+    "mcp",
+    "mcp-server",
+    "excel",
+    "vba",
+    "excel-vba",
+    "claude",
+    "ai",
+    "automation",
+    "model-context-protocol",
+    "win32com",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial :: Spreadsheet",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "pywin32>=306",
+]
+
+[project.urls]
+Homepage = "https://github.com/xiongchenghou/vba-mcp-server"
+Repository = "https://github.com/xiongchenghou/vba-mcp-server"
+Issues = "https://github.com/xiongchenghou/vba-mcp-server/issues"
+
+[project.scripts]
+vba-mcp-server = "server:mcp.run"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+include = ["server.py"]

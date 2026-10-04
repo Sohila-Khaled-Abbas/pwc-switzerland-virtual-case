@@ -250,6 +250,7 @@ pwc-switzerland-virtual-case/
 │   ├── 07_dashboard_background_and_uiux_guide.md # Modern canvas UI, floating cards & best practices
 │   ├── 08_metadata_and_kpi_governance_guide.md # Pre-dashboard orientation layer & catalog
 │   ├── 09_excel_dashboard_publishing_and_distribution_guide.md # Browser view, SharePoint & Power BI
+│   ├── 10_vba_script_execution_and_architecture_guide.md # ⭐ MASTER VBA EXECUTION & ARCHITECTURE GUIDE
 │   └── FIXED_WORKBOOK_CHANGELOG.md        # Comprehensive forensic audit & technical fix changelog
 │
 ├── power_query/
@@ -259,15 +260,20 @@ pwc-switzerland-virtual-case/
 │   └── 04_calendar_generator.m            # Autonomous dynamic date dimension M-code
 │
 ├── scripts/
+│   ├── scan_vba_conflicts.py              # Automated collision scanner (0 duplicate symbols)
+│   ├── verify_vba_syntax.py               # VBA syntax and block structure validator
+│   ├── vba_mcp_server/                    # ⭐ Official VBA MCP Server for direct Excel COM read/write
+│   │   ├── server.py                      # FastMCP server for direct VBA module automation
+│   │   └── requirements.txt               # FastMCP & pywin32 dependencies
 │   ├── apply_all_excel_updates.py         # Complete Excel automation & VBA injector
 │   ├── generate_web_icons.py              # Generator for 280 colored vector SVG icons
 │   └── modernize_cockpit_styling.py       # Cockpit chart gradients, SVG badges & styling
 │
 ├── vba/
-│   ├── modPwC_Unified_Master.bas          # ⭐ UNIFIED MASTER SUITE: Consolidated all-in-one automation engine
-│   ├── modAppState.bas                    # Application screen updating & calculation state
+│   ├── modPwC_Unified_Master.bas          # ⭐ MASTER SUITE ORCHESTRATOR: Coordinates all 11 subsystems
+│   ├── modAppState.bas                    # Application screen updating & calculation state shield
 │   ├── modCreateGovernanceSheets.bas      # Pre-dashboard business domains & metadata catalog builder
-│   ├── modDashboardUIUX.bas               # Modern canvas, floating KPI cards & PwC palette engine
+│   ├── modDashboardUIUX.bas               # Modern canvas, BAN cards, slicer panels & automated charts
 │   ├── modDataRefresh.bas                 # Clean VertiPaq model refresh handler
 │   ├── modExportPDF.bas                   # Automated executive report PDF generator
 │   ├── modFilterController.bas            # Slicer reset and interactive filter controls

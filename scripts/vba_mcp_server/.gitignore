@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Private project-specific scripts (not part of the MCP server)
+fix_*.py
+step*.py
+check_*.py
+find_*.py
+reformat_*.py
+remove_*.py

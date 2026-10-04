@@ -12,28 +12,28 @@ Option Explicit
 
 ' --- Color Palette Definitions (Windows Long / BGR format) ---
 ' Light Theme Palettes
-Public Const LIGHT_BG As Long = 16579832           ' #F8FAFC (Slate 50)
-Public Const LIGHT_CONTAINER As Long = 16777215    ' #FFFFFF (Crisp White)
-Public Const LIGHT_BORDER As Long = 15790306       ' #E2E8F0 (Slate 200)
-Public Const LIGHT_TEXT_PRIMARY As Long = 2762511  ' #0F172A (Deep Slate Navy)
-Public Const LIGHT_TEXT_MUTED As Long = 9141092    ' #64748B (Slate 500)
-Public Const LIGHT_HEADER_BG As Long = 2762511     ' #0F172A (Dark Slate)
-Public Const LIGHT_HEADER_TEXT As Long = 16777215  ' #FFFFFF (Crisp White)
-Public Const LIGHT_ACCENT As Long = 1481168        ' #D04A02 (PwC Tangerine)
-Public Const LIGHT_GRIDLINE As Long = 16382457     ' #F1F5F9 (Slate 100)
-Public Const LIGHT_CARD_BG As Long = 16777215      ' #FFFFFF
+Private Const LIGHT_BG As Long = 16579832           ' #F8FAFC (Slate 50)
+Private Const LIGHT_CONTAINER As Long = 16777215    ' #FFFFFF (Crisp White)
+Private Const LIGHT_BORDER As Long = 15790306       ' #E2E8F0 (Slate 200)
+Private Const LIGHT_TEXT_PRIMARY As Long = 2762511  ' #0F172A (Deep Slate Navy)
+Private Const LIGHT_TEXT_MUTED As Long = 9141092    ' #64748B (Slate 500)
+Private Const LIGHT_HEADER_BG As Long = 2762511     ' #0F172A (Dark Slate)
+Private Const LIGHT_HEADER_TEXT As Long = 16777215  ' #FFFFFF (Crisp White)
+Private Const LIGHT_ACCENT As Long = 1481168        ' #D04A02 (PwC Tangerine)
+Private Const LIGHT_GRIDLINE As Long = 16382457     ' #F1F5F9 (Slate 100)
+Private Const LIGHT_CARD_BG As Long = 16777215      ' #FFFFFF
 
 ' Dark Theme Palettes
-Public Const DARK_BG As Long = 1642251             ' #0B0F19 (Pitch Slate Navy)
-Public Const DARK_CONTAINER As Long = 3022358      ' #161E2E (Deep Elevated Card)
-Public Const DARK_BORDER As Long = 4666410         ' #2A3447 (Border Slate)
-Public Const DARK_TEXT_PRIMARY As Long = 16579832  ' #F8FAFC (Pure White/Slate 50)
-Public Const DARK_TEXT_MUTED As Long = 12099732    ' #94A3B8 (Slate 400)
-Public Const DARK_HEADER_BG As Long = 3879201      ' #1E293B (Card Header Navy)
-Public Const DARK_HEADER_TEXT As Long = 16579832   ' #F8FAFC (Crisp White)
-Public Const DARK_ACCENT As Long = 3373823         ' #FF7A33 (Vibrant Glowing Orange)
-Public Const DARK_GRIDLINE As Long = 3022358       ' #161E2E (Subtle Dark Grid)
-Public Const DARK_CARD_BG As Long = 2367258        ' #1E293B
+Private Const DARK_BG As Long = 1642251             ' #0B0F19 (Pitch Slate Navy)
+Private Const DARK_CONTAINER As Long = 3022358      ' #161E2E (Deep Elevated Card)
+Private Const DARK_BORDER As Long = 4666410         ' #2A3447 (Border Slate)
+Private Const DARK_TEXT_PRIMARY As Long = 16579832  ' #F8FAFC (Pure White/Slate 50)
+Private Const DARK_TEXT_MUTED As Long = 12099732    ' #94A3B8 (Slate 400)
+Private Const DARK_HEADER_BG As Long = 3879201      ' #1E293B (Card Header Navy)
+Private Const DARK_HEADER_TEXT As Long = 16579832   ' #F8FAFC (Crisp White)
+Private Const DARK_ACCENT As Long = 3373823         ' #FF7A33 (Vibrant Glowing Orange)
+Private Const DARK_GRIDLINE As Long = 3022358       ' #161E2E (Subtle Dark Grid)
+Private Const DARK_CARD_BG As Long = 2367258        ' #1E293B
 
 ' State Storage Property Name
 Private Const THEME_PROP_NAME As String = "PwC_Dashboard_Theme"

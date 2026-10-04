@@ -2,7 +2,7 @@ Attribute VB_Name = "modAppState"
 Option Explicit
 
 ' ==============================================================================
-' PwC Switzerland Digital Accelerator — Application State Shield
+' PwC Switzerland Digital Accelerator -- Application State Shield
 ' Provides deterministic screen freezing and fail-safe environment restoration
 ' ==============================================================================
 
