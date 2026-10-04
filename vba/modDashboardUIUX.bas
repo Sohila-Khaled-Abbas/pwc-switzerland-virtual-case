@@ -10,28 +10,38 @@ Option Explicit
 ' ==============================================================================
 
 ' --- Module-Scoped Brand & UI Tokens (Private to eliminate global conflicts) ---
-Private Const PWC_ORANGE As Long = 1481168           ' RGB(208, 74, 2)
-Private Const PWC_CHARCOAL As Long = 2762511         ' RGB(15, 23, 42)
-Private Const PWC_DARK_SLATE As Long = 2038555       ' RGB(27, 30, 31)
-Private Const PWC_WHITE As Long = 16777215           ' RGB(255, 255, 255)
-Private Const PWC_CANVAS_BG As Long = 16250871       ' RGB(247, 248, 248)
-Private Const PWC_CARD_FILL As Long = 16777215       ' RGB(255, 255, 255)
-Private Const PWC_CARD_BORDER As Long = 14737632     ' RGB(224, 224, 224)
-Private Const PWC_TEXT_TITLE As Long = 1118481       ' RGB(17, 17, 17)
-Private Const PWC_TEXT_MUTED As Long = 6710886       ' RGB(102, 102, 102)
-Private Const PWC_TEXT_LIGHT As Long = 10066329      ' RGB(153, 153, 153)
-Private Const PWC_SLOT_FILL As Long = 16053492       ' RGB(244, 244, 244)
-Private Const PWC_BORDER_DASHED As Long = 13421772   ' RGB(204, 204, 204)
-Private Const PWC_PILL_BG As Long = 16579836         ' RGB(252, 252, 252)
-Private Const PWC_SUCCESS_GREEN As Long = 2796123    ' RGB(91, 162, 42)
-Private Const PWC_ALERT_RED As Long = 2368751        ' RGB(239, 35, 36)
-Private Const PWC_WARNING_AMBER As Long = 1481168    ' RGB(208, 74, 2)
-Private Const PWC_BADGE_GREEN_BG As Long = 14548430  ' RGB(206, 247, 221)
-Private Const PWC_BADGE_GREEN_TXT As Long = 2191942  ' RGB(70, 114, 33)
-Private Const PWC_BADGE_AMBER_BG As Long = 15334399  ' RGB(255, 247, 233)
-Private Const PWC_BADGE_AMBER_TXT As Long = 1735100  ' RGB(188, 117, 26)
-Private Const PWC_BADGE_RED_BG As Long = 15132927    ' RGB(255, 232, 230)
-Private Const PWC_BADGE_RED_TXT As Long = 2237156    ' RGB(228, 38, 34)
+Private Const PWC_ORANGE As Long = 150224             ' RGB(208, 74, 2) - True PwC Vibrant Orange (#D04A02)
+Private Const PWC_CHARCOAL As Long = 2762511           ' RGB(15, 23, 42) - Slate 900 (#0F172A)
+Private Const PWC_DARK_SLATE As Long = 2038555         ' RGB(27, 30, 31)
+Private Const PWC_WHITE As Long = 16777215             ' RGB(255, 255, 255)
+Private Const PWC_CANVAS_BG As Long = 16579832         ' RGB(248, 250, 252) - Slate 50 (#F8FAFC)
+Private Const PWC_CARD_FILL As Long = 16777215         ' RGB(255, 255, 255)
+Private Const PWC_CARD_BORDER As Long = 15790306       ' RGB(226, 232, 240) - Slate 200 (#E2E8F0)
+Private Const PWC_TEXT_TITLE As Long = 2762511         ' RGB(15, 23, 42) - Slate 900
+Private Const PWC_TEXT_MUTED As Long = 9141092         ' RGB(100, 116, 139) - Slate 500 (#64748B)
+Private Const PWC_TEXT_LIGHT As Long = 12099732        ' RGB(148, 163, 184) - Slate 400 (#94A3B8)
+Private Const PWC_SLOT_FILL As Long = 16382457         ' RGB(241, 245, 249) - Slate 100 (#F1F5F9)
+Private Const PWC_BORDER_DASHED As Long = 14737632     ' RGB(224, 224, 224)
+Private Const PWC_PILL_BG As Long = 16579836           ' RGB(252, 252, 252)
+Private Const PWC_SUCCESS_GREEN As Long = 2796123      ' RGB(91, 162, 42) - Green 600
+Private Const PWC_ALERT_RED As Long = 2368751          ' RGB(239, 35, 36) - Red 600
+Private Const PWC_WARNING_AMBER As Long = 440025       ' RGB(217, 119, 6) - Amber 600
+
+' Circular Badge Pastel Fills & High-Contrast Typography Tokens
+Private Const PWC_BADGE_ORANGE_BG As Long = 14020095   ' RGB(255, 237, 213) #FFEDD5
+Private Const PWC_BADGE_ORANGE_TXT As Long = 1193114   ' RGB(154, 52, 18)   #9A3412
+Private Const PWC_BADGE_GREEN_BG As Long = 15203548    ' RGB(220, 252, 231) #DCFCE7
+Private Const PWC_BADGE_GREEN_TXT As Long = 2254102    ' RGB(22, 101, 52)   #166534
+Private Const PWC_BADGE_AMBER_BG As Long = 13104126    ' RGB(254, 243, 199) #FEF3C7
+Private Const PWC_BADGE_AMBER_TXT As Long = 933902     ' RGB(146, 64, 14)   #92400E
+Private Const PWC_BADGE_RED_BG As Long = 14869246      ' RGB(254, 226, 226) #FEE2E2
+Private Const PWC_BADGE_RED_TXT As Long = 1776537      ' RGB(153, 27, 27)   #991B1B
+Private Const PWC_BADGE_PURPLE_BG As Long = 16771315   ' RGB(243, 232, 255) #F3E8FF
+Private Const PWC_BADGE_PURPLE_TXT As Long = 11018603  ' RGB(107, 33, 168)  #6B21A8
+Private Const PWC_BADGE_BLUE_BG As Long = 16698075     ' RGB(219, 234, 254) #DBEAFE
+Private Const PWC_BADGE_BLUE_TXT As Long = 11485214    ' RGB(30, 64, 175)   #1E40AF
+Private Const PWC_BADGE_TEAL_BG As Long = 15858636     ' RGB(204, 251, 241) #CCFBF1
+Private Const PWC_BADGE_TEAL_TXT As Long = 5856785     ' RGB(17, 94, 89)    #115E59
 
 Private Const FONT_FAMILY As String = "Segoe UI"
 Private Const CANVAS_LEFT As Single = 16
@@ -59,12 +69,37 @@ Public Sub SafeDeleteChart(ByVal ws As Worksheet, ByVal chartName As String)
     ws.ChartObjects(chartName).Delete
 End Sub
 
-Public Sub SafeSetShapeFormula(ByVal ws As Worksheet, ByVal shapeName As String, ByVal formulaStr As String)
+Public Sub SafeSetShapeFormula(ByVal ws As Worksheet, ByVal shapeName As String, ByVal formulaStr As String, _
+                              Optional ByVal fontSize As Single = 18, _
+                              Optional ByVal fontBold As Boolean = True, _
+                              Optional ByVal fontColor As Long = PWC_TEXT_TITLE, _
+                              Optional ByVal centerHoriz As Boolean = False)
     On Error Resume Next
     Dim shp As Shape
     Set shp = ws.Shapes(shapeName)
     If Not shp Is Nothing Then
         shp.DrawingObject.Formula = formulaStr
+        With shp.TextFrame2
+            .WordWrap = msoFalse
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            With .TextRange.Font
+                .Name = FONT_FAMILY
+                .Size = fontSize
+                .Bold = IIf(fontBold, msoTrue, msoFalse)
+                .Fill.ForeColor.RGB = fontColor
+            End With
+            If centerHoriz Then
+                .TextRange.ParagraphFormat.Alignment = msoAlignCenter
+            Else
+                .TextRange.ParagraphFormat.Alignment = msoAlignLeft
+            End If
+        End With
+        With shp.TextFrame
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .VerticalAlignment = xlVAlignCenter
+            If centerHoriz Then .HorizontalAlignment = xlHAlignCenter
+        End With
     End If
 End Sub
 
@@ -87,12 +122,18 @@ Public Sub CenterShapeText(ByVal shp As Shape, _
     On Error Resume Next
     With shp.TextFrame2
         .WordWrap = msoTrue
+        .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
         If centerVert Then
             .VerticalAnchor = msoAnchorMiddle
         End If
         If centerHoriz Then
             .TextRange.ParagraphFormat.Alignment = msoAlignCenter
         End If
+    End With
+    With shp.TextFrame
+        .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+        If centerVert Then .VerticalAlignment = xlVAlignCenter
+        If centerHoriz Then .HorizontalAlignment = xlHAlignCenter
     End With
 End Sub
 
@@ -202,105 +243,188 @@ End Sub
 ' ==============================================================================
 Public Sub BuildWebTopNavBar(ws As Worksheet, ByVal activeModuleCode As String)
     On Error Resume Next
-    Dim shpNav As Shape, shpLogoPic As Shape, shpBadge As Shape
+    Dim shpNav As Shape, shpLogoPic As Shape, shpBadge As Shape, shpBrandTxt As Shape
     Dim navW As Single: navW = CANVAS_WIDTH
     
-    Set shpNav = ws.Shapes.AddShape(msoShapeRectangle, CANVAS_LEFT, 16, navW, 48)
+    ' 1. Header Background Card (Elevated White Bar with Soft Shadow - 56pt Height matching Portal)
+    SafeDeleteShape ws, "Nav_Background"
+    Set shpNav = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT, 16, navW, 56)
     With shpNav
         .Name = "Nav_Background"
+        .Adjustments.Item(1) = 0.18
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_WHITE
         .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 1
         ApplySoftElevation shpNav
     End With
     
-    ' PwC Logo
+    ' 2. Official PwC Brand Logo
     Dim logoPath As String
     SafeDeleteShape ws, "Nav_PwC_Logo_Pic"
     logoPath = ResolveAssetPath("PwC_logo_rgb_colour_pos.png")
     If Len(logoPath) = 0 Then logoPath = ResolveAssetPath("pwc_logo.png")
     If Len(logoPath) > 0 Then
-        Set shpLogoPic = ws.Shapes.AddPicture(logoPath, msoFalse, msoTrue, CANVAS_LEFT + 14, 23, 72, 34)
+        Set shpLogoPic = ws.Shapes.AddPicture(logoPath, msoFalse, msoTrue, CANVAS_LEFT + 14, 24, 56, 38)
         If Not shpLogoPic Is Nothing Then
             shpLogoPic.Name = "Nav_PwC_Logo_Pic"
             shpLogoPic.ZOrder msoBringToFront
         End If
     End If
     
-    ' Live Status Pill
-    Set shpBadge = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT + 98, 28, 126, 24)
+    ' 3. Dual-Line Brand Title & Architecture Period
+    SafeDeleteShape ws, "Nav_BrandTitle"
+    Set shpBrandTxt = ws.Shapes.AddShape(msoShapeRectangle, CANVAS_LEFT + 76, 22, 320, 44)
+    With shpBrandTxt
+        .Name = "Nav_BrandTitle"
+        .Fill.Visible = msoFalse
+        .Line.Visible = msoFalse
+        With .TextFrame2
+            .WordWrap = msoFalse
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .TextRange.Text = "PwC Switzerland BI Intelligence Suite" & vbCrLf & _
+                              "Ralph Kimball Galaxy Architecture | VertiPaq Engine"
+            With .TextRange.Paragraphs(1).Font
+                .Name = FONT_FAMILY
+                .Size = 11.5
+                .Bold = msoTrue
+                .Fill.ForeColor.RGB = PWC_TEXT_TITLE
+            End With
+            With .TextRange.Paragraphs(2).Font
+                .Name = FONT_FAMILY
+                .Size = 8
+                .Bold = msoFalse
+                .Fill.ForeColor.RGB = PWC_TEXT_MUTED
+            End With
+        End With
+    End With
+    
+    ' 4. Live Engine Status Pill Badge
+    SafeDeleteShape ws, "Nav_StatusPill"
+    Set shpBadge = ws.Shapes.AddShape(msoShapeRoundedRectangle, CANVAS_LEFT + 406, 29, 142, 28)
     With shpBadge
         .Name = "Nav_StatusPill"
         .Adjustments.Item(1) = 0.5
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_BADGE_GREEN_BG
         .Line.ForeColor.RGB = RGB(167, 243, 208): .Line.Weight = 0.75
-        .TextFrame2.TextRange.Text = "[LIVE] MODEL ONLINE"
+        .TextFrame2.TextRange.Text = "[ACTIVE] VertiPaq Online"
         .TextFrame2.TextRange.Font.Name = FONT_FAMILY
         .TextFrame2.TextRange.Font.Size = 7.5: .TextFrame2.TextRange.Font.Bold = msoTrue
         .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = PWC_BADGE_GREEN_TXT
         CenterShapeText shpBadge, True, True
     End With
     
-    ' Module Navigation Tabs (Modern Rounded Square Pills)
+    ' 5. Module Navigation Tabs (Modern Rounded Square Pills with Web SVG Icons)
     Dim tabW As Single, tabH As Single, tabGap As Single, tabStartLeft As Single
-    tabW = 120: tabH = 30: tabGap = 8: tabStartLeft = CANVAS_LEFT + 236
+    tabW = 106: tabH = 28: tabGap = 6: tabStartLeft = CANVAS_LEFT + 558
     
-    CreateNavTabPill ws, "NavTab_Portal", tabStartLeft + (tabW + tabGap) * 0, 25, tabW, tabH, _
-                     "Portal Home", (activeModuleCode = "HOME"), "modNavigation.NavigateToHomePortal"
-    CreateNavTabPill ws, "NavTab_CC", tabStartLeft + (tabW + tabGap) * 1, 25, tabW, tabH, _
-                     "01 Call Center", (activeModuleCode = "CC"), "modNavigation.NavigateToCallCenter"
-    CreateNavTabPill ws, "NavTab_CR", tabStartLeft + (tabW + tabGap) * 2, 25, tabW, tabH, _
-                     "02 Retention", (activeModuleCode = "CR"), "modNavigation.NavigateToRetention"
-    CreateNavTabPill ws, "NavTab_DI", tabStartLeft + (tabW + tabGap) * 3, 25, tabW, tabH, _
-                     "03 Diversity", (activeModuleCode = "DI"), "modNavigation.NavigateToDiversity"
+    CreateNavTabPill ws, "NavTab_Portal", tabStartLeft + (tabW + tabGap) * 0, 29, tabW, tabH, _
+                     "Home Portal", (activeModuleCode = "HOME"), "modNavigation.NavigateToHomePortal", "home"
+    CreateNavTabPill ws, "NavTab_CC", tabStartLeft + (tabW + tabGap) * 1, 29, tabW, tabH, _
+                     "Call Center", (activeModuleCode = "CC"), "modNavigation.NavigateToCallCenter", "phone"
+    CreateNavTabPill ws, "NavTab_CR", tabStartLeft + (tabW + tabGap) * 2, 29, tabW, tabH, _
+                     "Retention", (activeModuleCode = "CR"), "modNavigation.NavigateToRetention", "users"
+    CreateNavTabPill ws, "NavTab_DI", tabStartLeft + (tabW + tabGap) * 3, 29, tabW, tabH, _
+                     "Diversity", (activeModuleCode = "DI"), "modNavigation.NavigateToDiversity", "shield"
                      
-    ' Action Buttons on Right
-    Dim actW As Single, actGap As Single, actRight As Single
-    actW = 96: actGap = 8: actRight = CANVAS_LEFT + navW - 14
+    ' 6. Action Buttons on Right (Gradients, Clean Badges & Fast Macros)
+    Dim actRight As Single
+    actRight = CANVAS_LEFT + navW - 14
     
-    CreateNavTabPill ws, "Action_ExportPDF", actRight - actW, 25, actW, tabH, _
-                     "Export PDF", False, "modExportPDF.ExportActiveDashboardPDF"
-    CreateNavTabPill ws, "Action_ThemeToggle", actRight - (actW * 2 + actGap), 25, actW, tabH, _
-                     "Theme Mode", False, "modThemeEngine.ToggleDashboardTheme"
-    CreateNavTabPill ws, "Action_ResetFilters", actRight - (actW * 3 + actGap * 2), 25, actW, tabH, _
-                     "Clear Slicers", False, "modFilterController.ClearAllFilters"
-    CreateNavTabPill ws, "Action_RefreshData", actRight - (actW * 4 + actGap * 3), 25, actW, tabH, _
-                     "Refresh Data", False, "modDataRefresh.RefreshPipelineSynchronously"
+    ' Far Right: Export PDF (Vibrant PwC Orange Gradient)
+    CreateNavTabPill ws, "Action_ExportPDF", actRight - 98, 29, 98, tabH, _
+                     "Export PDF", False, "modExportPDF.ExportActiveDashboardPDF", "download", True
+    ' Theme Mode
+    CreateNavTabPill ws, "Action_ThemeToggle", actRight - (98 + 6 + 92), 29, 92, tabH, _
+                     "Theme Mode", False, "modThemeEngine.ToggleDashboardTheme", ""
+    ' Clear Slicers
+    CreateNavTabPill ws, "Action_ResetFilters", actRight - (98 + 6 + 92 + 6 + 94), 29, 94, tabH, _
+                     "Clear Slicers", False, "modFilterController.ClearAllFilters", "filter"
+    ' Refresh Data
+    CreateNavTabPill ws, "Action_RefreshData", actRight - (98 + 6 + 92 + 6 + 94 + 6 + 86), 29, 86, tabH, _
+                     "Refresh", False, "modDataRefresh.RefreshPipelineSynchronously", "activity"
 End Sub
 
 Private Sub CreateNavTabPill(ws As Worksheet, ByVal shapeName As String, _
                             ByVal leftPos As Single, ByVal topPos As Single, _
                             ByVal w As Single, ByVal h As Single, _
                             ByVal labelText As String, ByVal isActive As Boolean, _
-                            ByVal macroName As String)
+                            ByVal macroName As String, _
+                            Optional ByVal iconBaseName As String = "", _
+                            Optional ByVal isGradientAction As Boolean = False)
     On Error Resume Next
-    Dim shp As Shape
+    Dim shp As Shape, shpIcon As Shape
+    Dim iconPath As String, actualIconName As String
+    
     SafeDeleteShape ws, shapeName
+    SafeDeleteShape ws, shapeName & "_Icon"
+    
     Set shp = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, w, h)
     With shp
         .Name = shapeName
         .Adjustments.Item(1) = 0.25
-        If isActive Then
-            .Fill.Solid: .Fill.ForeColor.RGB = PWC_ORANGE
+        
+        If isGradientAction Then
+            .Fill.TwoColorGradient msoGradientHorizontal, 1
+            .Fill.ForeColor.RGB = PWC_ORANGE
+            .Fill.BackColor.RGB = RGB(235, 120, 20)
+            .Line.Visible = msoFalse
+        ElseIf isActive Then
+            .Fill.TwoColorGradient msoGradientHorizontal, 1
+            .Fill.ForeColor.RGB = PWC_ORANGE
+            .Fill.BackColor.RGB = RGB(235, 120, 20)
             .Line.Visible = msoFalse
         Else
             .Fill.Solid: .Fill.ForeColor.RGB = PWC_WHITE
             .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 0.75
         End If
+        
         With .TextFrame2
             .WordWrap = msoFalse
+            .VerticalAnchor = msoAnchorMiddle
+            .MarginTop = 0: .MarginBottom = 0: .MarginRight = 0
+            If Len(iconBaseName) > 0 Then
+                .MarginLeft = 20
+                .TextRange.ParagraphFormat.Alignment = msoAlignLeft
+            Else
+                .MarginLeft = 0
+                .TextRange.ParagraphFormat.Alignment = msoAlignCenter
+            End If
             .TextRange.Text = labelText
             .TextRange.Font.Name = FONT_FAMILY
-            .TextRange.Font.Size = 8.5
-            .TextRange.Font.Bold = isActive
-            If isActive Then
+            .TextRange.Font.Size = 8
+            .TextRange.Font.Bold = IIf(isActive Or isGradientAction, msoTrue, msoFalse)
+            If isActive Or isGradientAction Then
                 .TextRange.Font.Fill.ForeColor.RGB = PWC_WHITE
             Else
                 .TextRange.Font.Fill.ForeColor.RGB = PWC_CHARCOAL
             End If
         End With
-        CenterShapeText shp, True, True
+        
         If Len(macroName) > 0 Then .OnAction = macroName
     End With
+    
+    ' Insert Web SVG Icon if specified
+    If Len(iconBaseName) > 0 Then
+        If isActive Or isGradientAction Then
+            actualIconName = iconBaseName & "_white.svg"
+        Else
+            actualIconName = iconBaseName & "_slate.svg"
+        End If
+        
+        iconPath = ResolveAssetPath("icons\web\" & actualIconName)
+        If Len(iconPath) = 0 Then iconPath = ResolveAssetPath("icons\" & iconBaseName & ".svg")
+        If Len(iconPath) = 0 Then iconPath = ResolveAssetPath("icons\web\" & iconBaseName & ".svg")
+        
+        If Len(iconPath) > 0 Then
+            Dim iconSize As Single: iconSize = 14
+            Dim iconTop As Single: iconTop = topPos + (h - iconSize) / 2
+            Set shpIcon = ws.Shapes.AddPicture(iconPath, msoFalse, msoTrue, leftPos + 6, iconTop, iconSize, iconSize)
+            If Not shpIcon Is Nothing Then
+                shpIcon.Name = shapeName & "_Icon"
+                shpIcon.ZOrder msoBringToFront
+                If Len(macroName) > 0 Then shpIcon.OnAction = macroName
+            End If
+        End If
+    End If
 End Sub
 
 Public Sub BuildHeroHeader(ws As Worksheet, _
@@ -340,7 +464,23 @@ Public Sub BuildKPICard(ws As Worksheet, ByVal cardPrefix As String, _
                         Optional ByVal sparklineFileName As String = "")
     On Error Resume Next
     Dim shpCard As Shape, shpBar As Shape, shpTitle As Shape, shpValue As Shape, shpBadge As Shape
+    Dim shpIconBadge As Shape
+    Dim badgeBgColor As Long
     
+    ' Select matching pastel badge background for circular pill
+    Select Case accentColor
+        Case PWC_ORANGE:         badgeBgColor = PWC_BADGE_ORANGE_BG
+        Case PWC_SUCCESS_GREEN:  badgeBgColor = PWC_BADGE_GREEN_BG
+        Case PWC_ALERT_RED:      badgeBgColor = PWC_BADGE_RED_BG
+        Case PWC_WARNING_AMBER:  badgeBgColor = PWC_BADGE_AMBER_BG
+        Case RGB(147, 51, 234):  badgeBgColor = PWC_BADGE_PURPLE_BG
+        Case RGB(37, 99, 235):   badgeBgColor = PWC_BADGE_BLUE_BG
+        Case RGB(13, 148, 136):  badgeBgColor = PWC_BADGE_TEAL_BG
+        Case Else:               badgeBgColor = PWC_SLOT_FILL
+    End Select
+    
+    ' 1. Card Container (SaaS elevated card)
+    SafeDeleteShape ws, "Card_" & cardPrefix
     Set shpCard = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos, topPos, cardWidth, cardHeight)
     With shpCard
         .Name = "Card_" & cardPrefix
@@ -350,6 +490,8 @@ Public Sub BuildKPICard(ws As Worksheet, ByVal cardPrefix As String, _
         ApplySoftElevation shpCard
     End With
     
+    ' 2. Top Color Indicator Bar
+    SafeDeleteShape ws, "TopAccent_" & cardPrefix
     Set shpBar = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 10, topPos + 1, cardWidth - 20, 3)
     With shpBar
         .Name = "TopAccent_" & cardPrefix
@@ -357,11 +499,23 @@ Public Sub BuildKPICard(ws As Worksheet, ByVal cardPrefix As String, _
         .Fill.Solid: .Fill.ForeColor.RGB = accentColor: .Line.Visible = msoFalse
     End With
     
+    ' 3. Circular Pastel Badge Pill for SVG Icon
+    SafeDeleteShape ws, "Pill_" & cardPrefix
+    Set shpIconBadge = ws.Shapes.AddShape(msoShapeOval, leftPos + 12, topPos + 12, 28, 28)
+    With shpIconBadge
+        .Name = "Pill_" & cardPrefix
+        .Fill.Solid: .Fill.ForeColor.RGB = badgeBgColor
+        .Line.Visible = msoFalse
+    End With
+    
+    ' 4. SVG Icon inserted neatly inside circular pill
     If Len(iconFileName) > 0 Then
-        Call InsertVectorIcon(ws, iconFileName, leftPos + cardWidth - 28, topPos + 12, 16, 16, "Icon_" & cardPrefix)
+        Call InsertVectorIcon(ws, iconFileName, leftPos + 17, topPos + 17, 18, 18, "Icon_" & cardPrefix)
     End If
     
-    Set shpTitle = ws.Shapes.AddShape(msoShapeRectangle, leftPos + 12, topPos + 12, cardWidth - 44, 16)
+    ' 5. KPI Title Label
+    SafeDeleteShape ws, "Title_" & cardPrefix
+    Set shpTitle = ws.Shapes.AddShape(msoShapeRectangle, leftPos + 44, topPos + 11, cardWidth - 52, 14)
     With shpTitle
         .Name = "Title_" & cardPrefix
         .Fill.Visible = msoFalse: .Line.Visible = msoFalse
@@ -370,37 +524,57 @@ Public Sub BuildKPICard(ws As Worksheet, ByVal cardPrefix As String, _
             .TextRange.Text = UCase$(titleText)
             .TextRange.Font.Name = FONT_FAMILY: .TextRange.Font.Size = 7.5: .TextRange.Font.Bold = msoTrue
             .TextRange.Font.Fill.ForeColor.RGB = PWC_TEXT_MUTED
+            .TextRange.ParagraphFormat.Alignment = msoAlignLeft
         End With
     End With
     
-    Set shpValue = ws.Shapes.AddShape(msoShapeRectangle, leftPos + 12, topPos + 28, cardWidth - 24, 34)
+    ' 6. KPI Primary Big Metric Value (Vertically centered in middle of box)
+    SafeDeleteShape ws, "Val_" & cardPrefix
+    Set shpValue = ws.Shapes.AddShape(msoShapeRectangle, leftPos + 44, topPos + 25, cardWidth - 50, 36)
     With shpValue
         .Name = "Val_" & cardPrefix
         .Fill.Visible = msoFalse: .Line.Visible = msoFalse
         With .TextFrame2
             .WordWrap = msoFalse: .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
             .TextRange.Text = valText
             .TextRange.Font.Name = FONT_FAMILY: .TextRange.Font.Size = 18: .TextRange.Font.Bold = msoTrue
             .TextRange.Font.Fill.ForeColor.RGB = PWC_TEXT_TITLE
+            .TextRange.ParagraphFormat.Alignment = msoAlignLeft
         End With
-        CenterShapeText shpValue, False, True
+        With .TextFrame
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .VerticalAlignment = xlVAlignCenter
+            .HorizontalAlignment = xlHAlignLeft
+        End With
     End With
     
+    ' 7. Bottom Trend Pill Badge
+    SafeDeleteShape ws, "Trend_" & cardPrefix
     Set shpBadge = ws.Shapes.AddShape(msoShapeRoundedRectangle, leftPos + 12, topPos + cardHeight - 24, cardWidth - 24, 18)
     With shpBadge
         .Name = "Trend_" & cardPrefix
         .Adjustments.Item(1) = 0.25
         .Fill.Solid: .Fill.ForeColor.RGB = PWC_PILL_BG
         .Line.ForeColor.RGB = PWC_CARD_BORDER: .Line.Weight = 0.5
-        .TextFrame2.TextRange.Text = trendText
-        .TextFrame2.TextRange.Font.Name = FONT_FAMILY
-        .TextFrame2.TextRange.Font.Size = 7.5: .TextFrame2.TextRange.Font.Bold = msoTrue
-        .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = accentColor
-        CenterShapeText shpBadge, True, True
+        With .TextFrame2
+            .WordWrap = msoFalse: .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            .TextRange.Text = trendText
+            .TextRange.Font.Name = FONT_FAMILY: .TextRange.Font.Size = 7.5: .TextRange.Font.Bold = msoTrue
+            .TextRange.Font.Fill.ForeColor.RGB = accentColor
+            .TextRange.ParagraphFormat.Alignment = msoAlignCenter
+        End With
+        With .TextFrame
+            .MarginLeft = 0: .MarginTop = 0: .MarginRight = 0: .MarginBottom = 0
+            .VerticalAlignment = xlVAlignCenter
+            .HorizontalAlignment = xlHAlignCenter
+        End With
     End With
     
+    ' 8. Optional Sparkline
     If Len(sparklineFileName) > 0 Then
-        Call InsertVectorIcon(ws, sparklineFileName, leftPos + cardWidth - 62, topPos + 30, 52, 22, "Spark_" & cardPrefix)
+        Call InsertVectorIcon(ws, sparklineFileName, leftPos + cardWidth - 54, topPos + cardHeight - 24, 46, 18, "Spark_" & cardPrefix)
     End If
 End Sub
 
@@ -411,21 +585,76 @@ Public Sub AutomateAndLinkKPICards(ws As Worksheet, ByVal moduleCode As String)
     Dim sheetRef As String: sheetRef = "'" & ws.Name & "'!"
     
     If modUpper = "CC" Then
-        ws.Range("AA" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Calls]"")"
+        ws.Range("AA" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Demand]"")"
+        ws.Range("AA" & rowIdx).NumberFormat = "#,##0"
         ws.Range("AB" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Answered Calls]"")"
+        ws.Range("AB" & rowIdx).NumberFormat = "#,##0"
         ws.Range("AC" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Abandoned Calls]"")"
+        ws.Range("AC" & rowIdx).NumberFormat = "#,##0"
         ws.Range("AD" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Answer Rate %]"")"
+        ws.Range("AD" & rowIdx).NumberFormat = "0.0%"
         ws.Range("AE" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Average Speed of Answer (s)]"")"
-        ws.Range("AF" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Average CSAT Rating]"")"
-        ws.Range("AG" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[First Call Resolution %]"")"
+        ws.Range("AE" & rowIdx).NumberFormat = "0.0"" s"""
+        ws.Range("AF" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Average CSAT]"")"
+        ws.Range("AF" & rowIdx).NumberFormat = "0.00"
+        ws.Range("AG" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[First Contact Resolution %]"")"
+        ws.Range("AG" & rowIdx).NumberFormat = "0.0%"
         
-        SafeSetShapeFormula ws, "Val_CC_TotalDemand", "=" & sheetRef & "$AA$" & rowIdx
-        SafeSetShapeFormula ws, "Val_CC_Answered", "=" & sheetRef & "$AB$" & rowIdx
-        SafeSetShapeFormula ws, "Val_CC_Missed", "=" & sheetRef & "$AC$" & rowIdx
-        SafeSetShapeFormula ws, "Val_CC_SLA", "=" & sheetRef & "$AD$" & rowIdx
-        SafeSetShapeFormula ws, "Val_CC_AHT", "=" & sheetRef & "$AE$" & rowIdx
-        SafeSetShapeFormula ws, "Val_CC_CSAT", "=" & sheetRef & "$AF$" & rowIdx
-        SafeSetShapeFormula ws, "Val_CC_FCR", "=" & sheetRef & "$AG$" & rowIdx
+        SafeSetShapeFormula ws, "Val_CC_TotalDemand", "=" & sheetRef & "$AA$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CC_Answered", "=" & sheetRef & "$AB$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CC_Missed", "=" & sheetRef & "$AC$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CC_SLA", "=" & sheetRef & "$AD$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CC_AHT", "=" & sheetRef & "$AE$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CC_CSAT", "=" & sheetRef & "$AF$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CC_FCR", "=" & sheetRef & "$AG$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        
+    ElseIf modUpper = "CR" Then
+        ws.Range("AA" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Customers]"")"
+        ws.Range("AA" & rowIdx).NumberFormat = "#,##0"
+        ws.Range("AB" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Churned Customers]"")"
+        ws.Range("AB" & rowIdx).NumberFormat = "#,##0"
+        ws.Range("AC" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Churn Rate %]"")"
+        ws.Range("AC" & rowIdx).NumberFormat = "0.0%"
+        ws.Range("AD" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Avg Monthly Ticket]"")"
+        ws.Range("AD" & rowIdx).NumberFormat = "$#,##0.00"
+        ws.Range("AE" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Lifetime Charges]"")"
+        ws.Range("AE" & rowIdx).NumberFormat = "$#,##0"
+        ws.Range("AF" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[At-Risk MRR]"")"
+        ws.Range("AF" & rowIdx).NumberFormat = "$#,##0"
+        ws.Range("AG" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Avg Tech Tickets per Customer]"")"
+        ws.Range("AG" & rowIdx).NumberFormat = "0.00"
+        
+        SafeSetShapeFormula ws, "Val_CR_CustomerBase", "=" & sheetRef & "$AA$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CR_ChurnVolume", "=" & sheetRef & "$AB$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CR_ChurnRate", "=" & sheetRef & "$AC$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CR_MonthlyCharges", "=" & sheetRef & "$AD$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CR_TotalRevenue", "=" & sheetRef & "$AE$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CR_RevenueAtRisk", "=" & sheetRef & "$AF$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_CR_TechSupport", "=" & sheetRef & "$AG$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        
+    ElseIf modUpper = "DI" Then
+        ws.Range("AA" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Employees]"")"
+        ws.Range("AA" & rowIdx).NumberFormat = "#,##0"
+        ws.Range("AB" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Female Representation %]"")"
+        ws.Range("AB" & rowIdx).NumberFormat = "0.0%"
+        ws.Range("AC" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Executive Female Share %]"")"
+        ws.Range("AC" & rowIdx).NumberFormat = "0.0%"
+        ws.Range("AD" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Total Promotions FY21]"")"
+        ws.Range("AD" & rowIdx).NumberFormat = "#,##0"
+        ws.Range("AE" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Overall Promotion Rate %]"")"
+        ws.Range("AE" & rowIdx).NumberFormat = "0.0%"
+        ws.Range("AF" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Promotion Equity Index]"")"
+        ws.Range("AF" & rowIdx).NumberFormat = "0.00"
+        ws.Range("AG" & rowIdx).Formula = "=CUBEVALUE(""ThisWorkbookDataModel"", ""[Measures].[Turnover Rate %]"")"
+        ws.Range("AG" & rowIdx).NumberFormat = "0.0%"
+        
+        SafeSetShapeFormula ws, "Val_DI_TotalEmployees", "=" & sheetRef & "$AA$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_DI_FemaleRepresentation", "=" & sheetRef & "$AB$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_DI_ExecParity", "=" & sheetRef & "$AC$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_DI_NewHireParity", "=" & sheetRef & "$AD$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_DI_PromoRate", "=" & sheetRef & "$AE$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_DI_PerfParity", "=" & sheetRef & "$AF$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
+        SafeSetShapeFormula ws, "Val_DI_TurnoverGap", "=" & sheetRef & "$AG$" & rowIdx, 18, True, PWC_TEXT_TITLE, False
     End If
 End Sub
 
@@ -779,58 +1008,75 @@ Public Sub BuildCallCenterVisuals(ws As Worksheet, wsStaging As Worksheet)
     On Error Resume Next
     Dim chtObj As ChartObject
     
-    ' 1. Daily Calls Trend (Smooth Line with Markers)
+    ' 1. Daily Calls Trend (Smooth Line with Markers, explicit X-axis dates)
     SafeDeleteChart ws, "cht_TrendDaily"
     Set chtObj = ws.ChartObjects.Add(258, 282, 432, 186)
     With chtObj
         .Name = "cht_TrendDaily"
         With .Chart
             .ChartType = xlLineMarkers
-            .SetSourceData wsStaging.Range("J3:K15")
-            If .SeriesCollection.Count > 0 Then
-                With .SeriesCollection(1)
-                    .Format.Line.ForeColor.RGB = PWC_ORANGE
-                    .Format.Line.Weight = 2
-                    .Smooth = True
-                    .MarkerStyle = xlMarkerStyleCircle
-                    .MarkerSize = 5
-                    .MarkerForegroundColor = PWC_ORANGE
-                    .MarkerBackgroundColor = PWC_WHITE
-                End With
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Call Volume"
+                .XValues = wsStaging.Range("J3:J14")
+                .Values = wsStaging.Range("K3:K14")
+                .Format.Line.ForeColor.RGB = PWC_ORANGE
+                .Format.Line.Weight = 2
+                .Smooth = True
+                .MarkerStyle = xlMarkerStyleCircle
+                .MarkerSize = 5
+                .MarkerForegroundColor.RGB = PWC_ORANGE
+                .MarkerBackgroundColor.RGB = PWC_WHITE
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
     
-    ' 2. Hourly Arrival Pattern (Column Chart)
+    ' 2. Hourly Arrival Pattern (Column Chart, explicit hours on X-axis)
     SafeDeleteChart ws, "cht_HourlyArrival"
     Set chtObj = ws.ChartObjects.Add(722, 282, 356, 186)
     With chtObj
         .Name = "cht_HourlyArrival"
         With .Chart
             .ChartType = xlColumnClustered
-            .SetSourceData wsStaging.Range("Z3:AA13")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = PWC_ORANGE
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Inbound Demand"
+                .XValues = wsStaging.Range("Z3:Z12")
+                .Values = wsStaging.Range("AA3:AA12")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = PWC_ORANGE
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
     
-    ' 3. Resolution Breakdown (Donut Chart)
+    ' 3. Resolution Breakdown (Donut Chart, explicit category names)
     SafeDeleteChart ws, "cht_Resolution"
     Set chtObj = ws.ChartObjects.Add(1116, 282, 334, 186)
     With chtObj
         .Name = "cht_Resolution"
         With .Chart
             .ChartType = xlDoughnut
-            .SetSourceData wsStaging.Range("N3:O6")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Points(1).Format.Fill.ForeColor.RGB = PWC_SUCCESS_GREEN
-                .SeriesCollection(1).Points(2).Format.Fill.ForeColor.RGB = PWC_WARNING_AMBER
-                .SeriesCollection(1).Points(3).Format.Fill.ForeColor.RGB = PWC_ALERT_RED
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Resolution Status"
+                .XValues = wsStaging.Range("N3:N5")
+                .Values = wsStaging.Range("O3:O5")
+                On Error Resume Next
+                .Points(1).Format.Fill.ForeColor.RGB = PWC_SUCCESS_GREEN
+                .Points(2).Format.Fill.ForeColor.RGB = PWC_WARNING_AMBER
+                .Points(3).Format.Fill.ForeColor.RGB = PWC_ALERT_RED
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
@@ -854,37 +1100,49 @@ Public Sub BuildCallCenterVisuals(ws As Worksheet, wsStaging As Worksheet)
         .ZOrder msoBringToFront
     End With
     
-    ' 4. Agent Performance Scorecard (Live Docked Picture of pt_Agent)
+    ' 4. Agent Performance Scorecard (Live Docked Picture constrained strictly to width 290)
     Call DockAgentScorecardLive(ws, wsStaging, 258, 546, 290, 204)
     
-    ' 5. AHT vs Call Volume (Combo Chart)
+    ' 5. AHT vs Call Volume (Column Chart with Agent Names on X-axis, docked at Left 582)
     SafeDeleteChart ws, "cht_AHTVolume"
     Set chtObj = ws.ChartObjects.Add(582, 546, 316, 204)
     With chtObj
         .Name = "cht_AHTVolume"
         With .Chart
             .ChartType = xlColumnClustered
-            .SetSourceData wsStaging.Range("B3:C11")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = RGB(147, 51, 234)
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Calls Handled"
+                .XValues = wsStaging.Range("B3:B10")
+                .Values = wsStaging.Range("C3:C10")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = RGB(147, 51, 234)
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
     
-    ' 6. Pareto Analysis (Top Complaints Bar Chart)
+    ' 6. Pareto Analysis (Top Complaints Bar Chart with Topic Names on Y-axis)
     SafeDeleteChart ws, "cht_ComplaintPareto"
     Set chtObj = ws.ChartObjects.Add(930, 546, 274, 204)
     With chtObj
         .Name = "cht_ComplaintPareto"
         With .Chart
             .ChartType = xlBarClustered
-            .SetSourceData wsStaging.Range("R3:S8")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = PWC_ORANGE
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Inquiry Volume"
+                .XValues = wsStaging.Range("R3:R7")
+                .Values = wsStaging.Range("S3:S7")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = PWC_ORANGE
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
@@ -897,8 +1155,18 @@ Private Sub DockAgentScorecardLive(ws As Worksheet, wsStaging As Worksheet, _
                                   ByVal leftPos As Single, ByVal topPos As Single, _
                                   ByVal w As Single, ByVal h As Single)
     On Error Resume Next
+    Dim wb As Workbook: Set wb = ws.Parent
+    Dim wsStgPivots As Worksheet
     Dim ptRng As Range, shpPic As Shape
-    Set ptRng = wsStaging.Range("B2:H11")
+    
+    ' Copy from formatted pivot table on Staging_Pivots if available
+    Set wsStgPivots = wb.Worksheets("Staging_Pivots")
+    If Not wsStgPivots Is Nothing Then
+        Set ptRng = wsStgPivots.Range("C3:H11")
+    End If
+    If ptRng Is Nothing Then
+        Set ptRng = wsStaging.Range("B2:H11")
+    End If
     
     Dim wasUpdating As Boolean
     wasUpdating = Application.ScreenUpdating
@@ -916,6 +1184,7 @@ Private Sub DockAgentScorecardLive(ws As Worksheet, wsStaging As Worksheet, _
     If Not shpPic Is Nothing Then
         With shpPic
             .Name = "LiveScorecardPic"
+            .LockAspectRatio = msoFalse
             .Left = leftPos
             .Top = topPos
             .Width = w
@@ -1005,63 +1274,124 @@ Public Sub BuildRetentionVisuals(ws As Worksheet, wsStaging As Worksheet)
     On Error Resume Next
     Dim chtObj As ChartObject
     
+    ' 1. Contract Type Exposure (Donut Chart with Contract Names)
     SafeDeleteChart ws, "cht_ContractRisk"
     Set chtObj = ws.ChartObjects.Add(258, 282, 356, 186)
     With chtObj
         .Name = "cht_ContractRisk"
         With .Chart
             .ChartType = xlDoughnut
-            .SetSourceData wsStaging.Range("AC2:AD5")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Points(1).Format.Fill.ForeColor.RGB = PWC_ALERT_RED
-                .SeriesCollection(1).Points(2).Format.Fill.ForeColor.RGB = PWC_WARNING_AMBER
-                .SeriesCollection(1).Points(3).Format.Fill.ForeColor.RGB = PWC_SUCCESS_GREEN
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Contract Risk"
+                .XValues = wsStaging.Range("AC3:AC5")
+                .Values = wsStaging.Range("AD3:AD5")
+                On Error Resume Next
+                .Points(1).Format.Fill.ForeColor.RGB = PWC_ALERT_RED      ' Month-to-Month
+                .Points(2).Format.Fill.ForeColor.RGB = PWC_WARNING_AMBER  ' One Year
+                .Points(3).Format.Fill.ForeColor.RGB = PWC_SUCCESS_GREEN  ' Two Year
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
     
+    ' 2. Tenure Lifecycle Churn Velocity (Column Chart with Cohorts)
     SafeDeleteChart ws, "cht_TenureCohort"
-    Set chtObj = ws.ChartObjects.Add(628, 282, 412, 186)
+    Set chtObj = ws.ChartObjects.Add(646, 282, 394, 186)
     With chtObj
         .Name = "cht_TenureCohort"
         With .Chart
             .ChartType = xlColumnClustered
-            .SetSourceData wsStaging.Range("AF2:AG6")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = PWC_ORANGE
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Cohort Churn Rate"
+                .XValues = wsStaging.Range("AF3:AF6")
+                .Values = wsStaging.Range("AG3:AG6")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = PWC_ORANGE
+            End With
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0.0%"
         End With
     End With
     DeclutterAndFormatChart chtObj
     
+    ' 3. Payment Method Risk Matrix (Horizontal Bar Chart)
     SafeDeleteChart ws, "cht_PaymentFriction"
-    Set chtObj = ws.ChartObjects.Add(1054, 282, 396, 186)
+    Set chtObj = ws.ChartObjects.Add(1074, 282, 376, 186)
     With chtObj
         .Name = "cht_PaymentFriction"
         With .Chart
             .ChartType = xlBarClustered
-            .SetSourceData wsStaging.Range("AI2:AJ6")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = RGB(220, 38, 38)
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Payment Churn Rate"
+                .XValues = wsStaging.Range("AI3:AI6")
+                .Values = wsStaging.Range("AJ3:AJ6")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = RGB(220, 38, 38)
+            End With
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0.0%"
         End With
     End With
     DeclutterAndFormatChart chtObj
     
+    ' 4. Add-on Service Protective Shield (Column Chart)
     SafeDeleteChart ws, "cht_ServiceMatrix"
     Set chtObj = ws.ChartObjects.Add(258, 546, 580, 204)
     With chtObj
         .Name = "cht_ServiceMatrix"
         With .Chart
             .ChartType = xlColumnClustered
-            .SetSourceData wsStaging.Range("AL2:AM6")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = RGB(37, 99, 235)
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Service Churn Risk"
+                .XValues = wsStaging.Range("AL3:AL6")
+                .Values = wsStaging.Range("AM3:AM6")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = RGB(37, 99, 235)
+            End With
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0.0%"
+        End With
+    End With
+    DeclutterAndFormatChart chtObj
+    
+    ' 5. Customer Lifetime Value Distribution (Scatter / Line Chart)
+    SafeDeleteChart ws, "cht_TenureDistribution"
+    Set chtObj = ws.ChartObjects.Add(866, 546, 584, 204)
+    With chtObj
+        .Name = "cht_TenureDistribution"
+        With .Chart
+            .ChartType = xlLineMarkers
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Avg Charges"
+                .XValues = wsStaging.Range("AF3:AF6")
+                .Values = wsStaging.Range("AG3:AG6")
+                .Format.Line.ForeColor.RGB = RGB(13, 148, 136)
+                .Format.Line.Weight = 2
+                .MarkerStyle = xlMarkerStyleSquare
+                .MarkerSize = 6
+                .MarkerForegroundColor.RGB = RGB(13, 148, 136)
+                .MarkerBackgroundColor.RGB = PWC_WHITE
+            End With
         End With
     End With
     DeclutterAndFormatChart chtObj
@@ -1071,62 +1401,127 @@ Public Sub BuildDiversityVisuals(ws As Worksheet, wsStaging As Worksheet)
     On Error Resume Next
     Dim chtObj As ChartObject
     
+    ' 1. Organizational Hierarchy Funnel (Stacked Bar Chart: Female vs Male)
     SafeDeleteChart ws, "cht_DIFunnel"
     Set chtObj = ws.ChartObjects.Add(258, 282, 420, 186)
     With chtObj
         .Name = "cht_DIFunnel"
         With .Chart
             .ChartType = xlBarStacked
-            .SetSourceData wsStaging.Range("AO2:AQ8")
+            .SetSourceData wsStaging.Range("AO2:AQ8"), xlColumns
             If .SeriesCollection.Count >= 2 Then
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = RGB(236, 72, 153)
-                .SeriesCollection(2).Format.Fill.ForeColor.RGB = RGB(59, 130, 246)
+                With .SeriesCollection(1)
+                    .Name = "Female %"
+                    .Format.Fill.ForeColor.RGB = RGB(236, 72, 153) ' Pink/Rose
+                End With
+                With .SeriesCollection(2)
+                    .Name = "Male %"
+                    .Format.Fill.ForeColor.RGB = RGB(59, 130, 246)  ' Blue
+                End With
             End If
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0""%"""
         End With
     End With
     DeclutterAndFormatChart chtObj
     
+    ' 2. Departmental Parity Distribution (Clustered Column Chart)
     SafeDeleteChart ws, "cht_DIDeptParity"
-    Set chtObj = ws.ChartObjects.Add(692, 282, 412, 186)
+    Set chtObj = ws.ChartObjects.Add(696, 282, 398, 186)
     With chtObj
         .Name = "cht_DIDeptParity"
         With .Chart
             .ChartType = xlColumnClustered
-            .SetSourceData wsStaging.Range("AS2:AU7")
+            .SetSourceData wsStaging.Range("AS2:AU7"), xlColumns
             If .SeriesCollection.Count >= 2 Then
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = RGB(236, 72, 153)
-                .SeriesCollection(2).Format.Fill.ForeColor.RGB = RGB(59, 130, 246)
+                With .SeriesCollection(1)
+                    .Name = "Female %"
+                    .Format.Fill.ForeColor.RGB = RGB(236, 72, 153)
+                End With
+                With .SeriesCollection(2)
+                    .Name = "Male %"
+                    .Format.Fill.ForeColor.RGB = RGB(59, 130, 246)
+                End With
             End If
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0""%"""
         End With
     End With
     DeclutterAndFormatChart chtObj
     
+    ' 3. Promotion Velocity Multi-Year (Line Chart)
     SafeDeleteChart ws, "cht_DIPromoVelocity"
-    Set chtObj = ws.ChartObjects.Add(1118, 282, 332, 186)
+    Set chtObj = ws.ChartObjects.Add(1124, 282, 326, 186)
     With chtObj
         .Name = "cht_DIPromoVelocity"
         With .Chart
             .ChartType = xlLineMarkers
-            .SetSourceData wsStaging.Range("AW2:AX6")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Line.ForeColor.RGB = PWC_ORANGE
-                .SeriesCollection(1).Format.Line.Weight = 2
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Promotion Rate"
+                .XValues = wsStaging.Range("AW3:AW6")
+                .Values = wsStaging.Range("AX3:AX6")
+                .Format.Line.ForeColor.RGB = PWC_ORANGE
+                .Format.Line.Weight = 2
+                .Smooth = True
+                .MarkerStyle = xlMarkerStyleCircle
+                .MarkerSize = 5
+                .MarkerForegroundColor.RGB = PWC_ORANGE
+                .MarkerBackgroundColor.RGB = PWC_WHITE
+            End With
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0.0%"
         End With
     End With
     DeclutterAndFormatChart chtObj
     
+    ' 4. Performance Rating Calibration (Column Chart)
     SafeDeleteChart ws, "cht_DIPerformance"
     Set chtObj = ws.ChartObjects.Add(258, 546, 580, 204)
     With chtObj
         .Name = "cht_DIPerformance"
         With .Chart
             .ChartType = xlColumnClustered
-            .SetSourceData wsStaging.Range("AZ2:BA6")
-            If .SeriesCollection.Count > 0 Then
-                .SeriesCollection(1).Format.Fill.Solid
-                .SeriesCollection(1).Format.Fill.ForeColor.RGB = RGB(16, 185, 129)
-            End If
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Appraisal Rating"
+                .XValues = wsStaging.Range("AZ3:AZ6")
+                .Values = wsStaging.Range("BA3:BA6")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = RGB(16, 185, 129)
+            End With
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0.00"
+        End With
+    End With
+    DeclutterAndFormatChart chtObj
+    
+    ' 5. Turnover & Leaver Forensics (Horizontal Bar Chart)
+    SafeDeleteChart ws, "cht_DITurnoverCohort"
+    Set chtObj = ws.ChartObjects.Add(866, 546, 584, 204)
+    With chtObj
+        .Name = "cht_DITurnoverCohort"
+        With .Chart
+            .ChartType = xlBarClustered
+            Do While .SeriesCollection.Count > 1
+                .SeriesCollection(2).Delete
+            Loop
+            If .SeriesCollection.Count = 0 Then .SeriesCollection.NewSeries
+            With .SeriesCollection(1)
+                .Name = "Turnover %"
+                .XValues = wsStaging.Range("AF3:AF6")
+                .Values = wsStaging.Range("AG3:AG6")
+                .Format.Fill.Solid
+                .Format.Fill.ForeColor.RGB = RGB(220, 38, 38)
+            End With
+            On Error Resume Next
+            .Axes(xlValue).TickLabels.NumberFormat = "0.0%"
         End With
     End With
     DeclutterAndFormatChart chtObj
@@ -1263,19 +1658,19 @@ Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Bo
     End If
     
     BuildKPICard ws, "CR_CustomerBase", kpiStartLeft + (cardW + cardGap) * 0, cardTop, cardW, 94, _
-                 "Total Customers", v1, ChrW(9650) & " 3.1% vs PY", PWC_CHARCOAL, "user_blue.svg", "sparkline_blue.svg"
+                 "Total Customers", v1, ChrW(9650) & " 3.1% vs PY", PWC_CHARCOAL, "users_teal.svg", "sparkline_blue.svg"
     BuildKPICard ws, "CR_ChurnVolume", kpiStartLeft + (cardW + cardGap) * 1, cardTop, cardW, 94, _
                  "Churned Accounts", v2, ChrW(9650) & " 8.4% vs PY", PWC_ALERT_RED, "xcircle_red.svg", "sparkline_red.svg"
     BuildKPICard ws, "CR_ChurnRate", kpiStartLeft + (cardW + cardGap) * 2, cardTop, cardW, 94, _
-                 "Churn Rate (%)", v3, ChrW(9650) & " 1.2% vs PY", PWC_ALERT_RED, "sparkline_red.svg"
+                 "Churn Rate (%)", v3, ChrW(9650) & " 1.2% vs PY", PWC_ALERT_RED, "trendingdown_red.svg", "sparkline_red.svg"
     BuildKPICard ws, "CR_MonthlyCharges", kpiStartLeft + (cardW + cardGap) * 3, cardTop, cardW, 94, _
-                 "Avg Monthly Bill", v4, ChrW(9650) & " $2.14 vs PY", PWC_ORANGE, "timer_amber.svg"
+                 "Avg Monthly Bill", v4, ChrW(9650) & " $2.14 vs PY", PWC_ORANGE, "dollar_green.svg", "sparkline_amber.svg"
     BuildKPICard ws, "CR_TotalRevenue", kpiStartLeft + (cardW + cardGap) * 4, cardTop, cardW, 94, _
-                 "Avg Lifetime Value", v5, ChrW(9650) & " $142 vs PY", PWC_SUCCESS_GREEN, "check_green.svg"
+                 "Avg Lifetime Value", v5, ChrW(9650) & " $142 vs PY", PWC_SUCCESS_GREEN, "award_orange.svg", "sparkline_green.svg"
     BuildKPICard ws, "CR_RevenueAtRisk", kpiStartLeft + (cardW + cardGap) * 5, cardTop, cardW, 94, _
-                 "MRR at Risk", v6, ChrW(9660) & " 4.2% vs PY", PWC_WARNING_AMBER, "sparkline_amber.svg"
+                 "MRR at Risk", v6, ChrW(9660) & " 4.2% vs PY", PWC_WARNING_AMBER, "activity_orange.svg", "sparkline_amber.svg"
     BuildKPICard ws, "CR_TechSupport", kpiStartLeft + (cardW + cardGap) * 6, cardTop, cardW, 94, _
-                 "Tech Support Adpt", v7, ChrW(9650) & " 1.8% vs PY", RGB(13, 148, 136), "target_teal.svg"
+                 "Tech Support Adpt", v7, ChrW(9650) & " 1.8% vs PY", RGB(13, 148, 136), "shield_blue.svg", "sparkline_teal.svg"
                  
     BuildSlicerPanelContainer ws, "CR_Slicers", CANVAS_LEFT, 130, SLICER_WIDTH, 710, _
                               "Contract Architecture", "Payment Gateway Friction", "Internet Service Modality"
@@ -1302,6 +1697,7 @@ Public Sub BuildCustomerRetentionCanvas(Optional ByVal populateInitialData As Bo
     Set wsStaging = EnsureStagingSheet()
     Call PopulateAnalyticalStagingData(wsStaging)
     Call BuildRetentionVisuals(ws, wsStaging)
+    Call AutomateAndLinkKPICards(ws, "CR")
     
     Dim wsStgPivotsCR As Worksheet, ptScorecardCR As PivotTable
     Set wsStgPivotsCR = wb.Worksheets("Staging_Pivots")
@@ -1349,19 +1745,19 @@ Public Sub BuildDiversityInclusionCanvas(Optional ByVal populateInitialData As B
     End If
     
     BuildKPICard ws, "DI_TotalEmployees", kpiStartLeft + (cardW + cardGap) * 0, cardTop, cardW, 94, _
-                 "Headcount", v1, ChrW(9650) & " 4.2% vs FY20", PWC_CHARCOAL, "user_blue.svg"
+                 "Headcount", v1, ChrW(9650) & " 4.2% vs FY20", PWC_CHARCOAL, "users_teal.svg", "sparkline_blue.svg"
     BuildKPICard ws, "DI_FemaleRepresentation", kpiStartLeft + (cardW + cardGap) * 1, cardTop, cardW, 94, _
-                 "Female Share (%)", v2, ChrW(9650) & " 2.4% vs FY20", RGB(236, 72, 153), "sparkline_purple.svg"
+                 "Female Share (%)", v2, ChrW(9650) & " 2.4% vs FY20", RGB(236, 72, 153), "user_blue.svg", "sparkline_purple.svg"
     BuildKPICard ws, "DI_ExecParity", kpiStartLeft + (cardW + cardGap) * 2, cardTop, cardW, 94, _
-                 "Exec Level Female", v3, ChrW(9650) & " 3.1% vs FY20", PWC_WARNING_AMBER, "timer_amber.svg"
+                 "Exec Level Female", v3, ChrW(9650) & " 3.1% vs FY20", PWC_WARNING_AMBER, "award_orange.svg", "sparkline_amber.svg"
     BuildKPICard ws, "DI_NewHireParity", kpiStartLeft + (cardW + cardGap) * 3, cardTop, cardW, 94, _
-                 "New Hire Ratio", v4, ChrW(9650) & " 1.8% vs FY20", PWC_SUCCESS_GREEN, "check_green.svg"
+                 "New Hire Ratio", v4, ChrW(9650) & " 1.8% vs FY20", PWC_SUCCESS_GREEN, "check_green.svg", "sparkline_green.svg"
     BuildKPICard ws, "DI_PromoRate", kpiStartLeft + (cardW + cardGap) * 4, cardTop, cardW, 94, _
-                 "Promotion Velocity", v5, ChrW(9650) & " 1.3% vs FY20", PWC_ORANGE, "sparkline_orange.svg"
+                 "Promotion Velocity", v5, ChrW(9650) & " 1.3% vs FY20", PWC_ORANGE, "trendingup_green.svg", "sparkline_orange.svg"
     BuildKPICard ws, "DI_PerfParity", kpiStartLeft + (cardW + cardGap) * 5, cardTop, cardW, 94, _
-                 "Rating Parity Index", v6, ChrW(9650) & " 0.02 vs FY20", RGB(37, 99, 235), "target_teal.svg"
+                 "Rating Parity Index", v6, ChrW(9650) & " 0.02 vs FY20", RGB(37, 99, 235), "star_blue.svg", "sparkline_teal.svg"
     BuildKPICard ws, "DI_TurnoverGap", kpiStartLeft + (cardW + cardGap) * 6, cardTop, cardW, 94, _
-                 "Turnover Delta", v7, ChrW(9660) & " 0.5% vs FY20", PWC_ALERT_RED, "xcircle_red.svg"
+                 "Turnover Delta", v7, ChrW(9660) & " 0.5% vs FY20", PWC_ALERT_RED, "xcircle_red.svg", "sparkline_red.svg"
                  
     BuildSlicerPanelContainer ws, "DI_Slicers", CANVAS_LEFT, 130, SLICER_WIDTH, 710, _
                               "Corporate Department", "Job Level Hierarchy", "Promotion Audit Cycle"
@@ -1388,6 +1784,7 @@ Public Sub BuildDiversityInclusionCanvas(Optional ByVal populateInitialData As B
     Set wsStaging = EnsureStagingSheet()
     Call PopulateAnalyticalStagingData(wsStaging)
     Call BuildDiversityVisuals(ws, wsStaging)
+    Call AutomateAndLinkKPICards(ws, "DI")
     
     Dim wsStgPivotsDI As Worksheet, ptScorecardDI As PivotTable
     Set wsStgPivotsDI = wb.Worksheets("Staging_Pivots")

@@ -24,14 +24,14 @@ Option Explicit
 ' ------------------------------------------------------------------------------
 ' PwC Enterprise Brand Color Constants (RGB Values)
 ' ------------------------------------------------------------------------------
-Private Const PWC_TANGERINE        As Long = 133288     ' #D04A02 - RGB(208, 74, 2)
+Private Const PWC_TANGERINE        As Long = 150224     ' #D04A02 - RGB(208, 74, 2)
 Private Const PWC_DARK_SLATE       As Long = 2758415    ' #0F172A - RGB(15, 23, 42)
 Private Const PWC_CHARCOAL          As Long = 3877150    ' #1E293B - RGB(30, 41, 59)
-Private Const PWC_CANVAS_BG         As Long = 16579320   ' #F8FAFC - RGB(248, 250, 252)
+Private Const PWC_CANVAS_BG         As Long = 16579832   ' #F8FAFC - RGB(248, 250, 252)
 Private Const PWC_CARD_FILL         As Long = 16777215   ' #FFFFFF - RGB(255, 255, 255)
-Private Const PWC_BORDER_MUTED      As Long = 15790322   ' #E2E8F0 - RGB(226, 232, 240)
-Private Const PWC_TEXT_TITLE        As Long = 3877150    ' #1E293B - RGB(30, 41, 59)
-Private Const PWC_TEXT_MUTED        As Long = 9141108    ' #64748B - RGB(100, 116, 139)
+Private Const PWC_BORDER_MUTED      As Long = 15790306   ' #E2E8F0 - RGB(226, 232, 240)
+Private Const PWC_TEXT_TITLE        As Long = 2762511    ' #0F172A - RGB(15, 23, 42)
+Private Const PWC_TEXT_MUTED        As Long = 9141092    ' #64748B - RGB(100, 116, 139)
 
 ' Soft Executive Alert & Badge Colors (Pastel fills + dark contrast text)
 Private Const PWC_SOFT_RED_BG       As Long = 14803454   ' #FEE2E2 - RGB(254, 226, 226)

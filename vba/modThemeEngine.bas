@@ -19,7 +19,7 @@ Private Const LIGHT_TEXT_PRIMARY As Long = 2762511  ' #0F172A (Deep Slate Navy)
 Private Const LIGHT_TEXT_MUTED As Long = 9141092    ' #64748B (Slate 500)
 Private Const LIGHT_HEADER_BG As Long = 2762511     ' #0F172A (Dark Slate)
 Private Const LIGHT_HEADER_TEXT As Long = 16777215  ' #FFFFFF (Crisp White)
-Private Const LIGHT_ACCENT As Long = 1481168        ' #D04A02 (PwC Tangerine)
+Private Const LIGHT_ACCENT As Long = 150224         ' #D04A02 (PwC Vibrant Tangerine Orange)
 Private Const LIGHT_GRIDLINE As Long = 16382457     ' #F1F5F9 (Slate 100)
 Private Const LIGHT_CARD_BG As Long = 16777215      ' #FFFFFF
 
@@ -205,6 +205,12 @@ Private Sub ApplyThemeToSheet(ByVal ws As Worksheet, ByVal isDark As Boolean)
                 shp.TextFrame2.MarginTop = 0
                 shp.TextFrame2.MarginBottom = 0
             End If
+            
+        ' Interactive Slicers
+        ElseIf shp.Type = msoSlicer Then
+            On Error Resume Next
+            shp.Slicer.Style = IIf(isDark, "SlicerStyleDark2", "SlicerStyleLight2")
+            On Error GoTo 0
         End If
     Next shp
     

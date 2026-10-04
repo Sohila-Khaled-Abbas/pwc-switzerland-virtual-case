@@ -4,6 +4,40 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [3.3.0] - 2026-10-04
+
+### 🎯 Real DataModel Slicers, Zero Compile Errors & Multi-Tier Asset Resolution
+
+- **Interactive VertiPaq Slicer & Filter Engine (`vba/modFilterController.bas`)**:
+  - Implemented `AddDataModelSlicer` creating and docking real Excel Data Model Slicers (`SlicerCaches.Add2` & `Slicers.Add`) formatted with `SlicerStyleLight2`.
+  - Deployed multi-dimensional filtering across all 3 analytical cockpits:
+    - **Call Center Cockpit**: `[DimDate].[Month]`, `[DimTopic].[Topic]`, and `[DimAgent].[Agent]`.
+    - **Customer Retention Cockpit**: `[DimContract].[Contract]`, `[Fact_Churn].[PaymentMethod]`, and `[Fact_Churn].[InternetService]`.
+    - **Diversity & Inclusion Cockpit**: `[DimDepartment].[Department]`, `[Fact_Employees].[JobLevel]`, and `[Fact_Employees].[Gender]`.
+  - Full fallback protection: gracefully falls back to staging table columns if VertiPaq OLAP cubes are not yet initialized.
+
+- **Elimination of Scorecard PivotTable Formatter Alert Dialog (`vba/modPivotTableFormatting.bas`)**:
+  - Auto-provisions `pt_Agent` on `Staging_Pivots` dynamically via `modInteractiveScorecard.EnsureOrBuildAgentPivotTable`.
+  - Eliminated the blocking modal warning dialog ("No PivotTable found on '03_CallCenter_Cockpit' or 'Staging_Pivots'...") to ensure smooth, unhalted batch execution.
+
+- **Elimination of Compile Error "Variable not defined" (`vba/modPwC_Unified_Master.bas`)**:
+  - Declared and initialized `Dim wb As Workbook: Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook` in `RunUnifiedPwCPlatform`.
+  - Tested live in Excel VBE COM: **Compilation successful with 0 errors**.
+  - Ran global AST/regex variable scanner across all 12 modules: **0 undeclared variables**.
+
+- **Multi-Tier Asset & SVG Icon Path Resolution (`vba/modDashboardUIUX.bas`)**:
+  - Upgraded `ResolveAssetPath` to search:
+    1. `assets/` (root)
+    2. `assets/icons/` (sparklines, hourly surge, topic SLA icons)
+    3. `assets/icons/web/` (280 modern SVG color icons)
+    4. `assets/diagrams/`
+    5. Parent fallbacks (`../assets/`)
+    6. Absolute project workspace paths.
+  - Added automatic alias: any `"logo"` query maps to `assets/PwC_logo_rgb_colour_pos.png`.
+  - Updated `BuildWebTopNavBar` to safely clean up previous logo shapes and insert the high-res brand logo.
+
+---
+
 ## [3.2.0] - 2026-10-04
 
 ### 💎 Multi-Module Interconnection, Safe Deletion Shield & Standalone Repository

@@ -56,7 +56,10 @@ def _get_excel_app(visible=False):
         excel = win32com.client.GetActiveObject("Excel.Application")
     except Exception:
         excel = win32com.client.Dispatch("Excel.Application")
-    excel.Visible = visible
+    try:
+        excel.Visible = visible
+    except Exception:
+        pass
     excel.DisplayAlerts = False
     return excel
 

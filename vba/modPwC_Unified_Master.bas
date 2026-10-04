@@ -51,7 +51,20 @@ Public Sub RunUnifiedPwCPlatform()
     currentStep = "Building Executive Home Portal (00_Home_Portal)"
     modPortalLanding.BuildExecutivePortal
     
-    ' Step 5: Build Analytical Cockpits with Real Visuals & KPI Cards
+    ' Step 5: Provision Data Model PivotTable Foundation (Staging_Pivots)
+    currentStep = "Provisioning Staging_Pivots & Agent Data Model PivotTable"
+    On Error Resume Next
+    Dim wsStgPivots As Worksheet
+    Set wsStgPivots = wb.Worksheets("Staging_Pivots")
+    If wsStgPivots Is Nothing Then
+        Set wsStgPivots = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
+        wsStgPivots.Name = "Staging_Pivots"
+        wsStgPivots.Visible = xlSheetHidden
+    End If
+    modInteractiveScorecard.EnsureOrBuildAgentPivotTable wsStgPivots
+    On Error GoTo MasterErrHandler
+    
+    ' Step 6: Build Analytical Cockpits with Real Visuals, Dynamic KPIs & Docked Slicers
     currentStep = "Building Call Center Cockpit (03_CallCenter_Cockpit)"
     On Error Resume Next
     modDashboardUIUX.BuildCallCenterCanvas True
@@ -67,42 +80,34 @@ Public Sub RunUnifiedPwCPlatform()
     modDashboardUIUX.BuildDiversityInclusionCanvas True
     On Error GoTo MasterErrHandler
     
-    ' Step 6: Provision Scorecard PivotTable, Apply Theme & Deploy Slicers
-    currentStep = "Provisioning Scorecard PivotTable & Applying Style"
+    ' Step 7: Finalize & Synchronize All 9 Interactive Slicers Across All Cockpits
+    currentStep = "Synchronizing All Data Model Slicers Across Cockpits"
     On Error Resume Next
-    Dim wsStgPivots As Worksheet
-    Set wsStgPivots = wb.Worksheets("Staging_Pivots")
-    If wsStgPivots Is Nothing Then
-        Set wsStgPivots = wb.Worksheets.Add(After:=wb.Worksheets(wb.Worksheets.Count))
-        wsStgPivots.Name = "Staging_Pivots"
-        wsStgPivots.Visible = xlSheetHidden
-    End If
-    modInteractiveScorecard.EnsureOrBuildAgentPivotTable wsStgPivots
-    modPivotTableFormatting.StyleAgentScorecardPivotTable "SLA_EXCEPTIONS"
-    
-    currentStep = "Deploying Real Interactive Slicers Across All Cockpits"
     modFilterController.DeployAllCockpitSlicers
+    modPivotTableFormatting.StyleAgentScorecardPivotTable "SLA_EXCEPTIONS"
     On Error GoTo MasterErrHandler
     
-    ' Step 7: Normalize Viewports (FreezePanes = False, Scroll = A1, Zoom = 80%)
+    ' Step 8: Normalize Viewports (FreezePanes = False, Scroll = A1, Zoom = 80%)
     currentStep = "Normalizing Sheet Viewports & Gridlines"
     modDashboardUIUX.ResetAllViewports
     
-    ' Step 8: Navigate to Call Center Cockpit as default landing view
+    ' Step 9: Navigate to Call Center Cockpit as default landing view
     currentStep = "Navigating to Call Center Cockpit"
     modNavigation.NavigateToCallCenter
     
-    ' Step 9: Restore Application State Shield
+    ' Step 10: Restore Application State Shield
     modAppState.RestoreAppState
     Application.StatusBar = "PwC Switzerland BI Suite ready."
     
-    MsgBox "PwC Switzerland BI Platform deployed successfully!" & vbCrLf & vbCrLf & _
-           "- Connected Architecture: All 12 VBA modules fully synchronized" & vbCrLf & _
-           "- Interactive Visuals: Real charts, BAN cards & scorecards generated" & vbCrLf & _
-           "- Zero Conflicts: 0 ambiguous names and 0 shape deletion errors" & vbCrLf & _
-           "- Responsive Design: Modern rounded buttons with centered text" & vbCrLf & _
-           "- Pure ASCII: 100% compatible across all Windows regional locales", _
-           vbInformation, PLATFORM_NAME & " " & PLATFORM_VERSION
+    If Application.UserControl Then
+        MsgBox "PwC Switzerland BI Platform deployed successfully!" & vbCrLf & vbCrLf & _
+               "- Connected Architecture: All 12 VBA modules fully synchronized" & vbCrLf & _
+               "- Interactive Visuals: Real charts, BAN cards & scorecards generated" & vbCrLf & _
+               "- Zero Conflicts: 0 ambiguous names and 0 shape deletion errors" & vbCrLf & _
+               "- Responsive Design: Modern rounded buttons with centered text" & vbCrLf & _
+               "- Pure ASCII: 100% compatible across all Windows regional locales", _
+               vbInformation, PLATFORM_NAME & " " & PLATFORM_VERSION
+    End If
     Exit Sub
 
 MasterErrHandler:

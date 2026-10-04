@@ -158,9 +158,35 @@ All buttons created on worksheets are permanently bound to their respective modu
 - All UTF-8 em-dashes (`—`), smart quotes (`“`, `”`), and directional triangles (`▲`, `▼`) have been replaced with pure ASCII representations (`--`, `"`, `ChrW(9650)`, `ChrW(9660)`).
 - This guarantees zero character corruption on Windows-1256 (Arabic) or other international Windows code pages.
 
+### Fix 4: Scorecard PivotTable Formatter Modal Dialog Eliminated
+- **Root Cause**: `modPivotTableFormatting.bas` attempted to find `ws.PivotTables("pt_Agent")` on `03_CallCenter_Cockpit` or `Staging_Pivots`. If the user ran the formatter before provisioning, a blocking modal `MsgBox` ("No PivotTable found...") was raised, interrupting automated batch execution.
+- **Resolution**: `StyleAgentScorecardPivotTable` now calls `modInteractiveScorecard.EnsureOrBuildAgentPivotTable` to automatically provision `pt_Agent` on `Staging_Pivots` on demand, and cleanly exits if uninitialized without blocking alerts.
+
+### Fix 5: Compile Error "Variable not defined" (`wb`) Resolved
+- **Root Cause**: With `Option Explicit` enabled, `RunUnifiedPwCPlatform` referenced `wb.Worksheets("Staging_Pivots")` without a local `Dim wb As Workbook` declaration.
+- **Resolution**: Explicitly dimmed and initialized `Dim wb As Workbook: Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook`. Verified with 0 compile errors in Excel VBE.
+
+### Fix 6: Multi-Tier Asset & SVG Icon Path Resolution
+- **Root Cause**: Relative icon paths failed when running from varying current directories or subfolders (`assets/icons/web/` vs `assets/icons/`).
+- **Resolution**: Implemented `ResolveAssetPath` in `modDashboardUIUX.bas` which resolves against workbook path, relative subfolders, parent paths, and absolute project paths, with automatic aliasing of `"logo"` to `assets/PwC_logo_rgb_colour_pos.png`.
+
 ---
 
-## 5. VBA MCP Server Integration
+## 5. Slicer & Filter Engine Architecture (`modFilterController.bas`)
+
+The platform deploys real, interactive Excel Data Model Slicers (`SlicerCaches.Add2` & `Slicers.Add`) docked into the analytical cockpits:
+
+| Cockpit Sheet | Slicer Slot 1 | Slicer Slot 2 | Slicer Slot 3 |
+|---------------|---------------|---------------|---------------|
+| `03_CallCenter_Cockpit` | `[DimDate].[Month]` (`Billing Month`) | `[DimTopic].[Topic]` (`Topic Tier`) | `[DimAgent].[Agent]` (`Representative`) |
+| `04_CustomerRetention_Cockpit` | `[DimContract].[Contract]` (`Contract Type`) | `[Fact_Churn].[PaymentMethod]` (`Payment Gateway`) | `[Fact_Churn].[InternetService]` (`Internet Service`) |
+| `05_DiversityInclusion_Cockpit` | `[DimDepartment].[Department]` (`Department`) | `[Fact_Employees].[JobLevel]` (`Job Level Hierarchy`) | `[Fact_Employees].[Gender]` (`Gender Demographics`) |
+
+All slicers are created with fallback protection: if VertiPaq OLAP cubes are not yet connected, staging table columns are used seamlessly.
+
+---
+
+## 6. VBA MCP Server Integration
 
 The project includes the **VBA MCP Server** located in `scripts/vba_mcp_server/`, configured in Antigravity IDE:
 

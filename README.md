@@ -313,18 +313,28 @@ pwc-switzerland-virtual-case/
 
 ### 3. Executing the Unified Master VBA Suite (`modPwC_Unified_Master.bas`)
 
+> [!TIP]
+> **One-Click Automated Deployment**: The entire platform—including all 6 sheets, 9 Data Model Slicers, 21 dynamic CUBEVALUE BAN cards, 16 charts, and live interactive Agent Scorecard—is built and configured automatically with a single script execution.
+
 To assemble or refresh the entire executive application in a single click:
 
-1. In Excel, press `Alt + F11` to open the Visual Basic Editor.
-2. Click **File** $\to$ **Import File...** $\to$ select [`vba/modPwC_Unified_Master.bas`](vba/modPwC_Unified_Master.bas).
-3. In the Code Window, place your cursor inside `Public Sub RunCompletePwCPlatform()` and press **`F5`**.
-4. The master orchestrator executes all stages sequentially:
-   * Provisions Governance Sheets (`01_Business_Domains`, `02_Metadata_&_KPI_Catalog`)
-   * Builds Executive Home Portal (`00_Home_Portal`) with embedded logo and launcher cards
-   * Assembles all 3 Web-App Canvases (`03_CallCenter`, `04_Retention`, `05_D&I`) with modern rounded square navbars, centered text, and 7 BAN cards on Call Center
-   * Builds and docks the live interactive Agent Scorecard with strict `0.0 "s"` formatting
-   * Refreshes the VertiPaq tabular model & PivotCaches
-   * Clears all slicers and returns focus to `00_Home_Portal`!
+1. In Excel, press `Alt + F11` to open the Visual Basic Editor (or press `Alt + F8` to open the Macro dialog).
+2. Locate the macro **`RunUnifiedPwCPlatform`** (or `RunCompletePwCPlatform`).
+3. Press **`Run`** (or press **`F5`** inside the code window).
+4. The master orchestrator executes all 10 stages sequentially in under 5 seconds:
+   * **Stage 1**: Initializes Application State Shield (silencing screen flicker and alerts).
+   * **Stage 2**: Populates and calibrates staging analytical datasets (`03_Staging_Data`).
+   * **Stage 3**: Provisions Governance Sheets (`01_Business_Domains`, `02_Metadata_&_KPI_Catalog`).
+   * **Stage 4**: Builds Executive Home Portal (`00_Home_Portal`) with embedded official PwC logo, metric ticker, and launcher cards.
+   * **Stage 5**: Provisions the VertiPaq Data Model PivotTable on `Staging_Pivots`.
+   * **Stage 6**: Assembles all 3 Web-App Canvases (`03_CallCenter_Cockpit`, `04_CustomerRetention_Cockpit`, `05_DiversityInclusion_Cockpit`) with modern elevated navbars, centered text, web SVG icons, and 21 floating BAN cards.
+   * **Stage 7**: Deploys and docks all 9 VertiPaq Data Model Slicers into their exact sidebar slots and styles the Agent Scorecard.
+   * **Stage 8**: Normalizes viewports across all sheets (A1 scroll, 80% zoom, hidden gridlines).
+   * **Stage 9**: Navigates to the Call Center Cockpit as the default operational landing view.
+   * **Stage 10**: Restores Excel application state and presents the completion briefing!
+
+> [!NOTE]
+> All 9 slicers are connected directly to the in-memory **VertiPaq Data Model** (`ThisWorkbookDataModel`). Filtering any slicer dynamically re-calculates all CUBEVALUE KPI cards, PivotCharts, and the live Agent Scorecard in real-time.
 
 ---
 
