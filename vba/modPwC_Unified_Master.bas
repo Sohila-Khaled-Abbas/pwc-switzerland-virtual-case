@@ -28,6 +28,8 @@ Private Const PLATFORM_VERSION As String = "v3.0.0 Enterprise"
 ' ==============================================================================
 Public Sub RunUnifiedPwCPlatform()
     Dim currentStep As String
+    Dim wb As Workbook
+    Set wb = ThisWorkbook: If wb Is Nothing Then Set wb = ActiveWorkbook
     On Error GoTo MasterErrHandler
     
     ' Step 1: Initialize Application State Shield
