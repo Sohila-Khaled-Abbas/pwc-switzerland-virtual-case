@@ -1,5 +1,5 @@
 # PwC Switzerland Virtual Case — Master Workbook Architecture & Fix Changelog
-**Deliverable File**: `PWC_Switzerland_Virtual_Case_FIXED.xlsm`  
+**Deliverable File**: `PWC_Switzerland_Virtual_Case.xlsm` (Consolidated Production Canonical)  
 **Engineer Roles**: Senior Analytics Engineer + Excel BI Dashboard Engineer + UX/UI Designer  
 **Status**: All Validation Checks Passed (Production Grade)  
 
@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary
 
-The macro-enabled enterprise semantic workbook `PWC_Switzerland_Virtual_Case.xlsm` has been audited, repaired, standardized, and professionally finished. The resulting deliverable, `PWC_Switzerland_Virtual_Case_FIXED.xlsm`, preserves 100% of the underlying analytical assets—including the **VertiPaq Tabular Data Model (Power Pivot)**, **13 model tables**, **81 DAX measures**, **Power Query mashup connections**, and **VBA automation modules**—while resolving all functional, semantic, visual, and architectural shortcomings.
+The macro-enabled enterprise semantic workbook `PWC_Switzerland_Virtual_Case.xlsm` has been audited, repaired, standardized, and professionally finished. All fixes and enhancements have been directly consolidated into `PWC_Switzerland_Virtual_Case.xlsm`, preserving 100% of the underlying analytical assets—including the **VertiPaq Tabular Data Model (Power Pivot)**, **13 model tables**, **81 DAX measures**, **Power Query mashup connections**, and the unified master **VBA automation engine (`vba/modPwC_Unified_Master.bas`)**—while resolving all functional, semantic, visual, and architectural shortcomings. The temporary artifact `PWC_Switzerland_Virtual_Case_FIXED.xlsm` has been deleted and retired to ensure a single, authoritative source of truth.
 
 ---
 
@@ -170,7 +170,7 @@ The macro-enabled enterprise semantic workbook `PWC_Switzerland_Virtual_Case.xls
 
 ## 4. Preservation & Production Deliverables Statement
 
-- **Master Production Workbook**: `PWC_Switzerland_Virtual_Case.xlsm` has been fully upgraded and synchronized with 100% of the verified architecture, navigation, slicers, and CUBE formula fixes.
-- **Dedicated Verified Deliverable**: Saved and tracked in parallel as **`PWC_Switzerland_Virtual_Case_FIXED.xlsm`** (byte-for-byte identical, MD5: `e29e00df89812a1d91c4e8a23304331d`).
+- **Master Production Workbook**: `PWC_Switzerland_Virtual_Case.xlsm` is the single canonical enterprise production workbook incorporating 100% of the verified architecture, navigation, slicers, CUBE formula fixes, and the consolidated VBA master engine.
+- **Unified Master VBA Module**: Consolidated into `vba/modPwC_Unified_Master.bas` for single-script execution. The legacy duplicate file `PWC_Switzerland_Virtual_Case_FIXED.xlsm` has been retired.
 - **Pre-Fix Backup**: Safely archived as `PWC_Switzerland_Virtual_Case_BACKUP_PRE_FIX.xlsm`.
 - **Operating Status**: Completely unlocked, unblocked, and ready for immediate executive presentation.

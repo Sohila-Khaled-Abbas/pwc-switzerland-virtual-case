@@ -4,6 +4,32 @@ All notable changes to the **PwC Switzerland Virtual Case Experience** platform 
 
 ---
 
+## [3.0.0] - 2026-10-04
+
+### 💎 Consolidated Master VBA Engine, Reference UI/UX Alignment & Artifact Clean-up
+
+- **Consolidated Master VBA Script (`vba/modPwC_Unified_Master.bas`)**:
+  - Merged and harmonized all 11 individual VBA modules (`modAppState`, `modThemeEngine`, `modNavigation`, `modDataRefresh`, `modFilterController`, `modExportPDF`, `modCreateGovernanceSheets`, `modPortalLanding`, `modDashboardUIUX`, `modInteractiveScorecard`, `modPivotTableFormatting`) into a single, unified, dependency-free `.bas` file (2,677 lines).
+  - Resolved all cross-module scoping conflicts, eliminated duplicate global constant declarations, and converted cross-module calls into direct internal calls.
+  - Pure ASCII-safe string encoding (`ChrW(...)` / standard characters) to eliminate any risk of UTF-8 encoding corruption across international Excel installations.
+  - Formally validated by Python abstract block parser: 50 Subs, 4 Functions, 100% block balance (0 unclosed blocks, 0 syntax errors).
+  - Single master entry point: `Public Sub RunCompletePwCPlatform()` orchestrates the entire platform build-out sequentially.
+
+- **UI/UX & Design Alignment with Reference SaaS Dashboard**:
+  - **Centered Text in Middle of All Text Boxes**: Implemented `CenterShapeText` helper enforcing `.VerticalAnchor = msoAnchorMiddle`, `.TextRange.ParagraphFormat.Alignment = msoAlignCenter`, `.VerticalAlignment = xlVAlignCenter`, `.HorizontalAlignment = xlHAlignCenter`, and zero margins across all cards, KPI badges, navigation buttons, and status indicators.
+  - **Modern Shaped Rounded Square Navbars & Cards**: Enforced subtle, elegant rounding (`Adjustments.Item(1) = 0.08` to `0.12`) on all navigation buttons, KPI containers, and filter drawer elements matching modern SaaS web standards.
+  - **Asset Integration (`assets/`)**: Fully wired vector SVG assets (`pwc_logo.svg`, `phone_orange.svg`, `check_green.svg`, `xcircle_red.svg`, `timer_amber.svg`, `clock_purple.svg`, `user_blue.svg`, `target_teal.svg`, `support_team_illustration.svg`, and all 7 colored sparklines) into visual generation routines.
+  - **Executive 7-BAN KPI Card Layout**: 7 cards staged via `=CUBEVALUE(...)` formulas on row 65 (`AA65:AG65`) with trend badges and micro-sparklines.
+  - **Live Docked Scorecard**: High-fidelity Top 10 Agent Performance scorecard with strict `0.0 "s"` formatting and live dynamic picture docking.
+  - **Dynamic Theme Engine**: Full Light (`ThemeMode.LightMode`) and Dark (`ThemeMode.DarkMode`) color token palettes with automatic chart, shape, and gridline adaptation.
+
+- **Artifact Clean-up & Documentation**:
+  - Removed deprecated redundant workbook `PWC_Switzerland_Virtual_Case_FIXED.xlsm`. The canonical production workbook is now purely `PWC_Switzerland_Virtual_Case.xlsm`.
+  - Updated `README.md` file tree and added step-by-step manual execution guide.
+  - Updated `docs/00_master_project_execution_guide.md` across Phases 4, 6, and 7 to reference the unified master VBA script and manual execution workflow.
+
+---
+
 ## [2.8.0] - 2026-10-03
 
 ### 🎨 Executive SaaS Visual Dashboard Alignment & 7-KPI Architecture

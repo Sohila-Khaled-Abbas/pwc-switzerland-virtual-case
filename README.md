@@ -264,6 +264,7 @@ pwc-switzerland-virtual-case/
 │   └── modernize_cockpit_styling.py       # Cockpit chart gradients, SVG badges & styling
 │
 ├── vba/
+│   ├── modPwC_Unified_Master.bas          # ⭐ UNIFIED MASTER SUITE: Consolidated all-in-one automation engine
 │   ├── modAppState.bas                    # Application screen updating & calculation state
 │   ├── modCreateGovernanceSheets.bas      # Pre-dashboard business domains & metadata catalog builder
 │   ├── modDashboardUIUX.bas               # Modern canvas, floating KPI cards & PwC palette engine
@@ -280,7 +281,6 @@ pwc-switzerland-virtual-case/
 ├── CONTRIBUTING.md                        # Dimensional modeling & DAX style guide
 ├── LICENSE                                # MIT Open-Source License
 ├── PWC_Switzerland_Virtual_Case.xlsm      # Master production workbook (VertiPaq Model & VBA Suite)
-├── PWC_Switzerland_Virtual_Case_FIXED.xlsm# Synchronized, verified production deliverable
 └── README.md                              # Master architectural documentation index
 ```
 
@@ -305,6 +305,20 @@ pwc-switzerland-virtual-case/
 2. Open [`PWC_Switzerland_Virtual_Case.xlsm`](PWC_Switzerland_Virtual_Case.xlsm) in Excel.
 3. Navigate to **Power Pivot** on the Excel ribbon $\to$ click **Manage**.
 4. In the Power Pivot window, click **Diagram View** to inspect the 12-table Galaxy Schema and active 1-to-many relationships.
+
+### 3. Executing the Unified Master VBA Suite (`modPwC_Unified_Master.bas`)
+
+To assemble or refresh the entire executive application in a single click:
+1. In Excel, press `Alt + F11` to open the Visual Basic Editor.
+2. Click **File** $\to$ **Import File...** $\to$ select [`vba/modPwC_Unified_Master.bas`](vba/modPwC_Unified_Master.bas).
+3. In the Code Window, place your cursor inside `Public Sub RunCompletePwCPlatform()` and press **`F5`**.
+4. The master orchestrator executes all stages sequentially:
+   - Provisions Governance Sheets (`01_Business_Domains`, `02_Metadata_&_KPI_Catalog`)
+   - Builds Executive Home Portal (`00_Home_Portal`) with embedded logo and launcher cards
+   - Assembles all 3 Web-App Canvases (`03_CallCenter`, `04_Retention`, `05_D&I`) with modern rounded square navbars, centered text, and 7 BAN cards on Call Center
+   - Builds and docks the live interactive Agent Scorecard with strict `0.0 "s"` formatting
+   - Refreshes the VertiPaq tabular model & PivotCaches
+   - Clears all slicers and returns focus to `00_Home_Portal`!
 
 ---
 
