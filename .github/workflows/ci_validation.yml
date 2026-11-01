@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: setup-python@v5
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -28,7 +28,7 @@ jobs:
               'data/01 Call-Center-Dataset.xlsx',
               'data/02 Churn-Dataset.xlsx',
               'data/03 Diversity-Inclusion-Dataset.xlsx',
-              'PWC_Switzerland_Virtual_Case.xlsx'
+              'PWC_Switzerland_Virtual_Case.xlsm'
           ]
           missing = [f for f in files if not os.path.exists(f)]
           if missing:
